@@ -1,229 +1,239 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظم الحياة والإنتاجية</title>
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-        }
-
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        h1 { margin: 0; font-size: 1.5rem; color: var(--primary); }
-        p { margin: 5px 0 0; color: var(--muted); font-size: 0.9rem; }
-
-        .card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .card h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; }
-
-        .progress-bar {
-            height: 10px;
-            background: #e2e8f0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        input, select, button {
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        input { flex: 1; }
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        ul { list-style: none; padding: 0; margin: 0; }
-
-        li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .completed { text-decoration: line-through; color: var(--muted); }
-        .badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; color: white; }
-        .high { background: #ef4444; }
-        .medium { background: #f59e0b; }
-        .low { background: #10b981; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منظم الحياة والإنتاجية</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --primary: #4a6fa5;
+      --accent: #27ae60;
+      --danger: #e74c3c;
+      --border: #e2e8f0;
+    }
+    body.dark {
+      --bg: #1a1a2e;
+      --card-bg: #16213e;
+      --text: #e9ecef;
+      --primary: #0f3460;
+      --border: #0f3460;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+      transition: all 0.3s ease;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 1.4rem; margin: 0; }
+    button.theme-btn {
+      background: none;
+      border: 1px solid var(--primary);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text);
+    }
+    button.add-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    li.done span { text-decoration: line-through; opacity: 0.6; }
+    .actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 5px;
+    }
+    .progress-bar {
+      height: 10px;
+      background: var(--border);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
-    <header>
-        <h1>منظم الحياة والإنتاجية</h1>
-        <p>تتبع مهامك، عاداتك، وأهدافك اليومية</p>
-    </header>
-
-    <!-- لوحة الأداء -->
-    <div class="card">
-        <h2>نسبة إنجاز اليوم</h2>
-        <div id="progressText">0% مكتمل</div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1>منظم الحياة والإنتاجية</h1>
+      <button class="theme-btn" onclick="toggleTheme()">🌙 الوضع</button>
     </div>
 
-    <!-- المهام اليومية -->
+    <!-- نسبة الإنجاز -->
     <div class="card">
-        <h2>قائمة المهام</h2>
-        <div class="input-group">
-            <input type="text" id="taskInput" placeholder="أضف مهمة جديدة...">
-            <select id="taskPriority">
-                <option value="low">منخفضة</option>
-                <option value="medium">متوسطة</option>
-                <option value="high">عالية</option>
-            </select>
-            <button onclick="addTask()">إضافة</button>
-        </div>
-        <ul id="taskList"></ul>
+      <h3>نسبة إنجاز المهام: <span id="progress-text">0%</span></h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
     </div>
 
-    <!-- متبع العادات -->
+    <!-- قائمة المهام -->
     <div class="card">
-        <h2>تتبع العادات</h2>
-        <div class="input-group">
-            <input type="text" id="habitInput" placeholder="عادة جديدة (مثال: القراءة)...">
-            <button onclick="addHabit()">إضافة</button>
-        </div>
-        <ul id="habitList"></ul>
+      <h3>قائمة المهام</h3>
+      <div class="input-group">
+        <input type="text" id="task-input" placeholder="أضف مهمة جديدة...">
+        <button class="add-btn" onclick="addTask()">إضافة</button>
+      </div>
+      <ul id="task-list"></ul>
     </div>
-</div>
 
-<script>
+    <!-- تتبع العادات -->
+    <div class="card">
+      <h3>تتبع العادات اليومية</h3>
+      <div class="input-group">
+        <input type="text" id="habit-input" placeholder="عادة جديدة (مثل: القراءة)...">
+        <button class="add-btn" onclick="addHabit()">إضافة</button>
+      </div>
+      <ul id="habit-list"></ul>
+    </div>
+  </div>
+
+  <script>
     let tasks = JSON.parse(localStorage.getItem('my_tasks')) || [];
     let habits = JSON.parse(localStorage.getItem('my_habits')) || [];
 
     function saveData() {
-        localStorage.setItem('my_tasks', JSON.stringify(tasks));
-        localStorage.setItem('my_habits', JSON.stringify(habits));
-        render();
+      localStorage.setItem('my_tasks', JSON.stringify(tasks));
+      localStorage.setItem('my_habits', JSON.stringify(habits));
+      render();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
     }
 
     function addTask() {
-        const input = document.getElementById('taskInput');
-        const priority = document.getElementById('taskPriority').value;
-        if (!input.value.trim()) return;
-        tasks.push({ text: input.value, priority, done: false });
-        input.value = '';
-        saveData();
+      const input = document.getElementById('task-input');
+      if (input.value.trim() === '') return;
+      tasks.push({ text: input.value, done: false });
+      input.value = '';
+      saveData();
     }
 
     function toggleTask(index) {
-        tasks[index].done = !tasks[index].done;
-        saveData();
+      tasks[index].done = !tasks[index].done;
+      saveData();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      saveData();
     }
 
     function addHabit() {
-        const input = document.getElementById('habitInput');
-        if (!input.value.trim()) return;
-        habits.push({ text: input.value, streak: 0, doneToday: false });
-        input.value = '';
-        saveData();
+      const input = document.getElementById('habit-input');
+      if (input.value.trim() === '') return;
+      habits.push({ text: input.value, count: 0 });
+      input.value = '';
+      saveData();
     }
 
-    function toggleHabit(index) {
-        habits[index].doneToday = !habits[index].doneToday;
-        habits[index].streak += habits[index].doneToday ? 1 : -1;
-        if (habits[index].streak < 0) habits[index].streak = 0;
-        saveData();
+    function incrementHabit(index) {
+      habits[index].count += 1;
+      saveData();
+    }
+
+    function deleteHabit(index) {
+      habits.splice(index, 1);
+      saveData();
     }
 
     function render() {
-        const taskList = document.getElementById('taskList');
-        taskList.innerHTML = '';
-        let completedCount = 0;
+      const taskList = document.getElementById('task-list');
+      taskList.innerHTML = '';
+      let doneCount = 0;
 
-        tasks.forEach((task, i) => {
-            if (task.done) completedCount++;
-            taskList.innerHTML += `
-                <li>
-                    <span class="${task.done ? 'completed' : ''}" onclick="toggleTask(${i})" style="cursor:pointer">
-                        ${task.done ? '✅' : '⬜'} ${task.text}
-                    </span>
-                    <span class="badge ${task.priority}">${task.priority == 'high' ? 'عالية' : task.priority == 'medium' ? 'متوسطة' : 'منخفضة'}</span>
-                </li>
-            `;
-        });
+      tasks.forEach((task, index) => {
+        if (task.done) doneCount++;
+        const li = document.createElement('li');
+        li.className = task.done ? 'done' : '';
+        li.innerHTML = `
+          <span onclick="toggleTask(${index})" style="cursor:pointer">${task.text}</span>
+          <div class="actions">
+            <button onclick="toggleTask(${index})">${task.done ? '↩️' : '✅'}</button>
+            <button onclick="deleteTask(${index})">🗑️</button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
 
-        const habitList = document.getElementById('habitList');
-        habitList.innerHTML = '';
-        habits.forEach((habit, i) => {
-            habitList.innerHTML += `
-                <li>
-                    <span class="${habit.doneToday ? 'completed' : ''}" onclick="toggleHabit(${i})" style="cursor:pointer">
-                        ${habit.doneToday ? '🔥' : '⚪'} ${habit.text}
-                    </span>
-                    <span style="font-size:0.85rem; color:var(--muted)">إنجاز: ${habit.streak} يوم</span>
-                </li>
-            `;
-        });
+      // حساب نسبة الإنجاز
+      const percent = tasks.length === 0 ? 0 : Math.round((doneCount / tasks.length) * 100);
+      document.getElementById('progress-text').innerText = `${percent}%`;
+      document.getElementById('progress-fill').style.width = `${percent}%`;
 
-        // تحديث نسبة الإنجاز
-        const total = tasks.length;
-        const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
-        document.getElementById('progressText').innerText = `${percent}% مكتمل`;
-        document.getElementById('progressFill').style.width = `${percent}%`;
+      const habitList = document.getElementById('habit-list');
+      habitList.innerHTML = '';
+      habits.forEach((habit, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${habit.text} (تمت: ${habit.count} مرة)</span>
+          <div class="actions">
+            <button onclick="incrementHabit(${index})">➕</button>
+            <button onclick="deleteHabit(${index})">🗑️</button>
+          </div>
+        `;
+        habitList.appendChild(li);
+      });
     }
 
+    // التشغيل الأول للتطبيقات
     render();
-</script>
-
+  </script>
 </body>
 </html>
+
