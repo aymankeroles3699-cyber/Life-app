@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظم الحياة والإنتاجية</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; color: var(--primary); }
+        p { margin: 5px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card h2 { font-size: 1.1rem; margin-top: 0; margin-bottom: 12px; }
+
+        .progress-bar {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        input, select, button {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        input { flex: 1; }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        ul { list-style: none; padding: 0; margin: 0; }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .completed { text-decoration: line-through; color: var(--muted); }
+        .badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; color: white; }
+        .high { background: #ef4444; }
+        .medium { background: #f59e0b; }
+        .low { background: #10b981; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>منظم الحياة والإنتاجية</h1>
+        <p>تتبع مهامك، عاداتك، وأهدافك اليومية</p>
+    </header>
+
+    <!-- لوحة الأداء -->
+    <div class="card">
+        <h2>نسبة إنجاز اليوم</h2>
+        <div id="progressText">0% مكتمل</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <!-- المهام اليومية -->
+    <div class="card">
+        <h2>قائمة المهام</h2>
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="أضف مهمة جديدة...">
+            <select id="taskPriority">
+                <option value="low">منخفضة</option>
+                <option value="medium">متوسطة</option>
+                <option value="high">عالية</option>
+            </select>
+            <button onclick="addTask()">إضافة</button>
+        </div>
+        <ul id="taskList"></ul>
+    </div>
+
+    <!-- متبع العادات -->
+    <div class="card">
+        <h2>تتبع العادات</h2>
+        <div class="input-group">
+            <input type="text" id="habitInput" placeholder="عادة جديدة (مثال: القراءة)...">
+            <button onclick="addHabit()">إضافة</button>
+        </div>
+        <ul id="habitList"></ul>
+    </div>
+</div>
+
+<script>
+    let tasks = JSON.parse(localStorage.getItem('my_tasks')) || [];
+    let habits = JSON.parse(localStorage.getItem('my_habits')) || [];
+
+    function saveData() {
+        localStorage.setItem('my_tasks', JSON.stringify(tasks));
+        localStorage.setItem('my_habits', JSON.stringify(habits));
+        render();
+    }
+
+    function addTask() {
+        const input = document.getElementById('taskInput');
+        const priority = document.getElementById('taskPriority').value;
+        if (!input.value.trim()) return;
+        tasks.push({ text: input.value, priority, done: false });
+        input.value = '';
+        saveData();
+    }
+
+    function toggleTask(index) {
+        tasks[index].done = !tasks[index].done;
+        saveData();
+    }
+
+    function addHabit() {
+        const input = document.getElementById('habitInput');
+        if (!input.value.trim()) return;
+        habits.push({ text: input.value, streak: 0, doneToday: false });
+        input.value = '';
+        saveData();
+    }
+
+    function toggleHabit(index) {
+        habits[index].doneToday = !habits[index].doneToday;
+        habits[index].streak += habits[index].doneToday ? 1 : -1;
+        if (habits[index].streak < 0) habits[index].streak = 0;
+        saveData();
+    }
+
+    function render() {
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = '';
+        let completedCount = 0;
+
+        tasks.forEach((task, i) => {
+            if (task.done) completedCount++;
+            taskList.innerHTML += `
+                <li>
+                    <span class="${task.done ? 'completed' : ''}" onclick="toggleTask(${i})" style="cursor:pointer">
+                        ${task.done ? '✅' : '⬜'} ${task.text}
+                    </span>
+                    <span class="badge ${task.priority}">${task.priority == 'high' ? 'عالية' : task.priority == 'medium' ? 'متوسطة' : 'منخفضة'}</span>
+                </li>
+            `;
+        });
+
+        const habitList = document.getElementById('habitList');
+        habitList.innerHTML = '';
+        habits.forEach((habit, i) => {
+            habitList.innerHTML += `
+                <li>
+                    <span class="${habit.doneToday ? 'completed' : ''}" onclick="toggleHabit(${i})" style="cursor:pointer">
+                        ${habit.doneToday ? '🔥' : '⚪'} ${habit.text}
+                    </span>
+                    <span style="font-size:0.85rem; color:var(--muted)">إنجاز: ${habit.streak} يوم</span>
+                </li>
+            `;
+        });
+
+        // تحديث نسبة الإنجاز
+        const total = tasks.length;
+        const percent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+        document.getElementById('progressText').innerText = `${percent}% مكتمل`;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+
+    render();
+</script>
+
+</body>
+</html>
