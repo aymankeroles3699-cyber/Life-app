@@ -36,7 +36,6 @@
       margin: 0 auto;
     }
 
-    /* التحكم في إظهار وإخفاء التابات */
     .tab-content {
       display: none;
     }
@@ -180,7 +179,32 @@
       margin-left: 4px;
     }
 
-    /* شريط التنقل السفلي */
+    /* أزرار قطع الملابس والـ Tags */
+    .wardrobe-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .wardrobe-tag {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid var(--primary);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wardrobe-tag:hover {
+      background: var(--primary);
+      color: white;
+    }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -223,14 +247,6 @@
       align-items: center;
       margin-bottom: 8px;
     }
-
-    .history-tasks-list {
-      font-size: 0.85rem;
-      color: var(--subtext);
-      border-top: 1px dashed var(--card-border);
-      padding-top: 8px;
-      margin-top: 8px;
-    }
   </style>
 </head>
 <body>
@@ -271,28 +287,41 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: خزانة الملابس والإطلالة -->
+    <!-- التابة الثانية: الدولاب وسجل الملابس Outfit Manager -->
     <div id="tab-outfit" class="tab-content">
-      <h2 style="margin-top: 0;">👔 خزانة الملابس والتنسيقات</h2>
-      <p style="color:var(--subtext); font-size:0.85rem; margin-top:-8px;">حدد واكتب الطقم أو الملابس المخصصة ليوم: <strong id="outfit-date-label" style="color:var(--primary);"></strong></p>
+      <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
+      <!-- 1. تحديد طقم اليوم الحالي -->
       <div class="card">
-        <h3 style="margin: 0 0 12px 0;">✨ طقم وإطلالة اليوم</h3>
-        <textarea id="outfit-input" rows="4" placeholder="اكتب تفاصيل الطقم (مثال: قميص أسود، بنطلون جينز أزرق، وساعة يد فضية...)" onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:6px; text-align:left;">✓ يتم الحفظ تلقائياً</div>
+        <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
+        <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم تلقائياً</div>
       </div>
 
+      <!-- 2. إضافة قطع جديدة للدولاب -->
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">💡 أفكار سريعة لتنسيق الملابس</h3>
-        <ul style="margin:0;">
-          <li><span>👔 طقم العمل / المواعيد الرسمية</span></li>
-          <li><span>👟 طقم الجيم / الرياضة</span></li>
-          <li><span>👕 طقم كاجوال للخروج</span></li>
-        </ul>
+        <h3 style="margin: 0 0 8px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
+        <div class="input-group">
+          <input type="text" id="wardrobe-item-input" placeholder="مثال: قميص أبيض، بنطلون زيتي...">
+          <button class="add-btn" onclick="addWardrobeItem()">إضافة</button>
+        </div>
+
+        <h4 style="margin: 14px 0 6px 0; color:var(--subtext);">اضغط على القطعة لإضافتها لطقم اليوم:</h4>
+        <div id="wardrobe-tags-container" class="wardrobe-tags">
+          <!-- قطع الدولاب تظهر هنا -->
+        </div>
+      </div>
+
+      <!-- 3. سجل الملابس السابقة Outfit History -->
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0;">📜 Outfit History (سجل الملابس)</h3>
+        <div id="outfit-history-container">
+          <!-- سجل الطقم لكل يوم يظهر هنا -->
+        </div>
       </div>
     </div>
 
-    <!-- التابة الثالثة: تقارير الأيام السابقة -->
+    <!-- التابة الثالثة: تقارير الأهداف -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقرير إنجاز الأيام السابقة</h2>
 
@@ -313,7 +342,7 @@
 
   </div>
 
-  <!-- شريط التنقل السفلي المطور -->
+  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
       <span style="font-size: 1.2rem;">🎯</span>
@@ -342,6 +371,7 @@
     let currentDate = getLocalDateString(0);
     let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
+    let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe')) || ['قميص أبيض', 'بنطلون جينز أزرق', 'تيشيرت أسود', 'كوتشي أبيض'];
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -355,6 +385,8 @@
         document.getElementById('btn-outfit').classList.add('active');
         document.getElementById('outfit-date-label').innerText = currentDate;
         document.getElementById('outfit-input').value = allOutfits[currentDate] || '';
+        renderWardrobe();
+        renderOutfitHistory();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         document.getElementById('btn-reports').classList.add('active');
@@ -396,10 +428,83 @@
       render();
     }
 
+    // إدارة الملابس والدولاب
     function saveOutfit() {
       const outfitInput = document.getElementById('outfit-input');
       allOutfits[currentDate] = outfitInput.value;
       localStorage.setItem('life_app_outfits_by_date', JSON.stringify(allOutfits));
+      renderOutfitHistory();
+    }
+
+    function addWardrobeItem() {
+      const input = document.getElementById('wardrobe-item-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      myWardrobe.push(val);
+      localStorage.setItem('life_app_my_wardrobe', JSON.stringify(myWardrobe));
+      input.value = '';
+      renderWardrobe();
+    }
+
+    function appendToOutfit(itemText) {
+      const outfitInput = document.getElementById('outfit-input');
+      if (outfitInput.value.trim() === '') {
+        outfitInput.value = itemText;
+      } else {
+        outfitInput.value += ` + ${itemText}`;
+      }
+      saveOutfit();
+    }
+
+    function deleteWardrobeItem(index, e) {
+      e.stopPropagation();
+      myWardrobe.splice(index, 1);
+      localStorage.setItem('life_app_my_wardrobe', JSON.stringify(myWardrobe));
+      renderWardrobe();
+    }
+
+    function renderWardrobe() {
+      const container = document.getElementById('wardrobe-tags-container');
+      container.innerHTML = '';
+
+      if (myWardrobe.length === 0) {
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.8rem;">دولابك فارغ الآن، أضف قطع جديدة بالأعلى!</span>';
+        return;
+      }
+
+      myWardrobe.forEach((item, idx) => {
+        const tag = document.createElement('div');
+        tag.className = 'wardrobe-tag';
+        tag.innerHTML = `
+          <span onclick="appendToOutfit('${item}')">${item}</span>
+          <span onclick="deleteWardrobeItem(${idx}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
+        `;
+        container.appendChild(tag);
+      });
+    }
+
+    function renderOutfitHistory() {
+      const historyContainer = document.getElementById('outfit-history-container');
+      historyContainer.innerHTML = '';
+
+      const sortedDates = Object.keys(allOutfits).sort().reverse();
+
+      if (sortedDates.length === 0) {
+        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center; padding:10px;">لا يوجد سجل ملابس مكتوب سابقاً.</div>';
+        return;
+      }
+
+      sortedDates.forEach(date => {
+        if (!allOutfits[date]) return;
+        const item = document.createElement('div');
+        item.style.cssText = "padding:10px; background:rgba(15,23,42,0.5); border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;";
+        item.innerHTML = `
+          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold;">📅 ${date}</div>
+          <div style="font-size:0.9rem; color:var(--text); margin-top:4px;">👔 ${allOutfits[date]}</div>
+        `;
+        historyContainer.appendChild(item);
+      });
     }
 
     function saveData() {
@@ -443,19 +548,16 @@
       let totalAll = 0;
       let completedAll = 0;
 
-      const allDatesSet = new Set([...Object.keys(allTasks), ...Object.keys(allOutfits)]);
-      const sortedDates = Array.from(allDatesSet).sort().reverse();
+      const sortedDates = Object.keys(allTasks).sort().reverse();
 
       if (sortedDates.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:var(--subtext); padding:20px;">لا توجد أهداف أو بيانات مسجلة سابقاً حتى الآن.</div>';
+        container.innerHTML = '<div style="text-align:center; color:var(--subtext); padding:20px;">لا توجد أهداف مسجلة سابقاً حتى الآن.</div>';
         return;
       }
 
       sortedDates.forEach(date => {
         const dayTasks = allTasks[date] || [];
-        const dayOutfit = allOutfits[date] || '';
-
-        if (dayTasks.length === 0 && !dayOutfit) return;
+        if (dayTasks.length === 0) return;
 
         let dayDone = 0;
         let tasksHtml = '';
@@ -471,7 +573,7 @@
           }
         });
 
-        const dayPercent = dayTasks.length === 0 ? 0 : Math.round((dayDone / dayTasks.length) * 100);
+        const dayPercent = Math.round((dayDone / dayTasks.length) * 100);
 
         const card = document.createElement('div');
         card.className = 'card history-card';
@@ -480,12 +582,11 @@
             <strong>📅 ${date}</strong>
             <span style="font-weight:bold; color: ${dayPercent === 100 ? 'var(--accent)' : 'var(--primary)'};">${dayPercent}% إنجاز</span>
           </div>
-          ${dayOutfit ? `<div style="font-size:0.85rem; color:var(--text); margin-bottom:8px; background:rgba(15,23,42,0.4); padding:6px 10px; border-radius:8px;">👔 الملابس: <strong>${dayOutfit}</strong></div>` : ''}
           <div class="progress-bar">
             <div class="progress-fill" style="width: ${dayPercent}%;"></div>
           </div>
           <div class="history-tasks-list">
-            ${tasksHtml || '<div style="color:var(--subtext);">لا توجد أهداف مسجلة هذا اليوم.</div>'}
+            ${tasksHtml}
           </div>
         `;
         container.appendChild(card);
