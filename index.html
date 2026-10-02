@@ -234,7 +234,7 @@
 
   <div class="container">
 
-    <!-- الشاشة الأولى: الأهداف واليومي -->
+    <!-- الشاشة الأولى: الأهداف واليومي والملابس -->
     <div id="tab-home" class="tab-content active">
       <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&w=600&q=80" class="motivation-banner" alt="Motivation">
 
@@ -256,6 +256,12 @@
           <div class="progress-fill" id="progress-fill"></div>
         </div>
         <div id="encouragement" style="font-size: 0.85rem; color: var(--subtext); margin-top: 8px; text-align: center;">ابدأ أنجز أهدافك اليوم! 💪</div>
+      </div>
+
+      <!-- قسم ملابس اليوم -->
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0;">👔 ملابس وإطلالة اليوم</h3>
+        <input type="text" id="outfit-input" placeholder="مثال: قميص أبيض وبنطلون كحلي..." onchange="saveOutfit()" style="width: 100%; box-sizing: border-box;">
       </div>
 
       <div class="card">
@@ -313,6 +319,7 @@
 
     let currentDate = getLocalDateString(0);
     let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
+    let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -358,6 +365,12 @@
       render();
     }
 
+    function saveOutfit() {
+      const outfitInput = document.getElementById('outfit-input');
+      allOutfits[currentDate] = outfitInput.value;
+      localStorage.setItem('life_app_outfits_by_date', JSON.stringify(allOutfits));
+    }
+
     function saveData() {
       localStorage.setItem('life_app_tasks_by_date', JSON.stringify(allTasks));
       render();
@@ -399,16 +412,19 @@
       let totalAll = 0;
       let completedAll = 0;
 
-      const sortedDates = Object.keys(allTasks).sort().reverse();
+      const allDatesSet = new Set([...Object.keys(allTasks), ...Object.keys(allOutfits)]);
+      const sortedDates = Array.from(allDatesSet).sort().reverse();
 
       if (sortedDates.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:var(--subtext); padding:20px;">لا توجد أهداف مسجلة سابقاً حتى الآن.</div>';
+        container.innerHTML = '<div style="text-align:center; color:var(--subtext); padding:20px;">لا توجد أهداف أو بيانات مسجلة سابقاً حتى الآن.</div>';
         return;
       }
 
       sortedDates.forEach(date => {
-        const dayTasks = allTasks[date];
-        if (dayTasks.length === 0) return;
+        const dayTasks = allTasks[date] || [];
+        const dayOutfit = allOutfits[date] || '';
+
+        if (dayTasks.length === 0 && !dayOutfit) return;
 
         let dayDone = 0;
         let tasksHtml = '';
@@ -424,7 +440,7 @@
           }
         });
 
-        const dayPercent = Math.round((dayDone / dayTasks.length) * 100);
+        const dayPercent = dayTasks.length === 0 ? 0 : Math.round((dayDone / dayTasks.length) * 100);
 
         const card = document.createElement('div');
         card.className = 'card history-card';
@@ -433,11 +449,12 @@
             <strong>📅 ${date}</strong>
             <span style="font-weight:bold; color: ${dayPercent === 100 ? 'var(--accent)' : 'var(--primary)'};">${dayPercent}% إنجاز</span>
           </div>
+          ${dayOutfit ? `<div style="font-size:0.85rem; color:var(--text); margin-bottom:6px;">👔 ملابس اليوم: <strong>${dayOutfit}</strong></div>` : ''}
           <div class="progress-bar">
             <div class="progress-fill" style="width: ${dayPercent}%;"></div>
           </div>
           <div class="history-tasks-list">
-            ${tasksHtml}
+            ${tasksHtml || '<div style="color:var(--subtext);">لا توجد مهام مسجلة لهذا اليوم.</div>'}
           </div>
         `;
         container.appendChild(card);
@@ -451,6 +468,9 @@
     function render() {
       const taskList = document.getElementById('task-list');
       taskList.innerHTML = '';
+
+      const outfitInput = document.getElementById('outfit-input');
+      outfitInput.value = allOutfits[currentDate] || '';
 
       const dayTasks = allTasks[currentDate] || [];
       let doneCount = 0;
