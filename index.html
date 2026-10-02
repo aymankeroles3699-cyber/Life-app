@@ -38,7 +38,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     h1 { font-size: 1.4rem; margin: 0; }
     button.theme-btn {
@@ -56,12 +56,41 @@
       margin-bottom: 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
+    .date-picker-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      background: var(--primary);
+      color: white;
+    }
+    .date-picker-card input[type="date"] {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: white;
+      color: #333;
+      cursor: pointer;
+    }
+    .quick-date-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .quick-date-btns button {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid white;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
     .input-group {
       display: flex;
       gap: 8px;
       margin-bottom: 12px;
     }
-    input {
+    input[type="text"] {
       flex: 1;
       padding: 10px;
       border: 1px solid var(--border);
@@ -114,42 +143,85 @@
       <button class="theme-btn" onclick="toggleTheme()">🌙 الوضع</button>
     </div>
 
-    <!-- نسبة الإنجاز -->
+    <!-- اختيار اليوم والتاريخ -->
+    <div class="card date-picker-card">
+      <div style="font-size: 1.1rem; font-weight: bold;">📅 اليوم المحدد: <span id="display-date-label"></span></div>
+      <input type="date" id="selected-date" onchange="changeDate(this.value)">
+      <div class="quick-date-btns">
+        <button onclick="setQuickDate(0)">اليوم</button>
+        <button onclick="setQuickDate(1)">غداً</button>
+      </div>
+    </div>
+
+    <!-- نسبة إنجاز اليوم -->
     <div class="card">
-      <h3>نسبة إنجاز المهام: <span id="progress-text">0%</span></h3>
+      <h3>إنجاز أهداف هذا اليوم: <span id="progress-text">0%</span></h3>
       <div class="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
       </div>
     </div>
 
-    <!-- قائمة المهام -->
+    <!-- قائمة أهداف ومهام اليوم -->
     <div class="card">
-      <h3>قائمة المهام</h3>
+      <h3>🎯 أهداف ومهام اليوم</h3>
       <div class="input-group">
-        <input type="text" id="task-input" placeholder="أضف مهمة جديدة...">
+        <input type="text" id="task-input" placeholder="أضف هدف أو مهمة لهذا اليوم...">
         <button class="add-btn" onclick="addTask()">إضافة</button>
       </div>
       <ul id="task-list"></ul>
     </div>
-
-    <!-- تتبع العادات -->
-    <div class="card">
-      <h3>تتبع العادات اليومية</h3>
-      <div class="input-group">
-        <input type="text" id="habit-input" placeholder="عادة جديدة (مثل: القراءة)...">
-        <button class="add-btn" onclick="addHabit()">إضافة</button>
-      </div>
-      <ul id="habit-list"></ul>
-    </div>
   </div>
 
   <script>
-    let tasks = JSON.parse(localStorage.getItem('my_tasks')) || [];
-    let habits = JSON.parse(localStorage.getItem('my_habits')) || [];
+    // الحصول على تاريخ اليوم بتنسيق YYYY-MM-DD
+    function getTodayString(offset = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offset);
+      return d.toISOString().split('T')[0];
+    }
+
+    let currentDate = getTodayString(0);
+    
+    // مخزن المهام مقسم بالتاريخ
+    let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
+
+    function initDate() {
+      const dateInput = document.getElementById('selected-date');
+      dateInput.value = currentDate;
+      updateDateLabel();
+      render();
+    }
+
+    function updateDateLabel() {
+      const label = document.getElementById('display-date-label');
+      const today = getTodayString(0);
+      const tomorrow = getTodayString(1);
+
+      if (currentDate === today) {
+        label.innerText = `اليوم (${currentDate})`;
+      } else if (currentDate === tomorrow) {
+        label.innerText = `غداً (${currentDate})`;
+      } else {
+        label.innerText = currentDate;
+      }
+    }
+
+    function changeDate(newDate) {
+      if (!newDate) return;
+      currentDate = newDate;
+      updateDateLabel();
+      render();
+    }
+
+    function setQuickDate(offset) {
+      currentDate = getTodayString(offset);
+      document.getElementById('selected-date').value = currentDate;
+      updateDateLabel();
+      render();
+    }
 
     function saveData() {
-      localStorage.setItem('my_tasks', JSON.stringify(tasks));
-      localStorage.setItem('my_habits', JSON.stringify(habits));
+      localStorage.setItem('life_app_tasks_by_date', JSON.stringify(allTasks));
       render();
     }
 
@@ -160,45 +232,38 @@
     function addTask() {
       const input = document.getElementById('task-input');
       if (input.value.trim() === '') return;
-      tasks.push({ text: input.value, done: false });
+
+      if (!allTasks[currentDate]) {
+        allTasks[currentDate] = [];
+      }
+
+      allTasks[currentDate].push({ text: input.value, done: false });
       input.value = '';
       saveData();
     }
 
     function toggleTask(index) {
-      tasks[index].done = !tasks[index].done;
-      saveData();
+      if (allTasks[currentDate]) {
+        allTasks[currentDate][index].done = !allTasks[currentDate][index].done;
+        saveData();
+      }
     }
 
     function deleteTask(index) {
-      tasks.splice(index, 1);
-      saveData();
-    }
-
-    function addHabit() {
-      const input = document.getElementById('habit-input');
-      if (input.value.trim() === '') return;
-      habits.push({ text: input.value, count: 0 });
-      input.value = '';
-      saveData();
-    }
-
-    function incrementHabit(index) {
-      habits[index].count += 1;
-      saveData();
-    }
-
-    function deleteHabit(index) {
-      habits.splice(index, 1);
-      saveData();
+      if (allTasks[currentDate]) {
+        allTasks[currentDate].splice(index, 1);
+        saveData();
+      }
     }
 
     function render() {
       const taskList = document.getElementById('task-list');
       taskList.innerHTML = '';
+
+      const dayTasks = allTasks[currentDate] || [];
       let doneCount = 0;
 
-      tasks.forEach((task, index) => {
+      dayTasks.forEach((task, index) => {
         if (task.done) doneCount++;
         const li = document.createElement('li');
         li.className = task.done ? 'done' : '';
@@ -212,35 +277,20 @@
         taskList.appendChild(li);
       });
 
-      // حساب نسبة الإنجاز
-      const percent = tasks.length === 0 ? 0 : Math.round((doneCount / tasks.length) * 100);
+      const percent = dayTasks.length === 0 ? 0 : Math.round((doneCount / dayTasks.length) * 100);
       document.getElementById('progress-text').innerText = `${percent}%`;
       document.getElementById('progress-fill').style.width = `${percent}%`;
-
-      const habitList = document.getElementById('habit-list');
-      habitList.innerHTML = '';
-      habits.forEach((habit, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${habit.text} (تمت: ${habit.count} مرة)</span>
-          <div class="actions">
-            <button onclick="incrementHabit(${index})">➕</button>
-            <button onclick="deleteHabit(${index})">🗑️</button>
-          </div>
-        `;
-        habitList.appendChild(li);
-      });
     }
 
-    // التشغيل الأول للتطبيقات
-    render();
+    // بدء التشغيل
+    initDate();
   </script>
-    <script>
+
+  <!-- Service Worker -->
+  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
     }
   </script>
-
 </body>
 </html>
-
