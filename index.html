@@ -8,7 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
-      /* الألوان الافتراضية */
       --bg: #0f172a;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
@@ -22,7 +21,6 @@
       --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
     }
 
-    /* ثيم الفجر والشروق (5 AM - 8 AM) */
     body.theme-sunrise {
       --bg: #2a1b2d;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(251, 146, 60, 0.25) 0px, transparent 50%),
@@ -34,7 +32,6 @@
       --accent: #f43f5e;
     }
 
-    /* ثيم النهار والظهيرة (8 AM - 5 PM) */
     body.theme-day {
       --bg: #0f172a;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.2) 0px, transparent 50%),
@@ -46,7 +43,6 @@
       --accent: #10b981;
     }
 
-    /* ثيم الغروب (5 PM - 8 PM) */
     body.theme-sunset {
       --bg: #1e1b4b;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(217, 70, 239, 0.25) 0px, transparent 50%),
@@ -58,7 +54,6 @@
       --accent: #f97316;
     }
 
-    /* ثيم الليل (8 PM - 5 AM) */
     body.theme-night {
       --bg: #090d16;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
@@ -347,8 +342,12 @@
 
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
+        
+        <!-- خانة المكان / المناسبة جديدة -->
+        <input type="text" id="outfit-place-input" placeholder="📍 المكان / المناسبة (مثال: العمل، الشارع، الجيم، مناسبة...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
+
         <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم تلقائياً</div>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً</div>
       </div>
 
       <div class="card">
@@ -406,19 +405,18 @@
   </div>
 
   <script>
-    // دالة تغيير الثيم أوتوماتيكياً بناءً على ساعة اليوم
     function applyTimeBasedTheme() {
       const hour = new Date().getHours();
       document.body.classList.remove('theme-sunrise', 'theme-day', 'theme-sunset', 'theme-night');
 
       if (hour >= 5 && hour < 8) {
-        document.body.classList.add('theme-sunrise'); // الشروق
+        document.body.classList.add('theme-sunrise');
       } else if (hour >= 8 && hour < 17) {
-        document.body.classList.add('theme-day');     // النهار
+        document.body.classList.add('theme-day');
       } else if (hour >= 17 && hour < 20) {
-        document.body.classList.add('theme-sunset');  // الغروب
+        document.body.classList.add('theme-sunset');
       } else {
-        document.body.classList.add('theme-night');   // الليل
+        document.body.classList.add('theme-night');
       }
     }
 
@@ -447,7 +445,11 @@
         document.getElementById('tab-outfit').classList.add('active');
         document.getElementById('btn-outfit').classList.add('active');
         document.getElementById('outfit-date-label').innerText = currentDate;
-        document.getElementById('outfit-input').value = allOutfits[currentDate] || '';
+        
+        const currentData = allOutfits[currentDate] || {};
+        document.getElementById('outfit-place-input').value = typeof currentData === 'object' ? (currentData.place || '') : '';
+        document.getElementById('outfit-input').value = typeof currentData === 'object' ? (currentData.text || '') : currentData;
+        
         renderWardrobe();
         renderOutfitHistory();
       } else if (tabName === 'reports') {
@@ -458,7 +460,7 @@
     }
 
     function initDate() {
-      applyTimeBasedTheme(); // تطبيق ثيم الوقت عند فتح التطبيق
+      applyTimeBasedTheme();
       document.getElementById('selected-date').value = currentDate;
       updateDateLabel();
       render();
@@ -494,7 +496,12 @@
 
     function saveOutfit() {
       const outfitInput = document.getElementById('outfit-input');
-      allOutfits[currentDate] = outfitInput.value;
+      const placeInput = document.getElementById('outfit-place-input');
+      
+      allOutfits[currentDate] = {
+        text: outfitInput.value,
+        place: placeInput.value
+      };
       localStorage.setItem('life_app_outfits_by_date', JSON.stringify(allOutfits));
       renderOutfitHistory();
     }
@@ -559,12 +566,22 @@
       }
 
       sortedDates.forEach(date => {
-        if (!allOutfits[date]) return;
+        const data = allOutfits[date];
+        if (!data) return;
+
+        const outfitText = typeof data === 'object' ? data.text : data;
+        const placeText = typeof data === 'object' ? data.place : '';
+
+        if (!outfitText && !placeText) return;
+
         const item = document.createElement('div');
         item.style.cssText = "padding:10px; background:rgba(15,23,42,0.5); border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;";
         item.innerHTML = `
-          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold;">📅 ${date}</div>
-          <div style="font-size:0.9rem; color:var(--text); margin-top:4px;">👔 ${allOutfits[date]}</div>
+          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between;">
+            <span>📅 ${date}</span>
+            ${placeText ? `<span style="color:var(--accent);">📍 ${placeText}</span>` : ''}
+          </div>
+          <div style="font-size:0.9rem; color:var(--text); margin-top:4px;">👔 ${outfitText || 'لم تُحدد تفاصيل الطقم'}</div>
         `;
         historyContainer.appendChild(item);
       });
@@ -664,9 +681,6 @@
       const taskList = document.getElementById('task-list');
       taskList.innerHTML = '';
 
-      const outfitInput = document.getElementById('outfit-input');
-      if (outfitInput) outfitInput.value = allOutfits[currentDate] || '';
-
       const dayTasks = allTasks[currentDate] || [];
       let doneCount = 0;
 
@@ -677,7 +691,7 @@
         li.innerHTML = `
           <span onclick="toggleTask(${index})" style="cursor:pointer; flex:1;">${task.text}</span>
           <div class="task-actions">
-            <button onclick="toggleTask(${index})">${task.done ? '↩️️' : '✅'}</button>
+            <button onclick="toggleTask(${index})">${task.done ? '↩' : '✅'}</button>
             <button onclick="deleteTask(${index})">🗑️</button>
           </div>
         `;
