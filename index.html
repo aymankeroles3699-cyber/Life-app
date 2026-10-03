@@ -8,7 +8,10 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
+      /* الألوان الافتراضية */
       --bg: #0f172a;
+      --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
       --card-bg: rgba(30, 41, 59, 0.85);
       --card-border: rgba(255, 255, 255, 0.08);
       --text: #f8fafc;
@@ -19,16 +22,64 @@
       --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
     }
 
+    /* ثيم الفجر والشروق (5 AM - 8 AM) */
+    body.theme-sunrise {
+      --bg: #2a1b2d;
+      --bg-gradient: radial-gradient(at 0% 0%, rgba(251, 146, 60, 0.25) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.2) 0px, transparent 50%);
+      --card-bg: rgba(45, 26, 48, 0.85);
+      --card-border: rgba(251, 146, 60, 0.15);
+      --primary: #f97316;
+      --primary-hover: #ea580c;
+      --accent: #f43f5e;
+    }
+
+    /* ثيم النهار والظهيرة (8 AM - 5 PM) */
+    body.theme-day {
+      --bg: #0f172a;
+      --bg-gradient: radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.2) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.2) 0px, transparent 50%);
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-border: rgba(56, 189, 248, 0.15);
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --accent: #10b981;
+    }
+
+    /* ثيم الغروب (5 PM - 8 PM) */
+    body.theme-sunset {
+      --bg: #1e1b4b;
+      --bg-gradient: radial-gradient(at 0% 0%, rgba(217, 70, 239, 0.25) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.2) 0px, transparent 50%);
+      --card-bg: rgba(30, 27, 75, 0.85);
+      --card-border: rgba(217, 70, 239, 0.15);
+      --primary: #a855f7;
+      --primary-hover: #9333ea;
+      --accent: #f97316;
+    }
+
+    /* ثيم الليل (8 PM - 5 AM) */
+    body.theme-night {
+      --bg: #090d16;
+      --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+      --card-bg: rgba(15, 23, 42, 0.9);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #10b981;
+    }
+
     body {
       font-family: system-ui, -apple-system, sans-serif;
       background-color: var(--bg);
-      background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
+      background-image: var(--bg-gradient);
       min-height: 100vh;
       color: var(--text);
       margin: 0;
       padding: 16px 16px 80px 16px;
       box-sizing: border-box;
+      transition: background 0.8s ease, color 0.8s ease;
     }
 
     .container {
@@ -67,6 +118,7 @@
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow);
+      transition: all 0.5s ease;
     }
 
     .date-card {
@@ -102,6 +154,7 @@
       font-weight: bold;
       color: white;
       cursor: pointer;
+      transition: background 0.3s;
     }
 
     .progress-bar {
@@ -114,7 +167,7 @@
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+      background: linear-gradient(90deg, var(--accent) 0%, var(--primary) 100%);
       width: 0%;
       border-radius: 10px;
       transition: width 0.4s ease;
@@ -146,6 +199,7 @@
       border-radius: 12px;
       font-weight: bold;
       cursor: pointer;
+      transition: background 0.3s;
     }
 
     ul { list-style: none; padding: 0; margin: 12px 0 0 0; }
@@ -179,7 +233,6 @@
       margin-left: 4px;
     }
 
-    /* أزرار قطع الملابس والـ Tags */
     .wardrobe-tags {
       display: flex;
       flex-wrap: wrap;
@@ -218,6 +271,7 @@
       justify-content: space-around;
       align-items: center;
       z-index: 1000;
+      transition: background 0.5s;
     }
 
     .nav-btn {
@@ -287,18 +341,16 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: الدولاب وسجل الملابس Outfit Manager -->
+    <!-- التابة الثانية: خزانة الملابس Outfit Manager -->
     <div id="tab-outfit" class="tab-content">
       <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
-      <!-- 1. تحديد طقم اليوم الحالي -->
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
         <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
         <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم تلقائياً</div>
       </div>
 
-      <!-- 2. إضافة قطع جديدة للدولاب -->
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
         <div class="input-group">
@@ -307,21 +359,16 @@
         </div>
 
         <h4 style="margin: 14px 0 6px 0; color:var(--subtext);">اضغط على القطعة لإضافتها لطقم اليوم:</h4>
-        <div id="wardrobe-tags-container" class="wardrobe-tags">
-          <!-- قطع الدولاب تظهر هنا -->
-        </div>
+        <div id="wardrobe-tags-container" class="wardrobe-tags"></div>
       </div>
 
-      <!-- 3. سجل الملابس السابقة Outfit History -->
       <div class="card">
         <h3 style="margin: 0 0 10px 0;">📜 Outfit History (سجل الملابس)</h3>
-        <div id="outfit-history-container">
-          <!-- سجل الطقم لكل يوم يظهر هنا -->
-        </div>
+        <div id="outfit-history-container"></div>
       </div>
     </div>
 
-    <!-- التابة الثالثة: تقارير الأهداف -->
+    <!-- التابة الثالثة: التقارير -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقرير إنجاز الأيام السابقة</h2>
 
@@ -359,6 +406,22 @@
   </div>
 
   <script>
+    // دالة تغيير الثيم أوتوماتيكياً بناءً على ساعة اليوم
+    function applyTimeBasedTheme() {
+      const hour = new Date().getHours();
+      document.body.classList.remove('theme-sunrise', 'theme-day', 'theme-sunset', 'theme-night');
+
+      if (hour >= 5 && hour < 8) {
+        document.body.classList.add('theme-sunrise'); // الشروق
+      } else if (hour >= 8 && hour < 17) {
+        document.body.classList.add('theme-day');     // النهار
+      } else if (hour >= 17 && hour < 20) {
+        document.body.classList.add('theme-sunset');  // الغروب
+      } else {
+        document.body.classList.add('theme-night');   // الليل
+      }
+    }
+
     function getLocalDateString(offset = 0) {
       const d = new Date();
       d.setDate(d.getDate() + offset);
@@ -395,6 +458,7 @@
     }
 
     function initDate() {
+      applyTimeBasedTheme(); // تطبيق ثيم الوقت عند فتح التطبيق
       document.getElementById('selected-date').value = currentDate;
       updateDateLabel();
       render();
@@ -428,7 +492,6 @@
       render();
     }
 
-    // إدارة الملابس والدولاب
     function saveOutfit() {
       const outfitInput = document.getElementById('outfit-input');
       allOutfits[currentDate] = outfitInput.value;
@@ -614,7 +677,7 @@
         li.innerHTML = `
           <span onclick="toggleTask(${index})" style="cursor:pointer; flex:1;">${task.text}</span>
           <div class="task-actions">
-            <button onclick="toggleTask(${index})">${task.done ? '↩️' : '✅'}</button>
+            <button onclick="toggleTask(${index})">${task.done ? '↩️️' : '✅'}</button>
             <button onclick="deleteTask(${index})">🗑️</button>
           </div>
         `;
