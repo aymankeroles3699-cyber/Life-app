@@ -248,11 +248,6 @@
       gap: 6px;
     }
 
-    .wardrobe-tag:hover {
-      background: var(--primary);
-      color: white;
-    }
-
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -273,11 +268,11 @@
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
       font-weight: bold;
     }
@@ -296,13 +291,42 @@
       align-items: center;
       margin-bottom: 8px;
     }
+
+    /* كروت التغذية */
+    .diet-badge {
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .badge-fasting {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--accent);
+      color: #34d399;
+    }
+    .badge-home {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid var(--primary);
+      color: #a5b4fc;
+    }
+    .weekly-rule-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--card-border);
+    }
+    .weekly-rule-item:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
 
-    <!-- التابة الأولى: الأهداف واليومي -->
+    <!-- التابة الأولى: الأهداف -->
     <div id="tab-home" class="tab-content active">
       <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&w=600&q=80" class="motivation-banner" alt="Motivation">
 
@@ -336,16 +360,51 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: خزانة الملابس Outfit Manager -->
+    <!-- التابة الثانية: التغذية والنظام الغذائي Meal & Lifestyle Planner -->
+    <div id="tab-diet" class="tab-content">
+      <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
+
+      <!-- شارة نوع الأكل لليوم المحدد -->
+      <div id="diet-day-status" class="diet-badge badge-home">
+        🏠 أكل البيت الصحي
+      </div>
+
+      <!-- عداد الحصص الأسبوعية -->
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
+        
+        <div class="weekly-rule-item">
+          <span>🍔 وجبة تيك أواي (Takeaway)</span>
+          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُستخدم (0/1)</button>
+        </div>
+
+        <div class="weekly-rule-item">
+          <span>🥤 مشروب غازي (Soda)</span>
+          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم يُشرب (0/1)</button>
+        </div>
+
+        <div class="weekly-rule-item">
+          <span>🥳 يوم خروج أسبوعي (Outing)</span>
+          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
+        </div>
+        <div style="font-size:0.75rem; color:var(--subtext); margin-top:8px; text-align:center;">* يتم إعادة ضبط العداد تلقائياً كل بداية أسبوع جديد</div>
+      </div>
+
+      <!-- كتابة وجبات اليوم -->
+      <div class="card">
+        <h3 style="margin: 0 0 8px 0;">📝 وجبات يوم: <span id="diet-date-label" style="color:var(--primary);"></span></h3>
+        <textarea id="diet-meals-input" rows="4" placeholder="اكتب وجبات اليوم هنا (مثال: الفطار كشري / الغداء صينية خضار نباتي...)" onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ وجبات اليوم تلقائياً</div>
+      </div>
+    </div>
+
+    <!-- التابة الثالثة: الملابس -->
     <div id="tab-outfit" class="tab-content">
       <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
-        
-        <!-- خانة المكان / المناسبة جديدة -->
-        <input type="text" id="outfit-place-input" placeholder="📍 المكان / المناسبة (مثال: العمل، الشارع، الجيم، مناسبة...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-
+        <input type="text" id="outfit-place-input" placeholder="📍 المكان / المناسبة (مثال: العمل، الشارع، الجيم...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
         <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
         <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً</div>
       </div>
@@ -356,7 +415,6 @@
           <input type="text" id="wardrobe-item-input" placeholder="مثال: قميص أبيض، بنطلون زيتي...">
           <button class="add-btn" onclick="addWardrobeItem()">إضافة</button>
         </div>
-
         <h4 style="margin: 14px 0 6px 0; color:var(--subtext);">اضغط على القطعة لإضافتها لطقم اليوم:</h4>
         <div id="wardrobe-tags-container" class="wardrobe-tags"></div>
       </div>
@@ -367,7 +425,7 @@
       </div>
     </div>
 
-    <!-- التابة الثالثة: التقارير -->
+    <!-- التابة الرابعة: التقارير -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقرير إنجاز الأيام السابقة</h2>
 
@@ -388,11 +446,15 @@
 
   </div>
 
-  <!-- شريط التنقل السفلي -->
+  <!-- شريط التنقل السفلي المطور 4 تابات -->
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
       <span style="font-size: 1.2rem;">🎯</span>
       <span>الأهداف</span>
+    </button>
+    <button class="nav-btn" id="btn-diet" onclick="switchTab('diet')">
+      <span style="font-size: 1.2rem;">🥗</span>
+      <span>الغذائي</span>
     </button>
     <button class="nav-btn" id="btn-outfit" onclick="switchTab('outfit')">
       <span style="font-size: 1.2rem;">👔</span>
@@ -409,15 +471,10 @@
       const hour = new Date().getHours();
       document.body.classList.remove('theme-sunrise', 'theme-day', 'theme-sunset', 'theme-night');
 
-      if (hour >= 5 && hour < 8) {
-        document.body.classList.add('theme-sunrise');
-      } else if (hour >= 8 && hour < 17) {
-        document.body.classList.add('theme-day');
-      } else if (hour >= 17 && hour < 20) {
-        document.body.classList.add('theme-sunset');
-      } else {
-        document.body.classList.add('theme-night');
-      }
+      if (hour >= 5 && hour < 8) document.body.classList.add('theme-sunrise');
+      else if (hour >= 8 && hour < 17) document.body.classList.add('theme-day');
+      else if (hour >= 17 && hour < 20) document.body.classList.add('theme-sunset');
+      else document.body.classList.add('theme-night');
     }
 
     function getLocalDateString(offset = 0) {
@@ -432,6 +489,8 @@
     let currentDate = getLocalDateString(0);
     let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
+    let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
+    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe')) || ['قميص أبيض', 'بنطلون جينز أزرق', 'تيشيرت أسود', 'كوتشي أبيض'];
 
     function switchTab(tabName) {
@@ -441,15 +500,17 @@
       if (tabName === 'home') {
         document.getElementById('tab-home').classList.add('active');
         document.getElementById('btn-home').classList.add('active');
+      } else if (tabName === 'diet') {
+        document.getElementById('tab-diet').classList.add('active');
+        document.getElementById('btn-diet').classList.add('active');
+        renderDietTab();
       } else if (tabName === 'outfit') {
         document.getElementById('tab-outfit').classList.add('active');
         document.getElementById('btn-outfit').classList.add('active');
         document.getElementById('outfit-date-label').innerText = currentDate;
-        
         const currentData = allOutfits[currentDate] || {};
         document.getElementById('outfit-place-input').value = typeof currentData === 'object' ? (currentData.place || '') : '';
         document.getElementById('outfit-input').value = typeof currentData === 'object' ? (currentData.text || '') : currentData;
-        
         renderWardrobe();
         renderOutfitHistory();
       } else if (tabName === 'reports') {
@@ -475,9 +536,8 @@
       else if (currentDate === tomorrow) label.innerText = `غداً (${currentDate})`;
       else label.innerText = currentDate;
 
-      if (document.getElementById('outfit-date-label')) {
-        document.getElementById('outfit-date-label').innerText = currentDate;
-      }
+      if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
+      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
     }
 
     function changeDate(newDate) {
@@ -494,14 +554,76 @@
       render();
     }
 
+    /* إدارة التغذية والنظام */
+    function renderDietTab() {
+      document.getElementById('diet-date-label').innerText = currentDate;
+      document.getElementById('diet-meals-input').value = allDietData[currentDate] || '';
+
+      const selectedDateObj = new Date(currentDate);
+      const dayOfWeek = selectedDateObj.getDay(); // 3 = الأربعاء, 5 = الجمعة
+      const statusBadge = document.getElementById('diet-day-status');
+
+      if (dayOfWeek === 3 || dayOfWeek === 5) {
+        statusBadge.className = "diet-badge badge-fasting";
+        statusBadge.innerHTML = "🌿 يوم صيام نباتي (أكل الكنيسة النباتي)";
+      } else {
+        statusBadge.className = "diet-badge badge-home";
+        statusBadge.innerHTML = "🏠 أكل البيت الصحي";
+      }
+
+      updateWeeklyButtons();
+    }
+
+    function saveDietData() {
+      const val = document.getElementById('diet-meals-input').value;
+      allDietData[currentDate] = val;
+      localStorage.setItem('life_app_diet_by_date', JSON.stringify(allDietData));
+    }
+
+    function toggleWeeklyRule(key) {
+      weeklyTracker[key] = !weeklyTracker[key];
+      localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
+      if (weeklyTracker[key]) {
+        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+      }
+      updateWeeklyButtons();
+    }
+
+    function updateWeeklyButtons() {
+      const btnTakeaway = document.getElementById('btn-takeaway');
+      const btnSoda = document.getElementById('btn-soda');
+      const btnOuting = document.getElementById('btn-outing');
+
+      if (weeklyTracker.takeaway) {
+        btnTakeaway.innerText = "تمت الوجبة (1/1) ✅";
+        btnTakeaway.style.background = "var(--accent)";
+      } else {
+        btnTakeaway.innerText = "لم تُستخدم (0/1)";
+        btnTakeaway.style.background = "var(--primary)";
+      }
+
+      if (weeklyTracker.soda) {
+        btnSoda.innerText = "تم الشرب (1/1) ✅";
+        btnSoda.style.background = "var(--accent)";
+      } else {
+        btnSoda.innerText = "لم يُشرب (0/1)";
+        btnSoda.style.background = "var(--primary)";
+      }
+
+      if (weeklyTracker.outing) {
+        btnOuting.innerText = "تمت الخروجة (1/1) ✅";
+        btnOuting.style.background = "var(--accent)";
+      } else {
+        btnOuting.innerText = "لم تُخرج بعد (0/1)";
+        btnOuting.style.background = "var(--primary)";
+      }
+    }
+
+    /* باقي الدوال الخاصة بالملابس والأهداف */
     function saveOutfit() {
       const outfitInput = document.getElementById('outfit-input');
       const placeInput = document.getElementById('outfit-place-input');
-      
-      allOutfits[currentDate] = {
-        text: outfitInput.value,
-        place: placeInput.value
-      };
+      allOutfits[currentDate] = { text: outfitInput.value, place: placeInput.value };
       localStorage.setItem('life_app_outfits_by_date', JSON.stringify(allOutfits));
       renderOutfitHistory();
     }
@@ -510,7 +632,6 @@
       const input = document.getElementById('wardrobe-item-input');
       const val = input.value.trim();
       if (!val) return;
-
       myWardrobe.push(val);
       localStorage.setItem('life_app_my_wardrobe', JSON.stringify(myWardrobe));
       input.value = '';
@@ -519,11 +640,7 @@
 
     function appendToOutfit(itemText) {
       const outfitInput = document.getElementById('outfit-input');
-      if (outfitInput.value.trim() === '') {
-        outfitInput.value = itemText;
-      } else {
-        outfitInput.value += ` + ${itemText}`;
-      }
+      outfitInput.value = outfitInput.value.trim() === '' ? itemText : `${outfitInput.value} + ${itemText}`;
       saveOutfit();
     }
 
@@ -537,19 +654,14 @@
     function renderWardrobe() {
       const container = document.getElementById('wardrobe-tags-container');
       container.innerHTML = '';
-
       if (myWardrobe.length === 0) {
-        container.innerHTML = '<span style="color:var(--subtext); font-size:0.8rem;">دولابك فارغ الآن، أضف قطع جديدة بالأعلى!</span>';
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.8rem;">دولابك فارغ الآن!</span>';
         return;
       }
-
       myWardrobe.forEach((item, idx) => {
         const tag = document.createElement('div');
         tag.className = 'wardrobe-tag';
-        tag.innerHTML = `
-          <span onclick="appendToOutfit('${item}')">${item}</span>
-          <span onclick="deleteWardrobeItem(${idx}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
-        `;
+        tag.innerHTML = `<span onclick="appendToOutfit('${item}')">${item}</span><span onclick="deleteWardrobeItem(${idx}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>`;
         container.appendChild(tag);
       });
     }
@@ -557,21 +669,16 @@
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       historyContainer.innerHTML = '';
-
       const sortedDates = Object.keys(allOutfits).sort().reverse();
-
       if (sortedDates.length === 0) {
-        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center; padding:10px;">لا يوجد سجل ملابس مكتوب سابقاً.</div>';
+        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل ملابس.</div>';
         return;
       }
-
       sortedDates.forEach(date => {
         const data = allOutfits[date];
         if (!data) return;
-
         const outfitText = typeof data === 'object' ? data.text : data;
         const placeText = typeof data === 'object' ? data.place : '';
-
         if (!outfitText && !placeText) return;
 
         const item = document.createElement('div');
@@ -595,7 +702,6 @@
     function addTask() {
       const input = document.getElementById('task-input');
       if (input.value.trim() === '') return;
-
       if (!allTasks[currentDate]) allTasks[currentDate] = [];
       allTasks[currentDate].push({ text: input.value, done: false });
       input.value = '';
@@ -606,10 +712,7 @@
       if (allTasks[currentDate]) {
         const isDone = !allTasks[currentDate][index].done;
         allTasks[currentDate][index].done = isDone;
-
-        if (isDone) {
-          confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
-        }
+        if (isDone) confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
         saveData();
       }
     }
@@ -624,37 +727,22 @@
     function renderReports() {
       const container = document.getElementById('history-container');
       container.innerHTML = '';
-
-      let totalAll = 0;
-      let completedAll = 0;
-
+      let totalAll = 0, completedAll = 0;
       const sortedDates = Object.keys(allTasks).sort().reverse();
-
       if (sortedDates.length === 0) {
         container.innerHTML = '<div style="text-align:center; color:var(--subtext); padding:20px;">لا توجد أهداف مسجلة سابقاً حتى الآن.</div>';
         return;
       }
-
       sortedDates.forEach(date => {
         const dayTasks = allTasks[date] || [];
         if (dayTasks.length === 0) return;
-
-        let dayDone = 0;
-        let tasksHtml = '';
-
+        let dayDone = 0, tasksHtml = '';
         dayTasks.forEach(task => {
           totalAll++;
-          if (task.done) {
-            completedAll++;
-            dayDone++;
-            tasksHtml += `<div style="color:var(--accent);">✅ ${task.text}</div>`;
-          } else {
-            tasksHtml += `<div style="color:var(--subtext);">❌ ${task.text}</div>`;
-          }
+          if (task.done) { completedAll++; dayDone++; tasksHtml += `<div style="color:var(--accent);">✅ ${task.text}</div>`; }
+          else { tasksHtml += `<div style="color:var(--subtext);">❌ ${task.text}</div>`; }
         });
-
         const dayPercent = Math.round((dayDone / dayTasks.length) * 100);
-
         const card = document.createElement('div');
         card.className = 'card history-card';
         card.innerHTML = `
@@ -662,16 +750,11 @@
             <strong>📅 ${date}</strong>
             <span style="font-weight:bold; color: ${dayPercent === 100 ? 'var(--accent)' : 'var(--primary)'};">${dayPercent}% إنجاز</span>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width: ${dayPercent}%;"></div>
-          </div>
-          <div class="history-tasks-list">
-            ${tasksHtml}
-          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: ${dayPercent}%;"></div></div>
+          <div class="history-tasks-list">${tasksHtml}</div>
         `;
         container.appendChild(card);
       });
-
       document.getElementById('total-completed-tasks').innerText = completedAll;
       const overall = totalAll === 0 ? 0 : Math.round((completedAll / totalAll) * 100);
       document.getElementById('overall-success-rate').innerText = `${overall}%`;
@@ -680,10 +763,8 @@
     function render() {
       const taskList = document.getElementById('task-list');
       taskList.innerHTML = '';
-
       const dayTasks = allTasks[currentDate] || [];
       let doneCount = 0;
-
       dayTasks.forEach((task, index) => {
         if (task.done) doneCount++;
         const li = document.createElement('li');
@@ -697,7 +778,6 @@
         `;
         taskList.appendChild(li);
       });
-
       const percent = dayTasks.length === 0 ? 0 : Math.round((doneCount / dayTasks.length) * 100);
       document.getElementById('progress-text').innerText = `${percent}%`;
       document.getElementById('progress-fill').style.width = `${percent}%`;
