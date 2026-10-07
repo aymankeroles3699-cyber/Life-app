@@ -174,7 +174,7 @@
       margin-top: 12px;
     }
 
-    input[type="text"], textarea {
+    input[type="text"], select, textarea {
       flex: 1;
       padding: 12px;
       border: 1px solid var(--card-border);
@@ -292,7 +292,6 @@
       margin-bottom: 8px;
     }
 
-    /* كروت التغذية */
     .diet-badge {
       padding: 8px 12px;
       border-radius: 12px;
@@ -320,6 +319,22 @@
     .weekly-rule-item:last-child {
       border-bottom: none;
     }
+
+    /* فلترة الفئات */
+    .cat-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--subtext);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .cat-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
   </style>
 </head>
 <body>
@@ -331,9 +346,10 @@
       <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&w=600&q=80" class="motivation-banner" alt="Motivation">
 
       <div class="card date-card">
-        <h3 style="margin: 0 0 10px 0; color: var(--text);">📅 أهداف يوم: <span id="display-date-label"></span></h3>
+        <h3 style="margin: 0 0 10px 0; color: var(--text);">📅 تحديد اليوم: <span id="display-date-label"></span></h3>
         <input type="date" id="selected-date" class="date-picker-input" onchange="changeDate(this.value)">
         <div class="quick-btns">
+          <button onclick="setQuickDate(-1)">أمس</button>
           <button onclick="setQuickDate(0)">اليوم</button>
           <button onclick="setQuickDate(1)">غداً</button>
         </div>
@@ -364,12 +380,10 @@
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
-      <!-- شارة نوع الأكل لليوم المحدد -->
       <div id="diet-day-status" class="diet-badge badge-home">
         🏠 أكل البيت الصحي
       </div>
 
-      <!-- عداد الحصص الأسبوعية -->
       <div class="card">
         <h3 style="margin: 0 0 10px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
         
@@ -390,7 +404,6 @@
         <div style="font-size:0.75rem; color:var(--subtext); margin-top:8px; text-align:center;">* يتم إعادة ضبط العداد تلقائياً كل بداية أسبوع جديد</div>
       </div>
 
-      <!-- كتابة وجبات اليوم -->
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">📝 وجبات يوم: <span id="diet-date-label" style="color:var(--primary);"></span></h3>
         <textarea id="diet-meals-input" rows="4" placeholder="اكتب وجبات اليوم هنا (مثال: الفطار كشري / الغداء صينية خضار نباتي...)" onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
@@ -398,7 +411,7 @@
       </div>
     </div>
 
-    <!-- التابة الثالثة: الملابس -->
+    <!-- التابة الثالثة: الملابس وتصنيف الفئات -->
     <div id="tab-outfit" class="tab-content">
       <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
@@ -406,16 +419,35 @@
         <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
         <input type="text" id="outfit-place-input" placeholder="📍 المكان / المناسبة (مثال: العمل، الشارع، الجيم...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
         <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً</div>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً لهذا التاريخ</div>
       </div>
 
+      <!-- 4. إضافة قطعة مع تحديد تصنيف الفئة -->
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
-        <div class="input-group">
+        <div class="input-group" style="flex-direction:column; gap:8px;">
           <input type="text" id="wardrobe-item-input" placeholder="مثال: قميص أبيض، بنطلون زيتي...">
-          <button class="add-btn" onclick="addWardrobeItem()">إضافة</button>
+          <div style="display:flex; gap:8px;">
+            <select id="wardrobe-category-select">
+              <option value="top">👕 علوي (قميص/تيشيرت)</option>
+              <option value="bottom">👖 سفلي (بنطلون/شورت)</option>
+              <option value="shoes">👟 أحذية</option>
+              <option value="accessory">⌚ إكسسوارات / أخرى</option>
+            </select>
+            <button class="add-btn" onclick="addWardrobeItem()">إضافة</button>
+          </div>
         </div>
-        <h4 style="margin: 14px 0 6px 0; color:var(--subtext);">اضغط على القطعة لإضافتها لطقم اليوم:</h4>
+
+        <!-- أزرار فلترة التصنيفات -->
+        <h4 style="margin: 16px 0 8px 0; color:var(--subtext);">اختر الفئة للفلترة والضغط لإضافة الطقم:</h4>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+          <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">الكل</button>
+          <button class="cat-btn" id="filter-top" onclick="filterWardrobe('top')">👕 علوي</button>
+          <button class="cat-btn" id="filter-bottom" onclick="filterWardrobe('bottom')">👖 سفلي</button>
+          <button class="cat-btn" id="filter-shoes" onclick="filterWardrobe('shoes')">👟 أحذية</button>
+          <button class="cat-btn" id="filter-accessory" onclick="filterWardrobe('accessory')">⌚ أخرى</button>
+        </div>
+
         <div id="wardrobe-tags-container" class="wardrobe-tags"></div>
       </div>
 
@@ -425,9 +457,9 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التقارير -->
+    <!-- التابة الرابعة: التقارير والتقرير الشهري الشامل -->
     <div id="tab-reports" class="tab-content">
-      <h2 style="margin-top: 0;">📊 تقرير إنجاز الأيام السابقة</h2>
+      <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
       <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
         <div>
@@ -440,13 +472,21 @@
         </div>
       </div>
 
+      <!-- 5. التقرير الشهري التفصيلي -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(30, 41, 59, 0.85));">
+        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل (Monthly Analytics)</h3>
+        <div style="font-size:0.85rem; line-height:1.6;" id="monthly-analytics-content">
+          جاري تحميل الإحصائيات...
+        </div>
+      </div>
+
       <h3 style="margin: 16px 0 10px 0;">سجّل الأيام والتفاصيل:</h3>
       <div id="history-container"></div>
     </div>
 
   </div>
 
-  <!-- شريط التنقل السفلي المطور 4 تابات -->
+  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
       <span style="font-size: 1.2rem;">🎯</span>
@@ -487,11 +527,19 @@
     }
 
     let currentDate = getLocalDateString(0);
+    let currentCategoryFilter = 'all';
     let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
-    let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe')) || ['قميص أبيض', 'بنطلون جينز أزرق', 'تيشيرت أسود', 'كوتشي أبيض'];
+    
+    // دعم نظام تصنيف قطع الملابس
+    let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
+      { text: 'قميص أبيض', cat: 'top' },
+      { text: 'بنطلون جينز أزرق', cat: 'bottom' },
+      { text: 'تيشيرت أسود', cat: 'top' },
+      { text: 'كوتشي أبيض', cat: 'shoes' }
+    ];
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -530,9 +578,11 @@
     function updateDateLabel() {
       const label = document.getElementById('display-date-label');
       const today = getLocalDateString(0);
+      const yesterday = getLocalDateString(-1);
       const tomorrow = getLocalDateString(1);
 
       if (currentDate === today) label.innerText = `اليوم (${currentDate})`;
+      else if (currentDate === yesterday) label.innerText = `أمس (${currentDate})`;
       else if (currentDate === tomorrow) label.innerText = `غداً (${currentDate})`;
       else label.innerText = currentDate;
 
@@ -554,13 +604,12 @@
       render();
     }
 
-    /* إدارة التغذية والنظام */
     function renderDietTab() {
       document.getElementById('diet-date-label').innerText = currentDate;
       document.getElementById('diet-meals-input').value = allDietData[currentDate] || '';
 
       const selectedDateObj = new Date(currentDate);
-      const dayOfWeek = selectedDateObj.getDay(); // 3 = الأربعاء, 5 = الجمعة
+      const dayOfWeek = selectedDateObj.getDay();
       const statusBadge = document.getElementById('diet-day-status');
 
       if (dayOfWeek === 3 || dayOfWeek === 5) {
@@ -619,7 +668,6 @@
       }
     }
 
-    /* باقي الدوال الخاصة بالملابس والأهداف */
     function saveOutfit() {
       const outfitInput = document.getElementById('outfit-input');
       const placeInput = document.getElementById('outfit-place-input');
@@ -630,11 +678,20 @@
 
     function addWardrobeItem() {
       const input = document.getElementById('wardrobe-item-input');
+      const catSelect = document.getElementById('wardrobe-category-select');
       const val = input.value.trim();
       if (!val) return;
-      myWardrobe.push(val);
-      localStorage.setItem('life_app_my_wardrobe', JSON.stringify(myWardrobe));
+
+      myWardrobe.push({ text: val, cat: catSelect.value });
+      localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
       input.value = '';
+      renderWardrobe();
+    }
+
+    function filterWardrobe(cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`filter-${cat}`).classList.add('active');
       renderWardrobe();
     }
 
@@ -647,21 +704,37 @@
     function deleteWardrobeItem(index, e) {
       e.stopPropagation();
       myWardrobe.splice(index, 1);
-      localStorage.setItem('life_app_my_wardrobe', JSON.stringify(myWardrobe));
+      localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
       renderWardrobe();
     }
 
     function renderWardrobe() {
       const container = document.getElementById('wardrobe-tags-container');
       container.innerHTML = '';
-      if (myWardrobe.length === 0) {
-        container.innerHTML = '<span style="color:var(--subtext); font-size:0.8rem;">دولابك فارغ الآن!</span>';
+
+      const filtered = currentCategoryFilter === 'all' 
+        ? myWardrobe 
+        : myWardrobe.filter(item => item.cat === currentCategoryFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.8rem;">لا توجد قطع في هذه الفئة!</span>';
         return;
       }
-      myWardrobe.forEach((item, idx) => {
+
+      filtered.forEach((item, idx) => {
         const tag = document.createElement('div');
         tag.className = 'wardrobe-tag';
-        tag.innerHTML = `<span onclick="appendToOutfit('${item}')">${item}</span><span onclick="deleteWardrobeItem(${idx}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>`;
+        
+        let icon = '👔';
+        if (item.cat === 'top') icon = '👕';
+        else if (item.cat === 'bottom') icon = '👖';
+        else if (item.cat === 'shoes') icon = '👟';
+        else if (item.cat === 'accessory') icon = '⌚';
+
+        tag.innerHTML = `
+          <span onclick="appendToOutfit('${item.text}')">${icon} ${item.text}</span>
+          <span onclick="deleteWardrobeItem(${idx}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
+        `;
         container.appendChild(tag);
       });
     }
@@ -724,40 +797,54 @@
       }
     }
 
+    /* توليد التقرير الشهري والتفاصيل */
     function renderReports() {
       const container = document.getElementById('history-container');
       container.innerHTML = '';
       let totalAll = 0, completedAll = 0;
       const sortedDates = Object.keys(allTasks).sort().reverse();
+
       if (sortedDates.length === 0) {
         container.innerHTML = '<div style="text-align:center; color:var(--subtext); padding:20px;">لا توجد أهداف مسجلة سابقاً حتى الآن.</div>';
-        return;
-      }
-      sortedDates.forEach(date => {
-        const dayTasks = allTasks[date] || [];
-        if (dayTasks.length === 0) return;
-        let dayDone = 0, tasksHtml = '';
-        dayTasks.forEach(task => {
-          totalAll++;
-          if (task.done) { completedAll++; dayDone++; tasksHtml += `<div style="color:var(--accent);">✅ ${task.text}</div>`; }
-          else { tasksHtml += `<div style="color:var(--subtext);">❌ ${task.text}</div>`; }
+      } else {
+        sortedDates.forEach(date => {
+          const dayTasks = allTasks[date] || [];
+          if (dayTasks.length === 0) return;
+          let dayDone = 0, tasksHtml = '';
+          dayTasks.forEach(task => {
+            totalAll++;
+            if (task.done) { completedAll++; dayDone++; tasksHtml += `<div style="color:var(--accent);">✅ ${task.text}</div>`; }
+            else { tasksHtml += `<div style="color:var(--subtext);">❌ ${task.text}</div>`; }
+          });
+          const dayPercent = Math.round((dayDone / dayTasks.length) * 100);
+          const card = document.createElement('div');
+          card.className = 'card history-card';
+          card.innerHTML = `
+            <div class="history-header">
+              <strong>📅 ${date}</strong>
+              <span style="font-weight:bold; color: ${dayPercent === 100 ? 'var(--accent)' : 'var(--primary)'};">${dayPercent}% إنجاز</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: ${dayPercent}%;"></div></div>
+            <div class="history-tasks-list">${tasksHtml}</div>
+          `;
+          container.appendChild(card);
         });
-        const dayPercent = Math.round((dayDone / dayTasks.length) * 100);
-        const card = document.createElement('div');
-        card.className = 'card history-card';
-        card.innerHTML = `
-          <div class="history-header">
-            <strong>📅 ${date}</strong>
-            <span style="font-weight:bold; color: ${dayPercent === 100 ? 'var(--accent)' : 'var(--primary)'};">${dayPercent}% إنجاز</span>
-          </div>
-          <div class="progress-bar"><div class="progress-fill" style="width: ${dayPercent}%;"></div></div>
-          <div class="history-tasks-list">${tasksHtml}</div>
-        `;
-        container.appendChild(card);
-      });
+      }
+
       document.getElementById('total-completed-tasks').innerText = completedAll;
       const overall = totalAll === 0 ? 0 : Math.round((completedAll / totalAll) * 100);
       document.getElementById('overall-success-rate').innerText = `${overall}%`;
+
+      // بناء التقرير الشهري الشامل
+      const analyticsContainer = document.getElementById('monthly-analytics-content');
+      const totalOutfitsCount = Object.keys(allOutfits).length;
+      const totalDietDaysCount = Object.keys(allDietData).length;
+
+      analyticsContainer.innerHTML = `
+        📌 <strong>تتبع النشاط العام:</strong> قمت بتسجيل أهدافك في <strong>${sortedDates.length}</strong> يوم بـ إجمالي أهداف مكتملة <strong>${completedAll}</strong> هدف.<br>
+        👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتسجيل إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.<br>
+        🥗 <strong>سجل الوجبات:</strong> قمت بتدوين وجباتك اليومية والنباتية في <strong>${totalDietDaysCount}</strong> يوم.
+      `;
     }
 
     function render() {
