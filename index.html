@@ -6,7 +6,7 @@
   <title>منظم الحياة والإنتاجية</title>
   <link rel="manifest" href="manifest.json">
   
-  <!-- روابط الأيقونة المباشرة للموبايل والـ PWA -->
+  <!-- روابط الأيقونة المباشرة -->
   <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
   <meta name="theme-color" content="#0f172a">
@@ -529,7 +529,20 @@
 
     let currentDate = getLocalDateString(0);
     let currentCategoryFilter = 'all';
-    let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
+
+    /* استرجاع ونقل البيانات القديمة تلقائياً بدون ضياع */
+    function loadTasksData() {
+      let data = JSON.parse(localStorage.getItem('life_app_tasks_by_date'));
+      if (!data) {
+        // فحص المفاتيح القديمة المحتملة لنقل البيانات
+        const oldTasks = JSON.parse(localStorage.getItem('tasks_by_date')) || JSON.parse(localStorage.getItem('my_tasks')) || {};
+        data = oldTasks;
+        localStorage.setItem('life_app_tasks_by_date', JSON.stringify(data));
+      }
+      return data || {};
+    }
+
+    let allTasks = loadTasksData();
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
