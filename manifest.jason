@@ -1,7 +1,7 @@
 {
-  "name": "منظم الحياة والإنتاجية",
-  "short_name": "منظم الحياة",
-  "description": "تطبيق إدارة الأهداف، الملابس، والنظام الغذائي",
+  "name": "Novara",
+  "short_name": "Novara",
+  "description": "Novara - Life, Goals, Wardrobe & Meal Organizer",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
