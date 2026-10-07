@@ -6,7 +6,6 @@
   <title>منظم الحياة والإنتاجية</title>
   <link rel="manifest" href="manifest.json">
   
-  <!-- روابط الأيقونة المباشرة -->
   <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
   <meta name="theme-color" content="#0f172a">
@@ -460,7 +459,7 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التقارير -->
+    <!-- التابة الرابعة: التقارير والنسخ الاحتياطي -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -472,6 +471,17 @@
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">معدل النجاح العام</div>
           <div style="font-size:1.5rem; font-weight:bold; color:var(--primary);" id="overall-success-rate">0%</div>
+        </div>
+      </div>
+
+      <!-- النسخ الاحتياطي والاسترجاع -->
+      <div class="card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+        <h3 style="margin: 0 0 8px 0; color: var(--accent);">💾 النسخ الاحتياطي للبيانات</h3>
+        <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">احفظ أهدافك وبياناتك واسترجعها في أي وقت حتى لو قمت بمسح المتصفح:</div>
+        <div style="display:flex; gap:8px;">
+          <button class="add-btn" style="flex:1; background:var(--accent);" onclick="exportData()">تصدير نسخة 📥</button>
+          <button class="add-btn" style="flex:1; background:var(--primary);" onclick="document.getElementById('import-file').click()">استرجاع 📤</button>
+          <input type="file" id="import-file" style="display:none;" onchange="importData(event)">
         </div>
       </div>
 
@@ -530,19 +540,7 @@
     let currentDate = getLocalDateString(0);
     let currentCategoryFilter = 'all';
 
-    /* استرجاع ونقل البيانات القديمة تلقائياً بدون ضياع */
-    function loadTasksData() {
-      let data = JSON.parse(localStorage.getItem('life_app_tasks_by_date'));
-      if (!data) {
-        // فحص المفاتيح القديمة المحتملة لنقل البيانات
-        const oldTasks = JSON.parse(localStorage.getItem('tasks_by_date')) || JSON.parse(localStorage.getItem('my_tasks')) || {};
-        data = oldTasks;
-        localStorage.setItem('life_app_tasks_by_date', JSON.stringify(data));
-      }
-      return data || {};
-    }
-
-    let allTasks = loadTasksData();
+    let allTasks = JSON.parse(localStorage.getItem('life_app_tasks_by_date')) || {};
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
@@ -808,6 +806,44 @@
         allTasks[currentDate].splice(index, 1);
         saveData();
       }
+    }
+
+    /* تصدير واسترجاع البيانات */
+    function exportData() {
+      const fullData = {
+        tasks: allTasks,
+        outfits: allOutfits,
+        diet: allDietData,
+        weekly: weeklyTracker,
+        wardrobe: myWardrobe
+      };
+      const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `life-app-backup-${getLocalDateString(0)}.json`;
+      a.click();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.tasks) localStorage.setItem('life_app_tasks_by_date', JSON.stringify(imported.tasks));
+          if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
+          if (imported.diet) localStorage.setItem('life_app_diet_by_date', JSON.stringify(imported.diet));
+          if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
+          if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(imported.wardrobe));
+          
+          alert('تم استرجاع جميع بياناتك بنجاح! 🎉');
+          location.reload();
+        } catch (err) {
+          alert('عذراً، الملف غير صالح!');
+        }
+      };
+      reader.readAsText(file);
     }
 
     function renderReports() {
