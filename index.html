@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منظم الأهداف والإنتاجية</title>
+  <title>منظم الحياة والإنتاجية</title>
   <link rel="manifest" href="manifest.json">
+  
+  <!-- روابط الأيقونة المباشرة للموبايل والـ PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
+  <meta name="theme-color" content="#0f172a">
+
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
@@ -320,7 +326,6 @@
       border-bottom: none;
     }
 
-    /* فلترة الفئات */
     .cat-btn {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
@@ -376,7 +381,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية والنظام الغذائي Meal & Lifestyle Planner -->
+    <!-- التابة الثانية: التغذية والنظام الغذائي -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -411,7 +416,7 @@
       </div>
     </div>
 
-    <!-- التابة الثالثة: الملابس وتصنيف الفئات -->
+    <!-- التابة الثالثة: الملابس -->
     <div id="tab-outfit" class="tab-content">
       <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
@@ -422,7 +427,6 @@
         <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً لهذا التاريخ</div>
       </div>
 
-      <!-- 4. إضافة قطعة مع تحديد تصنيف الفئة -->
       <div class="card">
         <h3 style="margin: 0 0 8px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
         <div class="input-group" style="flex-direction:column; gap:8px;">
@@ -438,7 +442,6 @@
           </div>
         </div>
 
-        <!-- أزرار فلترة التصنيفات -->
         <h4 style="margin: 16px 0 8px 0; color:var(--subtext);">اختر الفئة للفلترة والضغط لإضافة الطقم:</h4>
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
           <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">الكل</button>
@@ -457,7 +460,7 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التقارير والتقرير الشهري الشامل -->
+    <!-- التابة الرابعة: التقارير -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -472,7 +475,6 @@
         </div>
       </div>
 
-      <!-- 5. التقرير الشهري التفصيلي -->
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(30, 41, 59, 0.85));">
         <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل (Monthly Analytics)</h3>
         <div style="font-size:0.85rem; line-height:1.6;" id="monthly-analytics-content">
@@ -486,7 +488,6 @@
 
   </div>
 
-  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
       <span style="font-size: 1.2rem;">🎯</span>
@@ -533,7 +534,6 @@
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
-    // دعم نظام تصنيف قطع الملابس
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
       { text: 'قميص أبيض', cat: 'top' },
       { text: 'بنطلون جينز أزرق', cat: 'bottom' },
@@ -797,7 +797,6 @@
       }
     }
 
-    /* توليد التقرير الشهري والتفاصيل */
     function renderReports() {
       const container = document.getElementById('history-container');
       container.innerHTML = '';
@@ -835,7 +834,6 @@
       const overall = totalAll === 0 ? 0 : Math.round((completedAll / totalAll) * 100);
       document.getElementById('overall-success-rate').innerText = `${overall}%`;
 
-      // بناء التقرير الشهري الشامل
       const analyticsContainer = document.getElementById('monthly-analytics-content');
       const totalOutfitsCount = Object.keys(allOutfits).length;
       const totalDietDaysCount = Object.keys(allDietData).length;
