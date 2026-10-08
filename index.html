@@ -273,7 +273,7 @@
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -390,7 +390,6 @@
 
       <div class="card">
         <h3 style="margin: 0 0 4px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
-        <!-- عرض نطاق الأسبوع الحالي -->
         <div id="week-range-label" style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:12px;">
           🗓️ الأسبوع الحالي: ...
         </div>
@@ -410,7 +409,7 @@
           <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
         </div>
         
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; pt-8px; border-top:1px solid var(--card-border);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--card-border); padding-top:8px;">
           <span style="font-size:0.75rem; color:var(--subtext);">* يبدأ الأسبوع كل يوم أحد</span>
           <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">إعادة ضبط العداد يدويًا</button>
         </div>
@@ -467,7 +466,48 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التقارير والنسخ الاحتياطي -->
+    <!-- التابة الرابعة الجديده: التعافي والسيطرة 🛡️ -->
+    <div id="tab-recovery" class="tab-content">
+      <h2 style="margin-top: 0;">🛡️ رحلة التحدي والتحكم بالذات</h2>
+
+      <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
+        <div style="font-size:0.9rem; color:var(--subtext);">أيام التعافي المتتالية (Streak)</div>
+        <div style="font-size:3.5rem; font-weight:bold; color:var(--accent); margin:10px 0;" id="streak-days-count">0</div>
+        <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
+      </div>
+
+      <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أطول رقم قياسي</div>
+          <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">0 يوم</div>
+        </div>
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ البدء</div>
+          <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="streak-start-date">غير محدد</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0;">⚡ تسجيل اليوم والتحكم:</h3>
+        <button class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent); margin-bottom:10px;" onclick="logCleanDay()">
+          ✅ مرّ يوم جديد بنجاح دون عادة!
+        </button>
+        <button onclick="resetStreak()" style="width:100%; background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">
+          🔄 حدثت زلة (إعادة ضبط العداد والبدء من جديد)
+        </button>
+      </div>
+
+      <div class="card">
+        <h3 style="margin: 0 0 8px 0; color:var(--primary);">💡 خطة الإنقاذ السريعة عند الرغبة (Urge Surfing):</h3>
+        <ul style="margin:0; padding-right:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
+          <li><strong>سيب الموبايل والسرير فوراً:</strong> غير مكانك واخرج للصالة أو مكان فيه ناس.</li>
+          <li><strong>المية الباردة:</strong> اغسل وشك أو ايديك بمية باردة فوراً لتغيير حالة جسمك.</li>
+          <li><strong>قاعدة الـ 10 دقائق:</strong> قول لنفسك هأجّل الفكرة 10 دقائق فقط واشغل نفسك بـ 20 تمرين ضغط أو مشي.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- التابة الخامسة: التقارير والنسخ الاحتياطي -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -518,6 +558,10 @@
       <span style="font-size: 1.2rem;">👔</span>
       <span>الملابس</span>
     </button>
+    <button class="nav-btn" id="btn-recovery" onclick="switchTab('recovery')">
+      <span style="font-size: 1.2rem;">🛡️</span>
+      <span>التعافي</span>
+    </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
       <span style="font-size: 1.2rem;">📊</span>
       <span>التقارير</span>
@@ -552,6 +596,14 @@
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
+    // بيانات تابة التعافي
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
+      streak: 0,
+      bestStreak: 0,
+      startDate: getLocalDateString(0),
+      lastLogDate: ''
+    };
+
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
       { text: 'قميص أبيض', cat: 'top' },
       { text: 'بنطلون جينز أزرق', cat: 'bottom' },
@@ -579,6 +631,10 @@
         document.getElementById('outfit-input').value = typeof currentData === 'object' ? (currentData.text || '') : currentData;
         renderWardrobe();
         renderOutfitHistory();
+      } else if (tabName === 'recovery') {
+        document.getElementById('tab-recovery').classList.add('active');
+        document.getElementById('btn-recovery').classList.add('active');
+        renderRecoveryTab();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         document.getElementById('btn-reports').classList.add('active');
@@ -622,10 +678,9 @@
       render();
     }
 
-    /* حساب بداية ونهاية الأسبوع الحالي */
     function getWeekRange(dateStr) {
       const d = new Date(dateStr);
-      const day = d.getDay(); // 0: الأحد, 6: السبت
+      const day = d.getDay();
       
       const sun = new Date(d);
       sun.setDate(d.getDate() - day);
@@ -658,7 +713,6 @@
         statusBadge.innerHTML = "🏠 أكل البيت الصحي";
       }
 
-      // تحديث نطاق الأسبوع
       const range = getWeekRange(currentDate);
       document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: من الأحد (${range.sunStr}) إلى السبت (${range.satStr})`;
 
@@ -715,6 +769,50 @@
       } else {
         btnOuting.innerText = "لم تُخرج بعد (0/1)";
         btnOuting.style.background = "var(--primary)";
+      }
+    }
+
+    /* دوال تابة التعافي */
+    function renderRecoveryTab() {
+      document.getElementById('streak-days-count').innerText = recoveryData.streak;
+      document.getElementById('best-streak-count').innerText = `${recoveryData.bestStreak} يوم`;
+      document.getElementById('streak-start-date').innerText = recoveryData.startDate || 'غير محدد';
+
+      const mot = document.getElementById('streak-motivation');
+      if (recoveryData.streak === 0) {
+        mot.innerText = "البداية اليوم! العزيمة تصنع الفرق 💪";
+      } else if (recoveryData.streak < 7) {
+        mot.innerText = "بداية بطل! استمر الأسبوع الأول هو الأهم 🔥";
+      } else if (recoveryData.streak < 30) {
+        mot.innerText = "عاش يا بطل! عقلك بدأ يتأقلم ويبني عادات جديدة 🏆";
+      } else {
+        mot.innerText = "إنجاز أسطوري! التحكم في الذات أصبح قوتك الحقيقية 👑";
+      }
+    }
+
+    function logCleanDay() {
+      const today = getLocalDateString(0);
+      if (recoveryData.lastLogDate === today) {
+        alert('لقد سجلت يومك بنجاح بالفعل اليوم! استمر يا بطل 👍');
+        return;
+      }
+      recoveryData.streak += 1;
+      if (recoveryData.streak > recoveryData.bestStreak) {
+        recoveryData.bestStreak = recoveryData.streak;
+      }
+      recoveryData.lastLogDate = today;
+      localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      renderRecoveryTab();
+    }
+
+    function resetStreak() {
+      if (confirm('لا بأس، الزلات تحدث والمهارة هي العودة فوراً! هل تريد بدء عداد جديد من اليوم؟')) {
+        recoveryData.streak = 0;
+        recoveryData.startDate = getLocalDateString(0);
+        recoveryData.lastLogDate = '';
+        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+        renderRecoveryTab();
       }
     }
 
@@ -853,6 +951,7 @@
         outfits: allOutfits,
         diet: allDietData,
         weekly: weeklyTracker,
+        recovery: recoveryData,
         wardrobe: myWardrobe
       };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
@@ -873,6 +972,7 @@
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.diet) localStorage.setItem('life_app_diet_by_date', JSON.stringify(imported.diet));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
+          if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(imported.wardrobe));
           
           alert('تم استرجاع جميع بياناتك بنجاح! 🎉');
@@ -927,6 +1027,7 @@
 
       analyticsContainer.innerHTML = `
         📌 <strong>تتبع النشاط العام:</strong> قمت بتسجيل أهدافك في <strong>${sortedDates.length}</strong> يوم بـ إجمالي أهداف مكتملة <strong>${completedAll}</strong> هدف.<br>
+        🛡️ <strong>سجل التعافي:</strong> أنت الآن في اليوم الـ <strong>${recoveryData.streak}</strong> وأطول رقم حققته هو <strong>${recoveryData.bestStreak}</strong> يوم.<br>
         👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتسجيل إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.<br>
         🥗 <strong>سجل الوجبات:</strong> قمت بتدوين وجباتك اليومية والنباتية في <strong>${totalDietDaysCount}</strong> يوم.
       `;
