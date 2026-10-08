@@ -389,7 +389,11 @@
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
+        <h3 style="margin: 0 0 4px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
+        <!-- عرض نطاق الأسبوع الحالي -->
+        <div id="week-range-label" style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:12px;">
+          🗓️ الأسبوع الحالي: ...
+        </div>
         
         <div class="weekly-rule-item">
           <span>🍔 وجبة تيك أواي (Takeaway)</span>
@@ -405,7 +409,11 @@
           <span>🥳 يوم خروج أسبوعي (Outing)</span>
           <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
         </div>
-        <div style="font-size:0.75rem; color:var(--subtext); margin-top:8px; text-align:center;">* يتم إعادة ضبط العداد تلقائياً كل بداية أسبوع جديد</div>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; pt-8px; border-top:1px solid var(--card-border);">
+          <span style="font-size:0.75rem; color:var(--subtext);">* يبدأ الأسبوع كل يوم أحد</span>
+          <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">إعادة ضبط العداد يدويًا</button>
+        </div>
       </div>
 
       <div class="card">
@@ -474,7 +482,6 @@
         </div>
       </div>
 
-      <!-- النسخ الاحتياطي والاسترجاع -->
       <div class="card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
         <h3 style="margin: 0 0 8px 0; color: var(--accent);">💾 النسخ الاحتياطي للبيانات</h3>
         <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">احفظ أهدافك وبياناتك واسترجعها في أي وقت:</div>
@@ -615,6 +622,26 @@
       render();
     }
 
+    /* حساب بداية ونهاية الأسبوع الحالي */
+    function getWeekRange(dateStr) {
+      const d = new Date(dateStr);
+      const day = d.getDay(); // 0: الأحد, 6: السبت
+      
+      const sun = new Date(d);
+      sun.setDate(d.getDate() - day);
+      
+      const sat = new Date(sun);
+      sat.setDate(sun.getDate() + 6);
+      
+      const format = (dateObj) => {
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const dayNum = String(dateObj.getDate()).padStart(2, '0');
+        return `${m}/${dayNum}`;
+      };
+
+      return { sunStr: format(sun), satStr: format(sat) };
+    }
+
     function renderDietTab() {
       document.getElementById('diet-date-label').innerText = currentDate;
       document.getElementById('diet-meals-input').value = allDietData[currentDate] || '';
@@ -630,6 +657,10 @@
         statusBadge.className = "diet-badge badge-home";
         statusBadge.innerHTML = "🏠 أكل البيت الصحي";
       }
+
+      // تحديث نطاق الأسبوع
+      const range = getWeekRange(currentDate);
+      document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: من الأحد (${range.sunStr}) إلى السبت (${range.satStr})`;
 
       updateWeeklyButtons();
     }
@@ -647,6 +678,14 @@
         confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
       }
       updateWeeklyButtons();
+    }
+
+    function resetWeeklyTracker() {
+      if (confirm('هل تريد إعادة ضبط القواعد الأسبوعية لبدء أسبوع جديد؟')) {
+        weeklyTracker = { takeaway: false, soda: false, outing: false };
+        localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
+        updateWeeklyButtons();
+      }
     }
 
     function updateWeeklyButtons() {
@@ -808,7 +847,6 @@
       }
     }
 
-    /* تصدير واسترجاع البيانات */
     function exportData() {
       const fullData = {
         tasks: allTasks,
