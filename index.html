@@ -294,14 +294,16 @@
     <div id="tab-spiritual" class="tab-content active">
       <h2 style="margin-top: 0;">🕊️ Spiritual Rule & Commitment</h2>
 
-      <!-- 💡 Daily English Booster Card -->
+      <!-- 💡 Daily English Booster Card (تم حذف عنصر التشكيل الصوتي من هنا) -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);">💡 Daily English Booster</span>
           <span style="font-size:0.75rem; color:var(--subtext);" id="vocab-date">Today</span>
         </div>
         <div style="font-size:1.1rem; font-weight:bold; color:var(--text);" id="vocab-word">Perseverance</div>
-        <div style="font-size:0.8rem; color:var(--subtext); font-style:italic;" id="vocab-type">/ˌpɜːrsəˈvɪərəns/ • noun</div>
+        
+        <!-- تم حذف السطر القديم المخصص للتشكيل الصوتي -->
+
         <div style="font-size:0.85rem; color:var(--text); margin-top:6px;" id="vocab-def">Persistence in doing something despite difficulty or delay in achieving success.</div>
         <div style="font-size:0.8rem; color:var(--accent); margin-top:6px; border-top:1px dashed var(--card-border); padding-top:6px;" id="vocab-example">
           "Success is built through daily perseverance and commitment."
@@ -547,6 +549,7 @@
       else document.body.classList.add('theme-night');
     }
 
+    // دالة تنسيق التاريخ المعالجة لإغلاق خطأ تداخل الأرقام والـ Slashes
     function getLocalDateString(offset = 0) {
       const d = new Date();
       d.setDate(d.getDate() + offset);
@@ -590,23 +593,22 @@
       return { text: item.text, cat: c };
     });
 
-    // Daily English Vocabulary Bank
+    // Daily English Vocabulary Bank (خالية من رموز الـ Phonetics)
     const vocabList = [
-      { word: "Perseverance", type: "/ˌpɜːrsəˈvɪərəns/ • noun", def: "Persistence in doing something despite difficulty.", ex: '"Perseverance turns daily goals into lifetime achievements."' },
-      { word: "Consistency", type: "/kənˈsɪstənsi/ • noun", def: "Conformity in the application of something, necessary for success.", ex: '"Small steps done with consistency yield huge results."' },
-      { word: "Discipline", type: "/ˈdɪsəplɪn/ • noun", def: "The practice of training yourself to obey rules and self-control.", ex: '"Discipline is choosing between what you want now and what you want most."' },
-      { word: "Resilience", type: "/rɪˈzɪliəns/ • noun", def: "The capacity to withstand or recover quickly from difficulties.", ex: '"Resilience allows you to bounce back stronger after every setback."' },
-      { word: "Mindfulness", type: "/ˈmaɪndflnəs/ • noun", def: "The state of being conscious or aware of something in the present.", ex: '"Practice mindfulness to remain calm and focused throughout your day."' },
-      { word: "Commitment", type: "/kəˈmɪtmənt/ • noun", def: "The state or quality of being dedicated to a cause or activity.", ex: '"Success is the result of unwavering commitment."' },
-      { word: "Focus", type: "/ˈfəʊkəs/ • noun", def: "The center of interest or activity.", ex: '"Keep your focus on long-term goals rather than short-term distractions."' }
+      { word: "Perseverance", def: "Persistence in doing something despite difficulty.", ex: '"Perseverance turns daily goals into lifetime achievements."' },
+      { word: "Consistency", def: "Conformity in the application of something, necessary for success.", ex: '"Small steps done with consistency yield huge results."' },
+      { word: "Discipline", def: "The practice of training yourself to obey rules and self-control.", ex: '"Discipline is choosing between what you want now and what you want most."' },
+      { word: "Resilience", def: "The capacity to withstand or recover quickly from difficulties.", ex: '"Resilience allows you to bounce back stronger after every setback."' },
+      { word: "Mindfulness", def: "The state of being conscious or aware of something in the present.", ex: '"Practice mindfulness to remain calm and focused throughout your day."' },
+      { word: "Commitment", def: "The state or quality of being dedicated to a cause or activity.", ex: '"Success is the result of unwavering commitment."' },
+      { word: "Focus", def: "The center of interest or activity.", ex: '"Keep your focus on long-term goals rather than short-term distractions."' }
     ];
 
     function renderDailyVocab() {
-      const dayIdx = new Date().getDay(); // 0 to 6
+      const dayIdx = new Date().getDay();
       const item = vocabList[dayIdx % vocabList.length];
       document.getElementById('vocab-date').innerText = currentDate;
       document.getElementById('vocab-word').innerText = item.word;
-      document.getElementById('vocab-type').innerText = item.type;
       document.getElementById('vocab-def').innerText = item.def;
       document.getElementById('vocab-example').innerText = item.ex;
     }
