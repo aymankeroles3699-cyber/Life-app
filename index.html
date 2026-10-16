@@ -314,7 +314,6 @@
 
   <div class="container">
 
-    <!-- شريط الرأس الذي يحتوي على اسم التطبيق وزر التبديل المباشر -->
     <div class="top-header">
       <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
       <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 العربية</button>
@@ -347,7 +346,6 @@
         </div>
       </div>
 
-      <!-- Spiritual Counter with Start Date -->
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
         <div style="font-size:0.85rem; color:var(--subtext);" data-i18n="spiritual_days_label">Days of Continuous Commitment</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-days">0</div>
@@ -358,7 +356,6 @@
         </div>
       </div>
 
-      <!-- Spiritual Rule Items -->
       <div class="card">
         <h3 style="margin:0 0 10px 0;" data-i18n="checklist_title">📜 Daily Spiritual Rule Checklist:</h3>
 
@@ -417,7 +414,7 @@
 
       <div class="card">
         <h3 style="margin: 0 0 8px 0;"><span data-i18n="meal_log">📝 Meal Log for:</span> <span id="diet-date-label" style="color:var(--primary);"></span></h3>
-        <textarea id="diet-meals-input" rows="4" placeholder="Log your daily meals here..." onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
+        <textarea id="diet-meals-input" rows="4" data-i18n-ph="meal_ph" placeholder="Log your daily meals here..." onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
         <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;" data-i18n="auto_saved">✓ Meals auto-saved for this date</div>
       </div>
     </div>
@@ -428,15 +425,15 @@
 
       <div class="card">
         <h3 style="margin: 0 0 8px 0;"><span data-i18n="today_outfit">✨ Today's Outfit:</span> <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
-        <input type="text" id="outfit-place-input" placeholder="📍 Location / Event..." onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-        <textarea id="outfit-input" rows="3" placeholder="Select items from your wardrobe below or type outfit details..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
+        <input type="text" id="outfit-place-input" data-i18n-ph="place_ph" placeholder="📍 Location / Event..." onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
+        <textarea id="outfit-input" rows="3" data-i18n-ph="outfit_ph" placeholder="Select items from your wardrobe below or type outfit details..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
         <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;" data-i18n="auto_saved">✓ Outfit details auto-saved</div>
       </div>
 
       <div class="card">
         <h3 style="margin: 0 0 8px 0;" data-i18n="add_wardrobe">➕ Add New Item to Wardrobe</h3>
         <div class="input-group" style="flex-direction:column; gap:8px;">
-          <input type="text" id="wardrobe-item-input" placeholder="e.g., White Shirt, Olive Chinos...">
+          <input type="text" id="wardrobe-item-input" data-i18n-ph="item_ph" placeholder="e.g., White Shirt, Olive Chinos...">
           <div style="display:flex; gap:8px;">
             <select id="wardrobe-category-select">
               <option value="top" data-i18n="cat_top">👕 Tops (Shirt/T-Shirt)</option>
@@ -636,7 +633,17 @@
         nav_recovery: "Recovery",
         nav_reports: "Reports",
         fasting_badge: "🌿 Fasting Day (Vegetarian / Church Fasting)",
-        home_badge: "🏠 Healthy Home Cooking"
+        home_badge: "🏠 Healthy Home Cooking",
+        used_btn: "Used (1/1) ✅",
+        not_used_btn: "Not Used (0/1)",
+        consumed_btn: "Consumed (1/1) ✅",
+        not_consumed_btn: "Not Consumed (0/1)",
+        no_wardrobe_msg: "No wardrobe items in this category yet.",
+        no_outfit_msg: "No outfit records logged yet.",
+        meal_ph: "Log your daily meals here...",
+        place_ph: "📍 Location / Event...",
+        outfit_ph: "Select items from your wardrobe below or type outfit details...",
+        item_ph: "e.g., White Shirt, Olive Chinos..."
       },
       ar: {
         spiritual_title: "🕊️ القانون الروحي والالتزام",
@@ -705,7 +712,17 @@
         nav_recovery: "التعافي",
         nav_reports: "التقارير",
         fasting_badge: "🌿 يوم صيام (نباتي / صيام كنسي)",
-        home_badge: "🏠 أكل صحي من البيت"
+        home_badge: "🏠 أكل صحي من البيت",
+        used_btn: "تم الاستخدام (1/1) ✅",
+        not_used_btn: "لم يُستخدم (0/1)",
+        consumed_btn: "تم الشرب (1/1) ✅",
+        not_consumed_btn: "لم يُشرب (0/1)",
+        no_wardrobe_msg: "لا توجد قطع ملابس في هذه الفئة حتى الآن.",
+        no_outfit_msg: "لم يتم تسجيل أي أطقم سابقة حتى الآن.",
+        meal_ph: "سجّل وجباتك اليومية هنا...",
+        place_ph: "📍 المكان / المناسبة...",
+        outfit_ph: "اختر قطع الملابس من الأسفل أو اكتب تفاصيل الطقم...",
+        item_ph: "مثال: قميص أبيض، بنطلون زيتي..."
       }
     };
 
@@ -715,6 +732,7 @@
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
+      // ترجمة النصوص العامة
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[lang][key]) {
@@ -722,9 +740,22 @@
         }
       });
 
+      // ترجمة الخانات الخالية (Placeholders)
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (translations[lang][key]) {
+          el.placeholder = translations[lang][key];
+        }
+      });
+
       document.getElementById('lang-btn').innerText = lang === 'en' ? '🌐 العربية' : '🌐 English';
+      
+      updateDateLabel();
       renderDietTab();
       renderSpiritualTab();
+      renderWardrobe();
+      renderOutfitHistory();
+      renderReports();
     }
 
     function toggleLanguage() {
@@ -838,7 +869,6 @@
     function initDate() {
       applyTimeBasedTheme();
       document.getElementById('selected-date').value = currentDate;
-      updateDateLabel();
       renderDailyVocab();
       setLanguage(currentLang);
     }
@@ -991,13 +1021,13 @@
       const btnSoda = document.getElementById('btn-soda');
       const btnOuting = document.getElementById('btn-outing');
 
-      btnTakeaway.innerText = weeklyTracker.takeaway ? "Used (1/1) ✅" : "Not Used (0/1)";
+      btnTakeaway.innerText = weeklyTracker.takeaway ? translations[currentLang].used_btn : translations[currentLang].not_used_btn;
       btnTakeaway.style.background = weeklyTracker.takeaway ? "var(--accent)" : "var(--primary)";
 
-      btnSoda.innerText = weeklyTracker.soda ? "Consumed (1/1) ✅" : "Not Consumed (0/1)";
+      btnSoda.innerText = weeklyTracker.soda ? translations[currentLang].consumed_btn : translations[currentLang].not_consumed_btn;
       btnSoda.style.background = weeklyTracker.soda ? "var(--accent)" : "var(--primary)";
 
-      btnOuting.innerText = weeklyTracker.outing ? "Used (1/1) ✅" : "Not Used (0/1)";
+      btnOuting.innerText = weeklyTracker.outing ? translations[currentLang].used_btn : translations[currentLang].not_used_btn;
       btnOuting.style.background = weeklyTracker.outing ? "var(--accent)" : "var(--primary)";
     }
 
@@ -1087,6 +1117,11 @@
         ? myWardrobe 
         : myWardrobe.filter(item => item.cat === currentCategoryFilter);
 
+      if (filtered.length === 0) {
+        container.innerHTML = `<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">${translations[currentLang].no_wardrobe_msg}</span>`;
+        return;
+      }
+
       filtered.forEach((item) => {
         const tag = document.createElement('div');
         tag.className = 'wardrobe-tag';
@@ -1112,6 +1147,11 @@
       historyContainer.innerHTML = '';
       const sortedDates = Object.keys(allOutfits).sort().reverse();
       
+      if (sortedDates.length === 0) {
+        historyContainer.innerHTML = `<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">${translations[currentLang].no_outfit_msg}</div>`;
+        return;
+      }
+
       sortedDates.forEach(date => {
         const data = allOutfits[date];
         if (!data) return;
@@ -1169,12 +1209,21 @@
       document.getElementById('total-recovery-streak').innerText = calculateStreakDays();
 
       const analyticsContainer = document.getElementById('monthly-analytics-content');
-      analyticsContainer.innerHTML = `
-        🕊️ <strong>Spiritual Committed Days:</strong> <strong>${calculateSpiritualStreak()}</strong><br>
-        🛡️ <strong>Recovery Streak:</strong> <strong>${calculateStreakDays()}</strong> days<br>
-        👔 <strong>Outfits Logged:</strong> <strong>${Object.keys(allOutfits).length}</strong> days<br>
-        🥗 <strong>Meals Recorded:</strong> <strong>${Object.keys(allDietData).length}</strong> days
-      `;
+      if (currentLang === 'ar') {
+        analyticsContainer.innerHTML = `
+          🕊️ <strong>أيام الالتزام الروحي:</strong> <strong>${calculateSpiritualStreak()}</strong> يوماً<br>
+          🛡️ <strong>سلسلة التعافي:</strong> <strong>${calculateStreakDays()}</strong> يوماً<br>
+          👔 <strong>الأطقم المسجلة:</strong> <strong>${Object.keys(allOutfits).length}</strong> يوماً<br>
+          🥗 <strong>الوجبات المسجلة:</strong> <strong>${Object.keys(allDietData).length}</strong> يوماً
+        `;
+      } else {
+        analyticsContainer.innerHTML = `
+          🕊️ <strong>Spiritual Committed Days:</strong> <strong>${calculateSpiritualStreak()}</strong><br>
+          🛡️ <strong>Recovery Streak:</strong> <strong>${calculateStreakDays()}</strong> days<br>
+          👔 <strong>Outfits Logged:</strong> <strong>${Object.keys(allOutfits).length}</strong> days<br>
+          🥗 <strong>Meals Recorded:</strong> <strong>${Object.keys(allDietData).length}</strong> days
+        `;
+      }
     }
 
     initDate();
