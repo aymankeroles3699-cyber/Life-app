@@ -202,15 +202,32 @@
 
     ul { list-style: none; padding: 0; margin: 12px 0 0 0; }
 
-    li {
+    li.checklist-item {
       display: flex;
       align-items: center;
-      padding: 14px;
+      justify-content: space-between;
+      padding: 12px 14px;
       background: rgba(15, 23, 42, 0.5);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       margin-bottom: 8px;
       font-size: 0.95rem;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    li.checklist-item.done {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--accent);
+      color: #34d399;
+    }
+
+    li.checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
     }
 
     .wardrobe-tags {
@@ -319,9 +336,9 @@
       <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 English</button>
     </div>
 
-    <!-- Tab 1: Spiritual Rule 🕊️ (النظام الروحي الأسبوعي) -->
+    <!-- Tab 1: Spiritual Rule 🕊️ -->
     <div id="tab-spiritual" class="tab-content active">
-      <h2 style="margin-top: 0;" data-i18n="spiritual_title">🕊️ القانون الروحي والالتزام الأسبوعي</h2>
+      <h2 style="margin-top: 0;" data-i18n="spiritual_title">🕊️ القانون الروحي والالتزام</h2>
 
       <!-- 💡 بطاقة تحفيزية متغيرة يومياً -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
@@ -346,7 +363,7 @@
         </div>
       </div>
 
-      <!-- عداد الالتزام الأسبوعي -->
+      <!-- عداد الالتزام الأسبوعي الثابت -->
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
         <div style="font-size:0.85rem; color:var(--subtext);" data-i18n="spiritual_weeks_label">عدد الأسابيع المكتملة بنجاح 🏆</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-weeks">0</div>
@@ -357,23 +374,39 @@
         </div>
       </div>
 
+      <!-- قائمة الفحص اليومية التفاعلية -->
       <div class="card">
-        <h3 style="margin:0 0 10px 0;" data-i18n="checklist_title">📜 نظام القانون الروحي الأسبوعي:</h3>
+        <h3 style="margin:0 0 10px 0;" data-i18n="checklist_title">📜 التتبع اليومي للقانون الروحي:</h3>
 
-        <ul>
-          <li data-i18n="rule_morning">🌅 صلاة الباكر (أول شيء عند الاستيقاظ)</li>
-          <li data-i18n="rule_night">🌙 صلاة النوم (قبل الذهاب للنوم)</li>
-          <li data-i18n="rule_bible">📖 أصحاح الكتاب المقدس اليومي</li>
-          <li data-i18n="rule_fasting">🌿 صيام يومي الأربعاء والجمعة</li>
-          <li data-i18n="rule_communion">🍞 التناول من الأسرار المقدسة (مرة أسبوعياً)</li>
+        <ul id="spiritual-daily-checklist">
+          <li class="checklist-item" onclick="toggleDailyTask('morning')">
+            <span>🌅 صلاة الباكر (عند الاستيقاظ)</span>
+            <input type="checkbox" id="chk-morning">
+          </li>
+          <li class="checklist-item" onclick="toggleDailyTask('night')">
+            <span>🌙 صلاة النوم (قبل النوم)</span>
+            <input type="checkbox" id="chk-night">
+          </li>
+          <li class="checklist-item" onclick="toggleDailyTask('bible')">
+            <span>📖 أصحاح الكتاب المقدس اليومي</span>
+            <input type="checkbox" id="chk-bible">
+          </li>
+          <li class="checklist-item" onclick="toggleDailyTask('fasting')">
+            <span>🌿 صيام اليوم (الأربعاء والجمعة)</span>
+            <input type="checkbox" id="chk-fasting">
+          </li>
+          <li class="checklist-item" onclick="toggleDailyTask('communion')">
+            <span>🍞 التناول من الأسرار المقدسة</span>
+            <input type="checkbox" id="chk-communion">
+          </li>
         </ul>
 
         <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
-          <button id="main-spiritual-btn" class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent);" onclick="toggleCompleteSpiritual()" data-i18n="complete_btn">
-            ✨ اضغط هنا لإتمام إنجاز أسبوع جديد بنجاح
+          <button id="main-spiritual-btn" class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent);" onclick="toggleCompleteSpiritualWeek()" data-i18n="complete_btn">
+            ✨ تسجيل إتمام أسبوع جديد بنجاح (+1 أسبوع)
           </button>
           <button onclick="resetSpiritualStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;" data-i18n="reset_btn">
-            🔄 إعادة ضبط العداد وتاريخ البداية
+            🔄 إعادة ضبط العداد الأسبوعي وتاريخ البداية
           </button>
         </div>
       </div>
@@ -465,7 +498,7 @@
       </div>
     </div>
 
-    <!-- Tab 4: Recovery & Self-Control 🛡️ (قسم التعافي اليومي الأصلي بدون تعديل) -->
+    <!-- Tab 4: Recovery & Self-Control 🛡️ -->
     <div id="tab-recovery" class="tab-content">
       <h2 style="margin-top: 0;" data-i18n="recovery_title">🛡️ رحلة التعافي والتحكم بالنفس</h2>
 
@@ -569,7 +602,7 @@
 
     const translations = {
       ar: {
-        spiritual_title: "🕊️ القانون الروحي والالتزام الأسبوعي",
+        spiritual_title: "🕊️ القانون الروحي والالتزام",
         booster_tag: "💡 حكمة وحافز اليوم",
         select_date: "📅 اختر التاريخ:",
         yesterday: "الأمس",
@@ -578,15 +611,9 @@
         spiritual_weeks_label: "عدد الأسابيع المكتملة بنجاح 🏆",
         start_date_not_set: "📅 تاريخ البداية: غير محدد",
         best_record: "🏆 أفضل رقم قياسي:",
-        checklist_title: "📜 نظام القانون الروحي الأسبوعي:",
-        rule_morning: "🌅 صلاة الباكر (أول شيء عند الاستيقاظ)",
-        rule_night: "🌙 صلاة النوم (قبل الذهاب للنوم)",
-        rule_bible: "📖 أصحاح الكتاب المقدس اليومي",
-        rule_fasting: "🌿 صيام يومي الأربعاء والجمعة",
-        rule_communion: "🍞 التناول من الأسرار المقدسة (مرة أسبوعياً)",
-        complete_btn: "✨ اضغط هنا لإتمام إنجاز أسبوع جديد بنجاح",
-        completed_btn: "✅ تم تسجيل إتمام أسبوع ناجح جديد!",
-        reset_btn: "🔄 إعادة ضبط العداد وتاريخ البداية",
+        checklist_title: "📜 التتبع اليومي للقانون الروحي:",
+        complete_btn: "✨ تسجيل إتمام أسبوع جديد بنجاح (+1 أسبوع)",
+        reset_btn: "🔄 إعادة ضبط العداد الأسبوعي وتاريخ البداية",
         diet_title: "🥗 نظام التغذية وأسلوب الحياة",
         weekly_tracker: "📊 المتابعة الأسبوعية والقواعد (حد أقصى مرة أسبوعياً)",
         rule_takeaway: "🍔 وجبة دليفري / أكل خارجي",
@@ -649,7 +676,7 @@
         item_ph: "مثال: قميص أبيض، بنطلون زيتي..."
       },
       en: {
-        spiritual_title: "🕊️ Weekly Spiritual Commitment",
+        spiritual_title: "🕊️ Spiritual Rule & Commitment",
         booster_tag: "💡 Daily Wisdom & Motivation",
         select_date: "📅 Select Date:",
         yesterday: "Yesterday",
@@ -658,14 +685,8 @@
         spiritual_weeks_label: "Successful Weeks Completed 🏆",
         start_date_not_set: "📅 Start Date: Not set",
         best_record: "🏆 Best Record:",
-        checklist_title: "📜 Weekly Spiritual Rule System:",
-        rule_morning: "🌅 Morning Prayer (Daily waking habit)",
-        rule_night: "🌙 Night Prayer (Daily bedtime habit)",
-        rule_bible: "📖 Daily Bible Chapter",
-        rule_fasting: "🌿 Fasting on Wednesdays & Fridays",
-        rule_communion: "🍞 Holy Communion (At least once weekly)",
-        complete_btn: "✨ Click here to log a successful week",
-        completed_btn: "✅ New Successful Week Logged!",
+        checklist_title: "📜 Daily Spiritual Checklist:",
+        complete_btn: "✨ Log New Successful Week (+1 Week)",
         reset_btn: "🔄 Reset Counter & Start Date",
         diet_title: "🥗 Nutrition & Lifestyle System",
         weekly_tracker: "📊 Weekly Tracker & Rules (1x per week limit)",
@@ -810,14 +831,16 @@
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
-    // بيانات القانون الروحي أسبوعية
+    // سجل التتبع اليومي بالقانون الروحي
+    let spiritualDailyLog = JSON.parse(localStorage.getItem('life_app_spiritual_daily_log')) || {};
+
+    // بيانات العداد الأسبوعي
     let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_weekly_data')) || {
       weeksStreak: 0,
       bestStreak: 0,
       startDate: null
     };
 
-    // بيانات التعافي يومية كما هي
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
       startDate: null,
       bestStreak: 0
@@ -907,6 +930,7 @@
       renderSpiritualTab();
     }
 
+    // عرض التتبع اليومي والعداد الأسبوعي
     function renderSpiritualTab() {
       const weeks = spiritualData.weeksStreak || 0;
       
@@ -921,9 +945,38 @@
       document.getElementById('spiritual-start-date').innerText = spiritualData.startDate 
         ? `📅 ${translations[currentLang].start_date}: ${spiritualData.startDate}` 
         : translations[currentLang].start_date_not_set;
+
+      // تحديث حالة عناصر التتبع اليومي لليوم المعتمد
+      const dayData = spiritualDailyLog[currentDate] || {};
+      const tasks = ['morning', 'night', 'bible', 'fasting', 'communion'];
+
+      tasks.forEach(task => {
+        const chk = document.getElementById(`chk-${task}`);
+        const item = chk.parentElement;
+        const isChecked = !!dayData[task];
+
+        chk.checked = isChecked;
+        if (isChecked) {
+          item.classList.add('done');
+        } else {
+          item.classList.remove('done');
+        }
+      });
     }
 
-    function toggleCompleteSpiritual() {
+    function toggleDailyTask(taskName) {
+      if (!spiritualDailyLog[currentDate]) {
+        spiritualDailyLog[currentDate] = {};
+      }
+      
+      const currentVal = !!spiritualDailyLog[currentDate][taskName];
+      spiritualDailyLog[currentDate][taskName] = !currentVal;
+
+      localStorage.setItem('life_app_spiritual_daily_log', JSON.stringify(spiritualDailyLog));
+      renderSpiritualTab();
+    }
+
+    function toggleCompleteSpiritualWeek() {
       if (!spiritualData.startDate) spiritualData.startDate = currentDate;
 
       spiritualData.weeksStreak = (spiritualData.weeksStreak || 0) + 1;
@@ -1027,7 +1080,6 @@
       return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     }
 
-    // العداد والعبارة اليومية لقسم التعافي بدون تعديل
     function renderRecoveryTab() {
       const currentStreak = calculateStreakDays();
       if (currentStreak > (recoveryData.bestStreak || 0)) {
@@ -1185,7 +1237,7 @@
     }
 
     function exportData() {
-      const fullData = { spiritual: spiritualData, outfits: allOutfits, diet: allDietData, weekly: weeklyTracker, recovery: recoveryData, wardrobe: myWardrobe };
+      const fullData = { spiritual: spiritualData, spiritualDaily: spiritualDailyLog, outfits: allOutfits, diet: allDietData, weekly: weeklyTracker, recovery: recoveryData, wardrobe: myWardrobe };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1201,6 +1253,7 @@
         try {
           const imported = JSON.parse(e.target.result);
           if (imported.spiritual) localStorage.setItem('life_app_spiritual_weekly_data', JSON.stringify(imported.spiritual));
+          if (imported.spiritualDaily) localStorage.setItem('life_app_spiritual_daily_log', JSON.stringify(imported.spiritualDaily));
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.diet) localStorage.setItem('life_app_diet_by_date', JSON.stringify(imported.diet));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
