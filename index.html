@@ -304,14 +304,14 @@
         </div>
       </div>
 
-      <!-- عداد الالتزام التلقائي الشيك (بدون كلمة يوم) -->
+      <!-- عداد الالتزام يبدأ من 0 -->
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
         <div style="font-size:0.85rem; color:var(--subtext);">أيام الالتزام المستمرة</div>
-        <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-days">1</div>
-        <div style="font-size:0.8rem; color:var(--accent);" id="spiritual-best-streak">🏆 أطول سجل التزام: 1</div>
+        <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-days">0</div>
+        <div style="font-size:0.8rem; color:var(--accent);" id="spiritual-best-streak">🏆 أطول سجل التزام: 0</div>
       </div>
 
-      <!-- بنود القانون الروحي (للعرض فقط) + زر الحفظ الرئيسي -->
+      <!-- بنود القانون الروحي -->
       <div class="card">
         <h3 style="margin:0 0 10px 0;">📜 بنود القانون الروحي اليومي:</h3>
 
@@ -324,7 +324,7 @@
 
         <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
           <button id="main-spiritual-btn" class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent);" onclick="toggleCompleteSpiritual()">
-            ✅ التزمت بالقانون الروحي لليوم
+            ✨ اضغط هنا عند إكمال قانون اليوم
           </button>
           <button onclick="resetSpiritualStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">
             🔄 إعادة ضبط العداد
@@ -425,14 +425,14 @@
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
         <div style="font-size:0.9rem; color:var(--subtext);">مدة التعافي المستمرة</div>
-        <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">1</div>
+        <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">0</div>
         <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
       </div>
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أطول سجل تعافي</div>
-          <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">1</div>
+          <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">0</div>
         </div>
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ البدء</div>
@@ -467,11 +467,11 @@
       <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">سجل الالتزام الروحي</div>
-          <div style="font-size:1.5rem; font-weight:bold; color:var(--primary);" id="total-spiritual-streak">1</div>
+          <div style="font-size:1.5rem; font-weight:bold; color:var(--primary);" id="total-spiritual-streak">0</div>
         </div>
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">سجل تعافي العادة</div>
-          <div style="font-size:1.5rem; font-weight:bold; color:var(--accent);" id="total-recovery-streak">1</div>
+          <div style="font-size:1.5rem; font-weight:bold; color:var(--accent);" id="total-recovery-streak">0</div>
         </div>
       </div>
 
@@ -546,14 +546,14 @@
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
     let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_data')) || {
-      startDate: getLocalDateString(0),
-      bestStreak: 1,
+      startDate: null,
+      bestStreak: 0,
       completedDates: {}
     };
 
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
-      startDate: getLocalDateString(0),
-      bestStreak: 1
+      startDate: null,
+      bestStreak: 0
     };
 
     let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
@@ -563,7 +563,6 @@
       { text: 'كوتشي أبيض', cat: 'shoes' }
     ];
 
-    // تنظيف وتوحيد مسميات الفئات القديمة إن وجدت
     let myWardrobe = rawWardrobe.map(item => {
       let c = item.cat;
       if (c === 'علوي') c = 'top';
@@ -642,10 +641,8 @@
     }
 
     function calculateSpiritualStreak() {
-      const start = new Date(spiritualData.startDate);
-      const today = new Date(getLocalDateString(0));
-      const diffTime = Math.abs(today - start);
-      return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      if (!spiritualData.completedDates) return 0;
+      return Object.keys(spiritualData.completedDates).filter(date => spiritualData.completedDates[date]).length;
     }
 
     function renderSpiritualTab() {
@@ -656,7 +653,7 @@
       }
 
       document.getElementById('spiritual-streak-days').innerText = streak;
-      document.getElementById('spiritual-best-streak').innerText = `🏆 أطول سجل التزام: ${spiritualData.bestStreak}`;
+      document.getElementById('spiritual-best-streak').innerText = `🏆 أطول سجل التزام: ${spiritualData.bestStreak || 0}`;
 
       const isCompleted = spiritualData.completedDates && spiritualData.completedDates[currentDate];
       const mainBtn = document.getElementById('main-spiritual-btn');
@@ -685,6 +682,7 @@
 
     function resetSpiritualStreak() {
       if (confirm('هل تريد إعادة ضبط العداد للبدء من جديد من اليوم؟')) {
+        spiritualData.completedDates = {};
         spiritualData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
         renderSpiritualTab();
@@ -784,10 +782,11 @@
     }
 
     function calculateStreakDays() {
+      if (!recoveryData.startDate) return 0;
       const start = new Date(recoveryData.startDate);
       const today = new Date(getLocalDateString(0));
       const diffTime = Math.abs(today - start);
-      return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     }
 
     function renderRecoveryTab() {
@@ -798,12 +797,12 @@
       }
 
       document.getElementById('streak-days-count').innerText = currentStreak;
-      document.getElementById('best-streak-count').innerText = recoveryData.bestStreak;
-      document.getElementById('streak-start-date').innerText = recoveryData.startDate || getLocalDateString(0);
+      document.getElementById('best-streak-count').innerText = recoveryData.bestStreak || 0;
+      document.getElementById('streak-start-date').innerText = recoveryData.startDate || 'لم يبدأ بعد';
 
       const mot = document.getElementById('streak-motivation');
-      if (currentStreak === 1) {
-        mot.innerText = "البداية اليوم! العزيمة تصنع الفرق 💪";
+      if (currentStreak === 0) {
+        mot.innerText = "ابدأ تحدي التعافي اليوم! العزيمة تصنع الفرق 💪";
       } else if (currentStreak < 7) {
         mot.innerText = "بداية بطل! استمر الأسبوع الأول هو الأهم 🔥";
       } else if (currentStreak < 30) {
@@ -814,8 +813,13 @@
     }
 
     function celebrateToday() {
+      if (!recoveryData.startDate) {
+        recoveryData.startDate = getLocalDateString(0);
+        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+      }
       confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
-      alert(`عاش يا بطل! أنت الآن في اليوم ${calculateStreakDays()} استمر وقوّي عزيمتك! 🔥`);
+      renderRecoveryTab();
+      alert(`عاش يا بطل! استمر وقوّي عزيمتك! 🔥`);
     }
 
     function resetStreak() {
@@ -977,7 +981,7 @@
       const totalDietDaysCount = Object.keys(allDietData).length;
 
       analyticsContainer.innerHTML = `
-        🕊️ <strong>القانون الروحي:</strong> أنت مستمر في الالتزام منذ <strong>${calculateSpiritualStreak()}</strong> يوم.<br>
+        🕊️ <strong>القانون الروحي:</strong> إجمالي الأيام الملتزم بها: <strong>${calculateSpiritualStreak()}</strong> يوم.<br>
         🛡️ <strong>سجل التعافي:</strong> أنت الآن في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
         👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتدوين إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.<br>
         🥗 <strong>سجل الوجبات:</strong> قمت بتدوين وجباتك اليومية والنباتية في <strong>${totalDietDaysCount}</strong> يوم.
