@@ -838,8 +838,10 @@
 
     function filterWardrobe(cat) {
       currentCategoryFilter = cat;
-      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(`filter-${cat}`).classList.add('active');
+      const buttons = document.querySelectorAll('.cat-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`filter-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
       renderWardrobe();
     }
 
@@ -879,9 +881,12 @@
         else if (item.cat === 'shoes') icon = '👟';
         else if (item.cat === 'accessory') icon = '⌚';
 
+        // إيجاد الفهرس الحقيقي في القائمة الأصلية لحذفه بدقة
+        const realIndex = myWardrobe.indexOf(item);
+
         tag.innerHTML = `
           <span onclick="appendToOutfit('${item.text}')">${icon} ${item.text}</span>
-          <span onclick="deleteWardrobeItem(${idx}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
+          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
         `;
         container.appendChild(tag);
       });
