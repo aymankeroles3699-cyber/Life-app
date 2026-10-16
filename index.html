@@ -556,12 +556,22 @@
       bestStreak: 1
     };
 
-    let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
+    let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
       { text: 'قميص أبيض', cat: 'top' },
       { text: 'بنطلون جينز أزرق', cat: 'bottom' },
       { text: 'تيشيرت أسود', cat: 'top' },
       { text: 'كوتشي أبيض', cat: 'shoes' }
     ];
+
+    // تنظيف وتوحيد مسميات الفئات القديمة إن وجدت
+    let myWardrobe = rawWardrobe.map(item => {
+      let c = item.cat;
+      if (c === 'علوي') c = 'top';
+      if (c === 'سفلي') c = 'bottom';
+      if (c === 'أحذية') c = 'shoes';
+      if (c === 'أخرى') c = 'accessory';
+      return { text: item.text, cat: c };
+    });
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -851,9 +861,9 @@
       saveOutfit();
     }
 
-    function deleteWardrobeItem(index, e) {
+    function deleteWardrobeItem(realIndex, e) {
       e.stopPropagation();
-      myWardrobe.splice(index, 1);
+      myWardrobe.splice(realIndex, 1);
       localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
       renderWardrobe();
     }
@@ -867,11 +877,11 @@
         : myWardrobe.filter(item => item.cat === currentCategoryFilter);
 
       if (filtered.length === 0) {
-        container.innerHTML = '<span style="color:var(--subtext); font-size:0.8rem;">لا توجد قطع في هذه الفئة!</span>';
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">لا توجد قطع في هذه الفئة حالياً.</span>';
         return;
       }
 
-      filtered.forEach((item, idx) => {
+      filtered.forEach((item) => {
         const tag = document.createElement('div');
         tag.className = 'wardrobe-tag';
         
@@ -881,7 +891,6 @@
         else if (item.cat === 'shoes') icon = '👟';
         else if (item.cat === 'accessory') icon = '⌚';
 
-        // إيجاد الفهرس الحقيقي في القائمة الأصلية لحذفه بدقة
         const realIndex = myWardrobe.indexOf(item);
 
         tag.innerHTML = `
