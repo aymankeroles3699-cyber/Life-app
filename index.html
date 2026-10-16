@@ -100,16 +100,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .motivation-banner {
-      width: 100%;
-      height: 130px;
-      border-radius: 20px;
-      object-fit: cover;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--card-border);
-    }
-
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -208,29 +198,27 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
+      padding: 14px;
       background: rgba(15, 23, 42, 0.5);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     li.done {
       background: rgba(16, 185, 129, 0.1);
-      border-color: rgba(16, 185, 129, 0.3);
+      border-color: rgba(16, 185, 129, 0.4);
     }
 
-    li.done span {
-      text-decoration: line-through;
+    .status-icon {
+      font-size: 1.1rem;
       color: var(--subtext);
     }
 
-    .task-actions button {
-      background: none;
-      border: none;
-      font-size: 1.1rem;
-      cursor: pointer;
-      margin-left: 4px;
+    li.done .status-icon {
+      color: var(--accent);
     }
 
     .wardrobe-tags {
@@ -286,17 +274,6 @@
       color: var(--primary);
     }
 
-    .history-card {
-      border-right: 4px solid var(--primary);
-    }
-
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
     .diet-badge {
       padding: 8px 12px;
       border-radius: 12px;
@@ -345,7 +322,7 @@
 
   <div class="container">
 
-    <!-- التابة الأولى البديلة: القانون الروحي 🕊️ -->
+    <!-- التابة الأولى: القانون الروحي 🕊️ -->
     <div id="tab-spiritual" class="tab-content active">
       <h2 style="margin-top: 0;">🕊️ القانون الروحي والالتزام</h2>
 
@@ -359,14 +336,14 @@
         </div>
       </div>
 
-      <!-- عداد الستريك الروحي التلقائي -->
+      <!-- عداد الستريك الروحي الأنيق -->
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
-        <div style="font-size:0.85rem; color:var(--subtext);">أيام الالتزام بالقانون الروحي (Spiritual Streak)</div>
-        <div style="font-size:3.5rem; font-weight:bold; color:var(--primary); margin:8px 0;" id="spiritual-streak-days">اليوم 1</div>
+        <div style="font-size:0.85rem; color:var(--subtext);">مدة الالتزام بالقانون الروحي</div>
+        <div style="font-size:2.8rem; font-weight:bold; color:var(--primary); margin:8px 0;" id="spiritual-streak-days">1 يوم التزام</div>
         <div style="font-size:0.8rem; color:var(--accent);" id="spiritual-best-streak">🏆 أطول رقم قياسي: 1 يوم</div>
       </div>
 
-      <!-- قائمة بنود القانون الروحي اليومي -->
+      <!-- بنود القانون الروحي اليومي بدون علامات غلط -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h3 style="margin:0;">📝 بنود القانون الروحي:</h3>
@@ -379,19 +356,19 @@
         <ul id="spiritual-checklist">
           <li id="item-morning" onclick="toggleSpiritualItem('morning')">
             <span>🌅 صلاة باكر (أول ما أصحى)</span>
-            <span class="status-icon">❌</span>
+            <span class="status-icon">◯</span>
           </li>
           <li id="item-night" onclick="toggleSpiritualItem('night')">
             <span>🌙 صلاة النوم (قبل ما أنام)</span>
-            <span class="status-icon">❌</span>
+            <span class="status-icon">◯</span>
           </li>
           <li id="item-bible" onclick="toggleSpiritualItem('bible')">
             <span>📖 إصحاح إنجيل يومي</span>
-            <span class="status-icon">❌</span>
+            <span class="status-icon">◯</span>
           </li>
           <li id="item-communion" onclick="toggleSpiritualItem('communion')">
             <span>🍞 التناول المقدّس (مرة أسبوعياً كحد أدنى)</span>
-            <span class="status-icon">❌</span>
+            <span class="status-icon">◯</span>
           </li>
         </ul>
 
@@ -493,8 +470,8 @@
       <h2 style="margin-top: 0;">🛡️ رحلة التحدي والتحكم بالذات</h2>
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
-        <div style="font-size:0.9rem; color:var(--subtext);">أيام التعافي المستمرة (تحديث تلقائي)</div>
-        <div style="font-size:3.5rem; font-weight:bold; color:var(--accent); margin:10px 0;" id="streak-days-count">اليوم 1</div>
+        <div style="font-size:0.9rem; color:var(--subtext);">مدة التعافي المستمرة</div>
+        <div style="font-size:2.8rem; font-weight:bold; color:var(--accent); margin:10px 0;" id="streak-days-count">1 يوم تعافي</div>
         <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
       </div>
 
@@ -614,14 +591,12 @@
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
-    // بيانات القانون الروحي
     let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_data')) || {
       startDate: getLocalDateString(0),
       bestStreak: 1,
       checklistByDate: {}
     };
 
-    // بيانات التعافي
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
       startDate: getLocalDateString(0),
       bestStreak: 1
@@ -702,7 +677,6 @@
       renderSpiritualTab();
     }
 
-    /* دوال القانون الروحي */
     function calculateSpiritualStreak() {
       const start = new Date(spiritualData.startDate);
       const today = new Date(getLocalDateString(0));
@@ -717,7 +691,7 @@
         localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
       }
 
-      document.getElementById('spiritual-streak-days').innerText = `اليوم ${streak}`;
+      document.getElementById('spiritual-streak-days').innerText = `${streak} يوم التزام`;
       document.getElementById('spiritual-best-streak').innerText = `🏆 أطول رقم قياسي: ${spiritualData.bestStreak} يوم`;
 
       const todayCheck = spiritualData.checklistByDate[currentDate] || { morning: false, night: false, bible: false, communion: false };
@@ -734,7 +708,7 @@
           icon.innerText = '✅';
         } else {
           el.classList.remove('done');
-          icon.innerText = '❌';
+          icon.innerText = '◯';
         }
       });
 
@@ -875,7 +849,7 @@
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
 
-      document.getElementById('streak-days-count').innerText = `اليوم ${currentStreak}`;
+      document.getElementById('streak-days-count').innerText = `${currentStreak} يوم تعافي`;
       document.getElementById('best-streak-count').innerText = `${recoveryData.bestStreak} يوم`;
       document.getElementById('streak-start-date').innerText = recoveryData.startDate || getLocalDateString(0);
 
@@ -1043,15 +1017,15 @@
     }
 
     function renderReports() {
-      document.getElementById('total-spiritual-streak').innerText = calculateSpiritualStreak();
-      document.getElementById('total-recovery-streak').innerText = calculateStreakDays();
+      document.getElementById('total-spiritual-streak').innerText = `${calculateSpiritualStreak()} يوم`;
+      document.getElementById('total-recovery-streak').innerText = `${calculateStreakDays()} يوم`;
 
       const analyticsContainer = document.getElementById('monthly-analytics-content');
       const totalOutfitsCount = Object.keys(allOutfits).length;
       const totalDietDaysCount = Object.keys(allDietData).length;
 
       analyticsContainer.innerHTML = `
-        🕊️ <strong>القانون الروحي:</strong> أنت ملتزم وفي اليوم الـ <strong>${calculateSpiritualStreak()}</strong> وأطول رقم حققته هو <strong>${spiritualData.bestStreak || 1}</strong> يوم.<br>
+        🕊️ <strong>القانون الروحي:</strong> أنت ملتزم ومستمر منذ <strong>${calculateSpiritualStreak()}</strong> يوم وأطول رقم حققته هو <strong>${spiritualData.bestStreak || 1}</strong> يوم.<br>
         🛡️ <strong>سجل التعافي:</strong> أنت الآن في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
         👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتدوين إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.<br>
         🥗 <strong>سجل الوجبات:</strong> قمت بتدوين وجباتك اليومية والنباتية في <strong>${totalDietDaysCount}</strong> يوم.
