@@ -87,23 +87,28 @@
       margin: 0 auto;
     }
 
-    .top-bar {
+    .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
     }
 
-    .lang-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--card-border);
-      color: var(--text);
+    .lang-toggle-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
       padding: 6px 14px;
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: bold;
       cursor: pointer;
-      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .tab-content {
@@ -309,9 +314,10 @@
 
   <div class="container">
 
-    <div class="top-bar">
-      <span style="font-weight: bold; font-size: 1.1rem; color: var(--primary);">Novara</span>
-      <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">🌐 العربية</button>
+    <!-- شريط الرأس الذي يحتوي على اسم التطبيق وزر التبديل المباشر -->
+    <div class="top-header">
+      <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
+      <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 العربية</button>
     </div>
 
     <!-- Tab 1: Spiritual Rule 🕊️ -->
@@ -494,9 +500,9 @@
       <div class="card">
         <h3 style="margin: 0 0 8px 0; color:var(--primary);" data-i18n="surfing_plan_title">💡 Rapid Urge Surfing Plan:</h3>
         <ul style="margin:0; padding-left:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
-          <li data-i18n="plan_step1"><strong>Leave the room/bed immediately:</strong> Move to a public space or living area.</li>
-          <li data-i18n="plan_step2"><strong>Cold Water Shock:</strong> Splash cold water on your face/hands to break the urge loop.</li>
-          <li data-i18n="plan_step3"><strong>10-Minute Delay Rule:</strong> Postpone the urge for 10 minutes and do 20 pushups.</li>
+          <li data-i18n="plan_step1">Leave the room/bed immediately to a public space.</li>
+          <li data-i18n="plan_step2">Splash cold water on your face to break the loop.</li>
+          <li data-i18n="plan_step3">Postpone the urge for 10 minutes and do 20 pushups.</li>
         </ul>
       </div>
     </div>
@@ -560,7 +566,6 @@
   </div>
 
   <script>
-    // i18n Dictionary Translation
     let currentLang = localStorage.getItem('novara_lang') || 'en';
 
     const translations = {
@@ -717,7 +722,7 @@
         }
       });
 
-      document.getElementById('lang-toggle-btn').innerText = lang === 'en' ? '🌐 العربية' : '🌐 English';
+      document.getElementById('lang-btn').innerText = lang === 'en' ? '🌐 العربية' : '🌐 English';
       renderDietTab();
       renderSpiritualTab();
     }
