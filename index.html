@@ -1050,7 +1050,6 @@
     }
 
     function renderRecoveryTab() {
-      // الضبط التلقائي لـ startDate إذا لم تكن مضبوطة سابقاً
       if (!recoveryData.startDate) {
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
