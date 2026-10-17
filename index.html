@@ -439,15 +439,8 @@
         </div>
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--card-border); padding-top:8px;">
-          <span style="font-size:0.75rem; color:var(--subtext);" data-i18n="week_reset_note">* يتم إعادة ضبط الأسبوع كل يوم أحد</span>
-          <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;" data-i18n="reset_weekly">إعادة ضبط القواعد الأسبوعية</button>
+          <span style="font-size:0.75rem; color:var(--subtext);" data-i18n="week_reset_note">* تتصفّر القواعد تلقائياً مع بداية كل أسبوع (الأحد)</span>
         </div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin: 0 0 8px 0;"><span data-i18n="meal_log">📝 سجل الوجبات ليوم:</span> <span id="diet-date-label" style="color:var(--primary);"></span></h3>
-        <textarea id="diet-meals-input" rows="4" data-i18n-ph="meal_ph" placeholder="سجّل وجباتك اليومية هنا..." onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;" data-i18n="auto_saved">✓ يتم الحفظ تلقائياً لهذا اليوم</div>
       </div>
     </div>
 
@@ -616,10 +609,7 @@
         rule_takeaway: "🍔 وجبة دليفري / أكل خارجي",
         rule_soda: "🥤 مشروبات غازية",
         rule_outing: "🥳 يوم الخروج الأسبوعي",
-        week_reset_note: "* يتم إعادة ضبط الأسبوع كل يوم أحد",
-        reset_weekly: "إعادة ضبط القواعد الأسبوعية",
-        meal_log: "📝 سجل الوجبات ليوم:",
-        auto_saved: "✓ يتم الحفظ تلقائياً لهذا اليوم",
+        week_reset_note: "* تتصفّر القواعد تلقائياً مع بداية كل أسبوع (الأحد)",
         outfit_title: "👔 دولاب الملابس وسجل الطقم اليومي",
         today_outfit: "✨ طقم اليوم:",
         add_wardrobe: "➕ إضافة قطعة جديدة للدولاب",
@@ -667,7 +657,6 @@
         not_consumed_btn: "لم يُشرب (0/1)",
         no_wardrobe_msg: "لا توجد قطع ملابس في هذه الفئة حتى الآن.",
         no_outfit_msg: "لم يتم تسجيل أي أطقم سابقة حتى الآن.",
-        meal_ph: "سجّل وجباتك اليومية هنا...",
         place_ph: "📍 المكان / المناسبة...",
         outfit_ph: "اختر قطع الملابس من الأسفل أو اكتب تفاصيل الطقم...",
         item_ph: "مثال: قميص أبيض، بنطلون زيتي..."
@@ -690,10 +679,7 @@
         rule_takeaway: "🍔 Takeaway Meal",
         rule_soda: "🥤 Soft Drink (Soda)",
         rule_outing: "🥳 Weekly Outing Day",
-        week_reset_note: "* Week resets every Sunday",
-        reset_weekly: "Reset Weekly Rules",
-        meal_log: "📝 Meal Log for:",
-        auto_saved: "✓ Auto-saved for this date",
+        week_reset_note: "* Rules automatically reset every Sunday",
         outfit_title: "👔 Wardrobe & Daily Outfit Log",
         today_outfit: "✨ Today's Outfit:",
         add_wardrobe: "➕ Add New Item to Wardrobe",
@@ -741,7 +727,6 @@
         not_consumed_btn: "Not Consumed (0/1)",
         no_wardrobe_msg: "No wardrobe items in this category yet.",
         no_outfit_msg: "No outfit records logged yet.",
-        meal_ph: "Log your daily meals here...",
         place_ph: "📍 Location / Event...",
         outfit_ph: "Select items from your wardrobe below or type outfit details...",
         item_ph: "e.g., White Shirt, Olive Chinos..."
@@ -771,8 +756,7 @@
     let currentCategoryFilter = 'all';
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
-    let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
-    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
+    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false, lastWeekRange: '' };
     let spiritualDailyLog = JSON.parse(localStorage.getItem('life_app_spiritual_daily_log')) || {};
 
     let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_weekly_data')) || {
@@ -907,7 +891,6 @@
       else label.innerText = currentDate;
 
       if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
-      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
     }
 
     function changeDate(newDate) {
@@ -915,6 +898,7 @@
       currentDate = newDate;
       updateDateLabel();
       renderSpiritualTab();
+      renderDietTab();
     }
 
     function setQuickDate(offset) {
@@ -922,6 +906,7 @@
       document.getElementById('selected-date').value = currentDate;
       updateDateLabel();
       renderSpiritualTab();
+      renderDietTab();
     }
 
     function renderSpiritualTab() {
@@ -1005,13 +990,10 @@
         return `${m}/${dayNum}`;
       };
 
-      return { sunStr: format(sun), satStr: format(sat) };
+      return { sunStr: format(sun), satStr: format(sat), fullId: `${sun.getFullYear()}-${sun.getMonth()+1}-${sun.getDate()}` };
     }
 
     function renderDietTab() {
-      document.getElementById('diet-date-label').innerText = currentDate;
-      document.getElementById('diet-meals-input').value = allDietData[currentDate] || '';
-
       const selectedDateObj = new Date(currentDate);
       const dayOfWeek = selectedDateObj.getDay();
       const statusBadge = document.getElementById('diet-day-status');
@@ -1025,15 +1007,22 @@
       }
 
       const range = getWeekRange(currentDate);
-      document.getElementById('week-range-label').innerText = `🗓️ الأحد (${range.sunStr}) - السبت (${range.satStr})`;
+      
+      // التصفير التلقائي للقواعد الأسبوعية عند اكتشاف بداية أسبوع جديد
+      if (weeklyTracker.lastWeekRange !== range.fullId) {
+        weeklyTracker.takeaway = false;
+        weeklyTracker.soda = false;
+        weeklyTracker.outing = false;
+        weeklyTracker.lastWeekRange = range.fullId;
+        localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
+      }
+
+      const weekText = currentLang === 'ar' 
+        ? `🗓️ الأحد (${range.sunStr}) - السبت (${range.satStr})` 
+        : `🗓️ Sun (${range.sunStr}) - Sat (${range.satStr})`;
+      document.getElementById('week-range-label').innerText = weekText;
 
       updateWeeklyButtons();
-    }
-
-    function saveDietData() {
-      const val = document.getElementById('diet-meals-input').value;
-      allDietData[currentDate] = val;
-      localStorage.setItem('life_app_diet_by_date', JSON.stringify(allDietData));
     }
 
     function toggleWeeklyRule(key) {
@@ -1041,14 +1030,6 @@
       localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
       if (weeklyTracker[key]) confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
       updateWeeklyButtons();
-    }
-
-    function resetWeeklyTracker() {
-      if (confirm('إعادة ضبط قواعد التتبع الأسبوعي؟')) {
-        weeklyTracker = { takeaway: false, soda: false, outing: false };
-        localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
-        updateWeeklyButtons();
-      }
     }
 
     function updateWeeklyButtons() {
@@ -1231,7 +1212,7 @@
     }
 
     function exportData() {
-      const fullData = { spiritual: spiritualData, spiritualDaily: spiritualDailyLog, outfits: allOutfits, diet: allDietData, weekly: weeklyTracker, recovery: recoveryData, wardrobe: myWardrobe };
+      const fullData = { spiritual: spiritualData, spiritualDaily: spiritualDailyLog, outfits: allOutfits, weekly: weeklyTracker, recovery: recoveryData, wardrobe: myWardrobe };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1249,7 +1230,6 @@
           if (imported.spiritual) localStorage.setItem('life_app_spiritual_weekly_data', JSON.stringify(imported.spiritual));
           if (imported.spiritualDaily) localStorage.setItem('life_app_spiritual_daily_log', JSON.stringify(imported.spiritualDaily));
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
-          if (imported.diet) localStorage.setItem('life_app_diet_by_date', JSON.stringify(imported.diet));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(imported.wardrobe));
@@ -1272,15 +1252,13 @@
         analyticsContainer.innerHTML = `
           🕊️ <strong>الأسابيع الروحية المكتملة:</strong> <strong>${spiritualData.weeksStreak || 0}</strong> أسبوعاً<br>
           🛡️ <strong>سلسلة التعافي:</strong> <strong>${calculateStreakDays()}</strong> يوماً<br>
-          👔 <strong>الأطقم المسجلة:</strong> <strong>${Object.keys(allOutfits).length}</strong> يوماً<br>
-          🥗 <strong>الوجبات المسجلة:</strong> <strong>${Object.keys(allDietData).length}</strong> يوماً
+          👔 <strong>الأطقم المسجلة:</strong> <strong>${Object.keys(allOutfits).length}</strong> يوماً
         `;
       } else {
         analyticsContainer.innerHTML = `
           🕊️ <strong>Spiritual Completed Weeks:</strong> <strong>${spiritualData.weeksStreak || 0}</strong> weeks<br>
           🛡️ <strong>Recovery Streak:</strong> <strong>${calculateStreakDays()}</strong> days<br>
-          👔 <strong>Outfits Logged:</strong> <strong>${Object.keys(allOutfits).length}</strong> days<br>
-          🥗 <strong>Meals Recorded:</strong> <strong>${Object.keys(allDietData).length}</strong> days
+          👔 <strong>Outfits Logged:</strong> <strong>${Object.keys(allOutfits).length}</strong> days
         `;
       }
     }
