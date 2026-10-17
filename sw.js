@@ -1,4 +1,4 @@
-const CACHE_NAME = 'novara-v1';
+const CACHE_NAME = 'novara-v2';
 const urlsToCache = [
   './',
   './index.html',
