@@ -340,7 +340,6 @@
     <div id="tab-spiritual" class="tab-content active">
       <h2 style="margin-top: 0;" data-i18n="spiritual_title">🕊️ القانون الروحي والالتزام</h2>
 
-      <!-- 💡 بطاقة تحفيزية متغيرة يومياً -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);" data-i18n="booster_tag">💡 حكمة وحافز اليوم</span>
@@ -363,7 +362,6 @@
         </div>
       </div>
 
-      <!-- عداد الالتزام الأسبوعي الثابت -->
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
         <div style="font-size:0.85rem; color:var(--subtext);" data-i18n="spiritual_weeks_label">عدد الأسابيع المكتملة بنجاح 🏆</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-weeks">0</div>
@@ -374,7 +372,6 @@
         </div>
       </div>
 
-      <!-- قائمة الفحص اليومية التفاعلية -->
       <div class="card">
         <h3 style="margin:0 0 10px 0;" data-i18n="checklist_title">📜 التتبع اليومي للقانون الروحي:</h3>
 
@@ -761,6 +758,50 @@
       { word: "التجدد اليومي", def: "كل بداية يوم جديد هي فرصة حقيقية لكتابة فصل جديد ومتميز في حياتك.", ex: '"لا تعش نفس اليوم 365 مرة وتسميها حياة، ابدأ اليوم بتحدٍ جديد."' }
     ];
 
+    function getLocalDateString(offset = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offset);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    let currentDate = getLocalDateString(0);
+    let currentCategoryFilter = 'all';
+
+    let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
+    let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
+    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
+    let spiritualDailyLog = JSON.parse(localStorage.getItem('life_app_spiritual_daily_log')) || {};
+
+    let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_weekly_data')) || {
+      weeksStreak: 0,
+      bestStreak: 0,
+      startDate: null
+    };
+
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
+      startDate: null,
+      bestStreak: 0
+    };
+
+    let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
+      { text: 'قميص أبيض', cat: 'top' },
+      { text: 'بنطلون جينز', cat: 'bottom' },
+      { text: 'تيشيرت أسود', cat: 'top' },
+      { text: 'كوتشي أبيض', cat: 'shoes' }
+    ];
+
+    let myWardrobe = rawWardrobe.map(item => {
+      let c = item.cat;
+      if (c === 'علوي') c = 'top';
+      if (c === 'سفلي') c = 'bottom';
+      if (c === 'أحذية') c = 'shoes';
+      if (c === 'أخرى') c = 'accessory';
+      return { text: item.text, cat: c };
+    });
+
     function renderDailyVocab() {
       const dayIdx = new Date().getDay();
       const item = spiritualMotivationList[dayIdx % spiritualMotivationList.length];
@@ -814,53 +855,6 @@
       else if (hour >= 17 && hour < 20) document.body.classList.add('theme-sunset');
       else document.body.classList.add('theme-night');
     }
-
-    function getLocalDateString(offset = 0) {
-      const d = new Date();
-      d.setDate(d.getDate() + offset);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    }
-
-    let currentDate = getLocalDateString(0);
-    let currentCategoryFilter = 'all';
-
-    let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
-    let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
-    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
-    
-    // سجل التتبع اليومي بالقانون الروحي
-    let spiritualDailyLog = JSON.parse(localStorage.getItem('life_app_spiritual_daily_log')) || {};
-
-    // بيانات العداد الأسبوعي
-    let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_weekly_data')) || {
-      weeksStreak: 0,
-      bestStreak: 0,
-      startDate: null
-    };
-
-    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
-      startDate: null,
-      bestStreak: 0
-    };
-
-    let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
-      { text: 'قميص أبيض', cat: 'top' },
-      { text: 'بنطلون جينز', cat: 'bottom' },
-      { text: 'تيشيرت أسود', cat: 'top' },
-      { text: 'كوتشي أبيض', cat: 'shoes' }
-    ];
-
-    let myWardrobe = rawWardrobe.map(item => {
-      let c = item.cat;
-      if (c === 'علوي') c = 'top';
-      if (c === 'سفلي') c = 'bottom';
-      if (c === 'أحذية') c = 'shoes';
-      if (c === 'أخرى') c = 'accessory';
-      return { text: item.text, cat: c };
-    });
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -930,7 +924,6 @@
       renderSpiritualTab();
     }
 
-    // عرض التتبع اليومي والعداد الأسبوعي
     function renderSpiritualTab() {
       const weeks = spiritualData.weeksStreak || 0;
       
@@ -946,20 +939,21 @@
         ? `📅 ${translations[currentLang].start_date}: ${spiritualData.startDate}` 
         : translations[currentLang].start_date_not_set;
 
-      // تحديث حالة عناصر التتبع اليومي لليوم المعتمد
       const dayData = spiritualDailyLog[currentDate] || {};
       const tasks = ['morning', 'night', 'bible', 'fasting', 'communion'];
 
       tasks.forEach(task => {
         const chk = document.getElementById(`chk-${task}`);
-        const item = chk.parentElement;
-        const isChecked = !!dayData[task];
+        if (chk) {
+          const item = chk.parentElement;
+          const isChecked = !!dayData[task];
 
-        chk.checked = isChecked;
-        if (isChecked) {
-          item.classList.add('done');
-        } else {
-          item.classList.remove('done');
+          chk.checked = isChecked;
+          if (isChecked) {
+            item.classList.add('done');
+          } else {
+            item.classList.remove('done');
+          }
         }
       });
     }
