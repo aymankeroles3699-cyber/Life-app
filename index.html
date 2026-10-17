@@ -511,10 +511,7 @@
 
       <div class="card">
         <h3 style="margin: 0 0 10px 0;" data-i18n="control_actions">⚡ التحكم والإجراءات:</h3>
-        <button class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent); margin-bottom:10px;" onclick="celebrateToday()" data-i18n="celebrate_btn">
-          🎉 الاحتفال بإتمام يوم نظيف جديد!
-        </button>
-        <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;" data-i18n="relapse_btn">
+        <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%; font-size:0.95rem;" data-i18n="relapse_btn">
           🔄 حدث انتكاس (إعادة بدء التحدي من اليوم)
         </button>
       </div>
@@ -630,7 +627,6 @@
         best_recovery: "🏆 أفضل سلسلة تعافي",
         start_date: "📅 تاريخ البداية",
         control_actions: "⚡ التحكم والإجراءات:",
-        celebrate_btn: "🎉 الاحتفال بإتمام يوم نظيف جديد!",
         relapse_btn: "🔄 حدث انتكاس (إعادة بدء التحدي من اليوم)",
         surfing_plan_title: "💡 خطة التعامل السريع مع الرغبة:",
         plan_step1: "غادر الغرفة/السرير فوراً إلى مكان عام أو الصالة.",
@@ -700,7 +696,6 @@
         best_recovery: "🏆 Best Recovery Streak",
         start_date: "📅 Start Date",
         control_actions: "⚡ Control & Actions:",
-        celebrate_btn: "🎉 Celebrate completing a new clean day!",
         relapse_btn: "🔄 Relapse Occurred (Restart challenge from today)",
         surfing_plan_title: "💡 Rapid Urge Surfing Plan:",
         plan_step1: "Leave the room/bed immediately to a public space.",
@@ -1008,7 +1003,6 @@
 
       const range = getWeekRange(currentDate);
       
-      // التصفير التلقائي للقواعد الأسبوعية عند اكتشاف بداية أسبوع جديد
       if (weeklyTracker.lastWeekRange !== range.fullId) {
         weeklyTracker.takeaway = false;
         weeklyTracker.soda = false;
@@ -1056,6 +1050,12 @@
     }
 
     function renderRecoveryTab() {
+      // الضبط التلقائي لـ startDate إذا لم تكن مضبوطة سابقاً
+      if (!recoveryData.startDate) {
+        recoveryData.startDate = getLocalDateString(0);
+        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+      }
+
       const currentStreak = calculateStreakDays();
       if (currentStreak > (recoveryData.bestStreak || 0)) {
         recoveryData.bestStreak = currentStreak;
@@ -1088,15 +1088,6 @@
           mot.innerText = "Legendary milestone! Self-control has become your core strength 👑";
         }
       }
-    }
-
-    function celebrateToday() {
-      if (!recoveryData.startDate) {
-        recoveryData.startDate = getLocalDateString(0);
-        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
-      }
-      confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
-      renderRecoveryTab();
     }
 
     function resetStreak() {
