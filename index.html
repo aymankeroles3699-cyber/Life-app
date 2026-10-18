@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=9">
+  <link rel="manifest" href="manifest.json?v=10">
   
-  <link rel="icon" type="image/jpeg" href="logo.jpg">
-  <link rel="apple-touch-icon" href="logo.jpg">
+  <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/85zX3V7J/logo.jpg">
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/85zX3V7J/logo.jpg">
   <meta name="theme-color" content="#0f172a">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -347,7 +347,7 @@
 
     <div class="top-header">
       <div class="app-brand">
-        <img src="logo.jpg" alt="Novara" class="app-logo-img" onerror="this.style.display='none'">
+        <img src="https://i.postimg.cc/85zX3V7J/logo.jpg" alt="Novara" class="app-logo-img">
         <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
       </div>
       <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 English</button>
@@ -982,7 +982,7 @@
       const tomorrow = getLocalDateString(1);
 
       if (currentDate === today) label.innerText = `${translations[currentLang].today} (${currentDate})`;
-      else if (currentDate === yesterday) label.innerText = `${translations[currentLang].yesterday} (${currentDate})`;
+      else if (currentDate === baseline = yesterday) label.innerText = `${translations[currentLang].yesterday} (${currentDate})`;
       else if (currentDate === tomorrow) label.innerText = `${translations[currentLang].tomorrow} (${currentDate})`;
       else label.innerText = currentDate;
 
@@ -1362,7 +1362,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=9');
+      navigator.serviceWorker.register('./sw.js?v=10');
     }
   </script>
 </body>
