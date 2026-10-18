@@ -1,6 +1,11 @@
 {
   "short_name": "Novara",
   "name": "Novara Life Tracker",
+  "start_url": "./index.html",
+  "id": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
   "icons": [
     {
       "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230f172a' rx='100'/><circle cx='256' cy='256' r='180' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z' fill='url(%23g2)'/><circle cx='256' cy='256' r='35' fill='%23ffffff'/><defs><linearGradient id='g' x1='0' y1='0' x2='512' y2='512'><stop offset='0%25' stop-color='%23f97316'/><stop offset='50%25' stop-color='%23a855f7'/><stop offset='100%25' stop-color='%230284c7'/></linearGradient><linearGradient id='g2' x1='100' y1='100' x2='400' y2='400'><stop offset='0%25' stop-color='%23ec4899'/><stop offset='50%25' stop-color='%238b5cf6'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs></svg>",
@@ -14,9 +19,5 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ],
-  "start_url": "./index.html",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "display": "standalone"
+  ]
 }
