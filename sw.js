@@ -1,28 +1,28 @@
-const CACHE_NAME = 'novara-cache-v14';
-const urlsToCache = [
+const CACHE_NAME = 'novara-v15';
+const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json'
 ];
 
-// Install Event
+// التثبيت وحفظ الملفات في الكاش
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
+      return cache.addAll(ASSETS_TO_CACHE);
     })
   );
 });
 
-// Activate Event
+// التفعيل وتحديث النسخ القديمة
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
         })
       );
@@ -30,11 +30,14 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event
+// استدعاء الملفات
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      return fetch(event.request);
     })
   );
 });
