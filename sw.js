@@ -1,14 +1,29 @@
-const CACHE_NAME = 'novara-v2';
+const CACHE_NAME = 'novara-v3';
 const urlsToCache = [
   './',
-  './index.html',
-  './manifest.json'
+  './index.html?v=3',
+  './manifest.json?v=3'
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(urlsToCache);
+    })
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            return caches.delete(cache);
+          }
+        })
+      );
     })
   );
 });
