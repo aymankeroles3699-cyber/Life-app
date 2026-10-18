@@ -1,11 +1,10 @@
-const CACHE_NAME = 'novara-v15';
+const CACHE_NAME = 'novara-v20';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json'
 ];
 
-// التثبيت وحفظ الملفات في الكاش
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -15,7 +14,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// التفعيل وتحديث النسخ القديمة
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -30,14 +28,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// استدعاء الملفات
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request);
+      return cachedResponse || fetch(event.request);
     })
   );
 });
