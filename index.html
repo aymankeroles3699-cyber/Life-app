@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=3">
+  <link rel="manifest" href="manifest.json?v=5">
   
-  <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/1041/1041888.png?v=3">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1041/1041888.png?v=3">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/isometric/512/shield.png">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/shield.png">
   <meta name="theme-color" content="#0f172a">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -517,11 +517,8 @@
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 8px 0; color:var(--primary);" data-i18n="surfing_plan_title">💡 خطة التعامل السريع مع الرغبة:</h3>
-        <ul style="margin:0; padding-left:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
-          <li data-i18n="plan_step1">غادر الغرفة/السرير فوراً إلى مكان عام أو الصالة.</li>
-          <li data-i18n="plan_step2">اغسل وجهك بماء بارد لكسر حلقة التفكير.</li>
-          <li data-i18n="plan_step3">أجّل الرغبة لمدة 10 دقائق وقم بعمل 20 تمرين ضغط.</li>
+        <h3 style="margin: 0 0 8px 0; color:var(--primary);" id="plan-card-title">💡 خطة التعامل السريع مع الرغبة (اليوم):</h3>
+        <ul id="daily-recovery-plan" style="margin:0; padding-left:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
         </ul>
       </div>
     </div>
@@ -628,10 +625,6 @@
         start_date: "📅 تاريخ البداية",
         control_actions: "⚡ التحكم والإجراءات:",
         relapse_btn: "🔄 حدث انتكاس (إعادة بدء التحدي من اليوم)",
-        surfing_plan_title: "💡 خطة التعامل السريع مع الرغبة:",
-        plan_step1: "غادر الغرفة/السرير فوراً إلى مكان عام أو الصالة.",
-        plan_step2: "اغسل وجهك بماء بارد لكسر حلقة التفكير.",
-        plan_step3: "أجّل الرغبة لمدة 10 دقائق وقم بعمل 20 تمرين ضغط.",
         analytics_title: "📊 النظرة العامة والتحليلات الشهرية",
         spiritual_weeks: "الأسابيع المكتملة",
         recovery_days: "أيام التعافي",
@@ -697,10 +690,6 @@
         start_date: "📅 Start Date",
         control_actions: "⚡ Control & Actions:",
         relapse_btn: "🔄 Relapse Occurred (Restart challenge from today)",
-        surfing_plan_title: "💡 Rapid Urge Surfing Plan:",
-        plan_step1: "Leave the room/bed immediately to a public space.",
-        plan_step2: "Splash cold water on your face to break the loop.",
-        plan_step3: "Postpone the urge for 10 minutes and do 20 pushups.",
         analytics_title: "📊 Overview & Monthly Analytics",
         spiritual_weeks: "Completed Weeks",
         recovery_days: "Recovery Days",
@@ -736,6 +725,38 @@
       { word: "السلام الداخلي", def: "تغذية روحك يومياً بالصلاة والتأمل يعطيك طاقة تتجدد باستمرار.", ex: '"السلام الداخلي يبدأ عندما ترفض أن تدع الأحداث الخارجية تتحكم في مشاعرك."' },
       { word: "المرونة النفسية", def: "قدرتك على النهوض أسرع وأقوى بعد كل كبوة أو تجربة صعبة.", ex: '"الضربات الصعبة لا تكسر القوي، بل تجعله أكثر صلابة وتماسكاً."' },
       { word: "التجدد اليومي", def: "كل بداية يوم جديد هي فرصة حقيقية لكتابة فصل جديد ومتميز في حياتك.", ex: '"لا تعش نفس اليوم 365 مرة وتسميها حياة، ابدأ اليوم بتحدٍ جديد."' }
+    ];
+
+    // قوائم يومية متجددة بالكامل باللغة العربية
+    const dailyRecoveryContent = [
+      {
+        motAr: "كل يوم تقاوم فيه هو انتصار حقيقي لكرامتك وحريتك! 💪",
+        planAr: ["غادر الغرفة أو السرير فوراً متجهاً للصالون أو مكان عام.", "اغسل وجهك بماء بارد جداً لكسر حلقة التفكير المتواصلة.", "أجّل الرغبة لمدة 10 دقائق وقم بعمل 20 تمرين ضغط."]
+      },
+      {
+        motAr: "الرغبة موجة مؤقتة تصل للقمة ثم تتلاشى، اربض واصمد فوق الموجة! 🌊",
+        planAr: ["قم بتشغيل مقطع صوتي أو فيديو يشتت انتباهك كلياً.", "اتصل بصديق أو تحدث مع أحد أفراد الأسرة في موضوع جانبي.", "اشرب كوباً كبيراً من الماء البارد ببطء شديد."]
+      },
+      {
+        motAr: "أنت لست أفكارك، أنت العقل الشجاع الذي يسيطر على أفعاله! 👑",
+        planAr: ["غيّر وضعية جسدك فوراً (إذا كنت مستلقياً اخرج للمشي).", "مارس تمرين التنفس العميق (4 ثوانٍ شهيق، 4 كتم، 4 زفير).", "تذكر شعور الفخر والانتصار عند الاستيقاظ بذهن صافٍ."]
+      },
+      {
+        motAr: "الصمود اليوم يجعلك أقوى غداً، استثمر في شخصيتك القادمة! 🔥",
+        planAr: ["اخرج في جولة سير سريعة بالخارج لمدة 15 دقيقة.", "ابدأ في كتابة أفكارك ومحاولات المقاومة في ورقة خارجية.", "قم بتنظيف وتعديل غرفتك أو مكتبك لإبقاء يديك مشغولتين."]
+      },
+      {
+        motAr: "المتعة اللحظية تزول في ثوانٍ، لكن الندم أو الفخر يدومان طويلاً! 🏆",
+        planAr: ["قم بعمل دش دافئ أو بارد فوراً لإنعاش جسدك.", "انتقل لممارسة هواية أو قراءة كتاب يحتاج لتركيز ذكي.", "ردد عبارة تحفيزية بصوت مرتفع: 'أنا الأقوى وأنا أتحكم بنفسي'."]
+      },
+      {
+        motAr: "الحرية الحقيقية هي ألا تكون عبداً لعادة أو شهوة عابرة! 🕊️",
+        planAr: ["اترك هاتفك في غرفة أخرى واجلس في مكان مفتوح.", "قم بعمل تمارين الإطالة والاسترخاء للجسد.", "تذكر أهدافك الكبرى التي تسعى لبنائها هذا العام."]
+      },
+      {
+        motAr: "بطل المعركة هو من ينتصر على نفسه قبل أن ينتصر على ظروفه! ⚡",
+        planAr: ["ابدأ بالصلاة والتأمل الهادئ لتهدئة عقلك وقلبك.", "تناول وجبة خفيفة صحية أو مشروباً دافئاً منزلياً.", "تذكر أن أسرع طريقة لقتل الرغبة هي إهمالها التام لمدة 15 دقيقة."]
+      }
     ];
 
     function getLocalDateString(offset = 0) {
@@ -1065,28 +1086,27 @@
       document.getElementById('best-streak-count').innerText = recoveryData.bestStreak || 0;
       document.getElementById('streak-start-date').innerText = recoveryData.startDate || '--';
 
+      // تغيير المحتوى اليومي تلقائياً بحسب اليوم
+      const dayIdx = new Date().getDay();
+      const dailyContent = dailyRecoveryContent[dayIdx % dailyRecoveryContent.length];
+
+      // تحديث الرسالة التحفيزية بالأرضية العربية فقط
       const mot = document.getElementById('streak-motivation');
-      if (currentLang === 'ar') {
-        if (currentStreak === 0) {
-          mot.innerText = "ابدأ تحدي التعافي اليوم! عزيمتك هي خطوتك الأولى نحو تحرير طاقاتك! 💪";
-        } else if (currentStreak < 7) {
-          mot.innerText = "بداية بطل حقيقي! الأسبوع الأول هو الأهم، واصل الثبات والصمود 🔥";
-        } else if (currentStreak < 30) {
-          mot.innerText = "عمل رائع! عقلك يبدأ الآن في التكيف وبناء عادات وإشارات صحية جديدة 🏆";
-        } else {
-          mot.innerText = "إنجاز أسطوري! التحكم بالنفس أصبح جزءاً أساسياً من قوتك وهويتك 👑";
-        }
-      } else {
-        if (currentStreak === 0) {
-          mot.innerText = "Start your recovery challenge today! Determination makes all the difference 💪";
-        } else if (currentStreak < 7) {
-          mot.innerText = "Champion start! Keep going, the first week is crucial 🔥";
-        } else if (currentStreak < 30) {
-          mot.innerText = "Great job! Your mind is adapting and forming strong new habits 🏆";
-        } else {
-          mot.innerText = "Legendary milestone! Self-control has become your core strength 👑";
-        }
-      }
+      mot.innerText = dailyContent.motAr;
+
+      // تحديث عنوان خطة التعامل السريع
+      const planTitle = document.getElementById('plan-card-title');
+      planTitle.innerText = "💡 خطة التعامل السريع مع الرغبة (اليوم):";
+
+      // تحديث خطوات الخطة بالكامل باللغة العربية
+      const planListContainer = document.getElementById('daily-recovery-plan');
+      planListContainer.innerHTML = '';
+      
+      dailyContent.planAr.forEach(step => {
+        const li = document.createElement('li');
+        li.innerText = step;
+        planListContainer.appendChild(li);
+      });
     }
 
     function resetStreak() {
@@ -1258,7 +1278,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=3');
+      navigator.serviceWorker.register('./sw.js?v=5');
     }
   </script>
 </body>
