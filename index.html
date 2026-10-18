@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=10">
+  <link rel="manifest" href="manifest.json?v=11">
   
   <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/85zX3V7J/logo.jpg">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/85zX3V7J/logo.jpg">
@@ -379,7 +379,7 @@
         </div>
       </div>
 
-      <!-- كارت تسجيل آخر مكان بتأخير ذكي لمنع التهنيج -->
+      <!-- كارت تسجيل آخر مكان بتأخير ذكي -->
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.85)); border-color: rgba(99, 102, 241, 0.3);">
         <h3 style="margin: 0 0 12px 0; color:var(--primary);">📌 تسجيل آخر ما وقفت عنده:</h3>
         
@@ -982,7 +982,7 @@
       const tomorrow = getLocalDateString(1);
 
       if (currentDate === today) label.innerText = `${translations[currentLang].today} (${currentDate})`;
-      else if (currentDate === baseline = yesterday) label.innerText = `${translations[currentLang].yesterday} (${currentDate})`;
+      else if (currentDate === yesterday) label.innerText = `${translations[currentLang].yesterday} (${currentDate})`;
       else if (currentDate === tomorrow) label.innerText = `${translations[currentLang].tomorrow} (${currentDate})`;
       else label.innerText = currentDate;
 
@@ -1362,7 +1362,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=10');
+      navigator.serviceWorker.register('./sw.js?v=11');
     }
   </script>
 </body>
