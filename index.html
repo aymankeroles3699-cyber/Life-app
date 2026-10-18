@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=5">
+  <link rel="manifest" href="manifest.json?v=7">
   
   <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/isometric/512/shield.png">
   <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/shield.png">
@@ -362,6 +362,28 @@
         </div>
       </div>
 
+      <!-- كارت تسجيل آخر مكان في الإنجيل و صلاة الباكر و صلاة النوم -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.85)); border-color: rgba(99, 102, 241, 0.3);">
+        <h3 style="margin: 0 0 12px 0; color:var(--primary);">📌 تسجيل آخر ما وقفت عنده:</h3>
+        
+        <div style="margin-bottom: 10px;">
+          <label style="font-size: 0.85rem; color: var(--subtext); display: block; margin-bottom: 4px;">📖 قراءة الإنجيل:</label>
+          <input type="text" id="bible-progress-input" placeholder="مثال: متى أصحاح 5..." onkeyup="saveSpiritualNotes()" style="width: 100%; margin: 0;">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label style="font-size: 0.85rem; color: var(--subtext); display: block; margin-bottom: 4px;">🌅 صلاة الباكر:</label>
+          <input type="text" id="morning-pray-input" placeholder="مثال: المزمور الخمسون / قطع الساعة الأولى..." onkeyup="saveSpiritualNotes()" style="width: 100%; margin: 0;">
+        </div>
+
+        <div>
+          <label style="font-size: 0.85rem; color: var(--subtext); display: block; margin-bottom: 4px;">🌙 صلاة النوم:</label>
+          <input type="text" id="night-pray-input" placeholder="مثال: قطيعة هوذا خدرك / تفضل يا رب..." onkeyup="saveSpiritualNotes()" style="width: 100%; margin: 0;">
+        </div>
+
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:8px;">✓ تُحفظ التغييرات تلقائياً للرجوع إليها في أي وقت</div>
+      </div>
+
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
         <div style="font-size:0.85rem; color:var(--subtext);" data-i18n="spiritual_weeks_label">عدد الأسابيع المكتملة بنجاح 🏆</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-weeks">0</div>
@@ -373,7 +395,7 @@
       </div>
 
       <div class="card">
-        <h3 style="margin:0 0 10px 0;" data-i18n="checklist_title">📜 التتبع اليومي للقانون الروحي:</h3>
+        <h3 style="margin:0 0 10px 0;" data-i18n="checklist_title">📜 التتبع اليومي للصلوات والقانون الروحي:</h3>
 
         <ul id="spiritual-daily-checklist">
           <li class="checklist-item" onclick="toggleDailyTask('morning')">
@@ -385,7 +407,7 @@
             <input type="checkbox" id="chk-night">
           </li>
           <li class="checklist-item" onclick="toggleDailyTask('bible')">
-            <span>📖 أصحاح الكتاب المقدس اليومي</span>
+            <span>📖 قراءة الإنجيل اليومية</span>
             <input type="checkbox" id="chk-bible">
           </li>
           <li class="checklist-item" onclick="toggleDailyTask('fasting')">
@@ -595,7 +617,7 @@
         spiritual_weeks_label: "عدد الأسابيع المكتملة بنجاح 🏆",
         start_date_not_set: "📅 تاريخ البداية: غير محدد",
         best_record: "🏆 أفضل رقم قياسي:",
-        checklist_title: "📜 التتبع اليومي للقانون الروحي:",
+        checklist_title: "📜 التتبع اليومي للصلوات والقانون الروحي:",
         complete_btn: "✨ تسجيل إتمام أسبوع جديد بنجاح (+1 أسبوع)",
         reset_btn: "🔄 إعادة ضبط العداد الأسبوعي وتاريخ البداية",
         diet_title: "🥗 نظام التغذية وأسلوب الحياة",
@@ -727,7 +749,6 @@
       { word: "التجدد اليومي", def: "كل بداية يوم جديد هي فرصة حقيقية لكتابة فصل جديد ومتميز في حياتك.", ex: '"لا تعش نفس اليوم 365 مرة وتسميها حياة، ابدأ اليوم بتحدٍ جديد."' }
     ];
 
-    // قوائم يومية متجددة بالكامل باللغة العربية
     const dailyRecoveryContent = [
       {
         motAr: "كل يوم تقاوم فيه هو انتصار حقيقي لكرامتك وحريتك! 💪",
@@ -801,6 +822,26 @@
       if (c === 'أخرى') c = 'accessory';
       return { text: item.text, cat: c };
     });
+
+    function saveSpiritualNotes() {
+      const bibleVal = document.getElementById('bible-progress-input').value;
+      const morningVal = document.getElementById('morning-pray-input').value;
+      const nightVal = document.getElementById('night-pray-input').value;
+
+      localStorage.setItem('life_app_bible_progress', bibleVal);
+      localStorage.setItem('life_app_morning_pray_progress', morningVal);
+      localStorage.setItem('life_app_night_pray_progress', nightVal);
+    }
+
+    function loadSpiritualNotes() {
+      const savedBible = localStorage.getItem('life_app_bible_progress') || '';
+      const savedMorning = localStorage.getItem('life_app_morning_pray_progress') || '';
+      const savedNight = localStorage.getItem('life_app_night_pray_progress') || '';
+
+      if (document.getElementById('bible-progress-input')) document.getElementById('bible-progress-input').value = savedBible;
+      if (document.getElementById('morning-pray-input')) document.getElementById('morning-pray-input').value = savedMorning;
+      if (document.getElementById('night-pray-input')) document.getElementById('night-pray-input').value = savedNight;
+    }
 
     function renderDailyVocab() {
       const dayIdx = new Date().getDay();
@@ -892,6 +933,7 @@
       applyTimeBasedTheme();
       document.getElementById('selected-date').value = currentDate;
       renderDailyVocab();
+      loadSpiritualNotes();
       setLanguage(currentLang);
     }
 
@@ -926,6 +968,7 @@
     }
 
     function renderSpiritualTab() {
+      loadSpiritualNotes();
       const weeks = spiritualData.weeksStreak || 0;
       
       if (weeks > (spiritualData.bestStreak || 0)) {
@@ -1086,19 +1129,15 @@
       document.getElementById('best-streak-count').innerText = recoveryData.bestStreak || 0;
       document.getElementById('streak-start-date').innerText = recoveryData.startDate || '--';
 
-      // تغيير المحتوى اليومي تلقائياً بحسب اليوم
       const dayIdx = new Date().getDay();
       const dailyContent = dailyRecoveryContent[dayIdx % dailyRecoveryContent.length];
 
-      // تحديث الرسالة التحفيزية بالأرضية العربية فقط
       const mot = document.getElementById('streak-motivation');
       mot.innerText = dailyContent.motAr;
 
-      // تحديث عنوان خطة التعامل السريع
       const planTitle = document.getElementById('plan-card-title');
       planTitle.innerText = "💡 خطة التعامل السريع مع الرغبة (اليوم):";
 
-      // تحديث خطوات الخطة بالكامل باللغة العربية
       const planListContainer = document.getElementById('daily-recovery-plan');
       planListContainer.innerHTML = '';
       
@@ -1222,7 +1261,11 @@
     }
 
     function exportData() {
-      const fullData = { spiritual: spiritualData, spiritualDaily: spiritualDailyLog, outfits: allOutfits, weekly: weeklyTracker, recovery: recoveryData, wardrobe: myWardrobe };
+      const bibleProgress = localStorage.getItem('life_app_bible_progress') || '';
+      const morningPray = localStorage.getItem('life_app_morning_pray_progress') || '';
+      const nightPray = localStorage.getItem('life_app_night_pray_progress') || '';
+
+      const fullData = { spiritual: spiritualData, spiritualDaily: spiritualDailyLog, bibleProgress: bibleProgress, morningPrayProgress: morningPray, nightPrayProgress: nightPray, outfits: allOutfits, weekly: weeklyTracker, recovery: recoveryData, wardrobe: myWardrobe };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1239,6 +1282,9 @@
           const imported = JSON.parse(e.target.result);
           if (imported.spiritual) localStorage.setItem('life_app_spiritual_weekly_data', JSON.stringify(imported.spiritual));
           if (imported.spiritualDaily) localStorage.setItem('life_app_spiritual_daily_log', JSON.stringify(imported.spiritualDaily));
+          if (imported.bibleProgress) localStorage.setItem('life_app_bible_progress', imported.bibleProgress);
+          if (imported.morningPrayProgress) localStorage.setItem('life_app_morning_pray_progress', imported.morningPrayProgress);
+          if (imported.nightPrayProgress) localStorage.setItem('life_app_night_pray_progress', imported.nightPrayProgress);
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
@@ -1278,7 +1324,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=5');
+      navigator.serviceWorker.register('./sw.js?v=7');
     }
   </script>
 </body>
