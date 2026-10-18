@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=7">
+  <link rel="manifest" href="manifest.json?v=8">
   
   <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/isometric/512/shield.png">
   <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/shield.png">
@@ -362,26 +362,26 @@
         </div>
       </div>
 
-      <!-- كارت تسجيل آخر مكان في الإنجيل و صلاة الباكر و صلاة النوم -->
+      <!-- كارت تسجيل آخر مكان بتأخير ذكي لمنع تهنيج الصفحة -->
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.85)); border-color: rgba(99, 102, 241, 0.3);">
         <h3 style="margin: 0 0 12px 0; color:var(--primary);">📌 تسجيل آخر ما وقفت عنده:</h3>
         
         <div style="margin-bottom: 10px;">
           <label style="font-size: 0.85rem; color: var(--subtext); display: block; margin-bottom: 4px;">📖 قراءة الإنجيل:</label>
-          <input type="text" id="bible-progress-input" placeholder="مثال: متى أصحاح 5..." onkeyup="saveSpiritualNotes()" style="width: 100%; margin: 0;">
+          <input type="text" id="bible-progress-input" placeholder="مثال: متى أصحاح 5..." oninput="debouncedSaveSpiritualNotes()" style="width: 100%; margin: 0;">
         </div>
 
         <div style="margin-bottom: 10px;">
           <label style="font-size: 0.85rem; color: var(--subtext); display: block; margin-bottom: 4px;">🌅 صلاة الباكر:</label>
-          <input type="text" id="morning-pray-input" placeholder="مثال: المزمور الخمسون / قطع الساعة الأولى..." onkeyup="saveSpiritualNotes()" style="width: 100%; margin: 0;">
+          <input type="text" id="morning-pray-input" placeholder="مثال: المزمور الخمسون / قطع الساعة الأولى..." oninput="debouncedSaveSpiritualNotes()" style="width: 100%; margin: 0;">
         </div>
 
         <div>
           <label style="font-size: 0.85rem; color: var(--subtext); display: block; margin-bottom: 4px;">🌙 صلاة النوم:</label>
-          <input type="text" id="night-pray-input" placeholder="مثال: قطيعة هوذا خدرك / تفضل يا رب..." onkeyup="saveSpiritualNotes()" style="width: 100%; margin: 0;">
+          <input type="text" id="night-pray-input" placeholder="مثال: قطيعة هوذا خدرك / تفضل يا رب..." oninput="debouncedSaveSpiritualNotes()" style="width: 100%; margin: 0;">
         </div>
 
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:8px;">✓ تُحفظ التغييرات تلقائياً للرجوع إليها في أي وقت</div>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:8px;" id="save-status-msg">✓ تُحفظ التغييرات تلقائياً للرجوع إليها في أي وقت</div>
       </div>
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
@@ -472,8 +472,8 @@
 
       <div class="card">
         <h3 style="margin: 0 0 8px 0;"><span data-i18n="today_outfit">✨ طقم اليوم:</span> <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
-        <input type="text" id="outfit-place-input" data-i18n-ph="place_ph" placeholder="📍 المكان / المناسبة..." onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-        <textarea id="outfit-input" rows="3" data-i18n-ph="outfit_ph" placeholder="اختر قطع الملابس من الأسفل أو اكتب تفاصيل الطقم..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
+        <input type="text" id="outfit-place-input" data-i18n-ph="place_ph" placeholder="📍 المكان / المناسبة..." oninput="debouncedSaveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
+        <textarea id="outfit-input" rows="3" data-i18n-ph="outfit_ph" placeholder="اختر قطع الملابس من الأسفل أو اكتب تفاصيل الطقم..." oninput="debouncedSaveOutfit()" style="width:100%; resize:vertical;"></textarea>
         <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;" data-i18n="auto_saved">✓ يتم الحفظ تلقائياً لهذا اليوم</div>
       </div>
 
@@ -823,24 +823,45 @@
       return { text: item.text, cat: c };
     });
 
-    function saveSpiritualNotes() {
-      const bibleVal = document.getElementById('bible-progress-input').value;
-      const morningVal = document.getElementById('morning-pray-input').value;
-      const nightVal = document.getElementById('night-pray-input').value;
+    let saveTimeout = null;
 
-      localStorage.setItem('life_app_bible_progress', bibleVal);
-      localStorage.setItem('life_app_morning_pray_progress', morningVal);
-      localStorage.setItem('life_app_night_pray_progress', nightVal);
+    function saveSpiritualNotes() {
+      try {
+        const bibleVal = document.getElementById('bible-progress-input').value;
+        const morningVal = document.getElementById('morning-pray-input').value;
+        const nightVal = document.getElementById('night-pray-input').value;
+
+        localStorage.setItem('life_app_bible_progress', bibleVal);
+        localStorage.setItem('life_app_morning_pray_progress', morningVal);
+        localStorage.setItem('life_app_night_pray_progress', nightVal);
+      } catch (e) {
+        console.error('Error saving notes:', e);
+      }
+    }
+
+    function debouncedSaveSpiritualNotes() {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveSpiritualNotes, 400);
+    }
+
+    let outfitSaveTimeout = null;
+    function debouncedSaveOutfit() {
+      clearTimeout(outfitSaveTimeout);
+      outfitSaveTimeout = setTimeout(saveOutfit, 400);
     }
 
     function loadSpiritualNotes() {
-      const savedBible = localStorage.getItem('life_app_bible_progress') || '';
-      const savedMorning = localStorage.getItem('life_app_morning_pray_progress') || '';
-      const savedNight = localStorage.getItem('life_app_night_pray_progress') || '';
+      try {
+        const savedBible = localStorage.getItem('life_app_bible_progress') || '';
+        const savedMorning = localStorage.getItem('life_app_morning_pray_progress') || '';
+        const savedNight = localStorage.getItem('life_app_night_pray_progress') || '';
 
-      if (document.getElementById('bible-progress-input')) document.getElementById('bible-progress-input').value = savedBible;
-      if (document.getElementById('morning-pray-input')) document.getElementById('morning-pray-input').value = savedMorning;
-      if (document.getElementById('night-pray-input')) document.getElementById('night-pray-input').value = savedNight;
+        if (document.getElementById('bible-progress-input')) document.getElementById('bible-progress-input').value = savedBible;
+        if (document.getElementById('morning-pray-input')) document.getElementById('morning-pray-input').value = savedMorning;
+        if (document.getElementById('night-pray-input')) document.getElementById('night-pray-input').value = savedNight;
+      } catch (e) {
+        console.error('Error loading notes:', e);
+      }
     }
 
     function renderDailyVocab() {
@@ -1324,7 +1345,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=7');
+      navigator.serviceWorker.register('./sw.js?v=8');
     }
   </script>
 </body>
