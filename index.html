@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=8">
+  <link rel="manifest" href="manifest.json?v=9">
   
-  <link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/isometric/512/shield.png">
-  <link rel="apple-touch-icon" href="https://img.icons8.com/isometric/512/shield.png">
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="apple-touch-icon" href="logo.jpg">
   <meta name="theme-color" content="#0f172a">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -97,6 +97,20 @@
       backdrop-filter: blur(12px);
       border-radius: 16px;
       border: 1px solid var(--card-border);
+    }
+
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-logo-img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .lang-toggle-btn {
@@ -332,7 +346,10 @@
   <div class="container">
 
     <div class="top-header">
-      <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
+      <div class="app-brand">
+        <img src="logo.jpg" alt="Novara" class="app-logo-img" onerror="this.style.display='none'">
+        <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
+      </div>
       <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 English</button>
     </div>
 
@@ -362,7 +379,7 @@
         </div>
       </div>
 
-      <!-- كارت تسجيل آخر مكان بتأخير ذكي لمنع تهنيج الصفحة -->
+      <!-- كارت تسجيل آخر مكان بتأخير ذكي لمنع التهنيج -->
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.85)); border-color: rgba(99, 102, 241, 0.3);">
         <h3 style="margin: 0 0 12px 0; color:var(--primary);">📌 تسجيل آخر ما وقفت عنده:</h3>
         
@@ -1345,7 +1362,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js?v=8');
+      navigator.serviceWorker.register('./sw.js?v=9');
     }
   </script>
 </body>
