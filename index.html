@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=15">
+  <link rel="manifest" href="manifest.json?v=20">
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='240' fill='%230f172a'/><circle cx='256' cy='256' r='180' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z' fill='url(%23g2)'/><circle cx='256' cy='256' r='35' fill='%23ffffff'/><defs><linearGradient id='g' x1='0' y1='0' x2='512' y2='512'><stop offset='0%25' stop-color='%23f97316'/><stop offset='50%25' stop-color='%23a855f7'/><stop offset='100%25' stop-color='%230284c7'/></linearGradient><linearGradient id='g2' x1='100' y1='100' x2='400' y2='400'><stop offset='0%25' stop-color='%23ec4899'/><stop offset='50%25' stop-color='%238b5cf6'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230f172a' rx='100'/><circle cx='256' cy='256' r='180' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z' fill='url(%23g2)'/><circle cx='256' cy='256' r='35' fill='%23ffffff'/><defs><linearGradient id='g' x1='0' y1='0' x2='512' y2='512'><stop offset='0%25' stop-color='%23f97316'/><stop offset='50%25' stop-color='%23a855f7'/><stop offset='100%25' stop-color='%230284c7'/></linearGradient><linearGradient id='g2' x1='100' y1='100' x2='400' y2='400'><stop offset='0%25' stop-color='%23ec4899'/><stop offset='50%25' stop-color='%238b5cf6'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs></svg>">
@@ -105,11 +105,9 @@
       gap: 10px;
     }
 
-    .app-logo-img {
+    .app-logo-svg {
       width: 34px;
       height: 34px;
-      border-radius: 50%;
-      object-fit: cover;
     }
 
     .lang-toggle-btn {
@@ -346,7 +344,7 @@
 
     <div class="top-header">
       <div class="app-brand">
-        <svg class="app-logo-img" viewBox="0 0 512 512"><circle cx="256" cy="256" r="240" fill="#0f172a"/><circle cx="256" cy="256" r="180" fill="none" stroke="url(#g3)" stroke-width="24"/><path d="M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z" fill="url(#g4)"/><circle cx="256" cy="256" r="35" fill="#ffffff"/><defs><linearGradient id="g3" x1="0" y1="0" x2="512" y2="512"><stop offset="0%" stop-color="#f97316"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#0284c7"/></linearGradient><linearGradient id="g4" x1="100" y1="100" x2="400" y2="400"><stop offset="0%" stop-color="#ec4899"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+        <svg class="app-logo-svg" viewBox="0 0 512 512"><circle cx="256" cy="256" r="240" fill="#0f172a"/><circle cx="256" cy="256" r="180" fill="none" stroke="url(#g3)" stroke-width="24"/><path d="M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z" fill="url(#g4)"/><circle cx="256" cy="256" r="35" fill="#ffffff"/><defs><linearGradient id="g3" x1="0" y1="0" x2="512" y2="512"><stop offset="0%" stop-color="#f97316"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#0284c7"/></linearGradient><linearGradient id="g4" x1="100" y1="100" x2="400" y2="400"><stop offset="0%" stop-color="#ec4899"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
         <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
       </div>
       <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 English</button>
@@ -378,7 +376,6 @@
         </div>
       </div>
 
-      <!-- كارت تسجيل آخر مكان بتأخير ذكي -->
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.85)); border-color: rgba(99, 102, 241, 0.3);">
         <h3 style="margin: 0 0 12px 0; color:var(--primary);">📌 تسجيل آخر ما وقفت عنده:</h3>
         
@@ -1362,7 +1359,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=15')
+        navigator.serviceWorker.register('./sw.js?v=20')
           .then(reg => console.log('SW Registered:', reg))
           .catch(err => console.error('SW Error:', err));
       });
