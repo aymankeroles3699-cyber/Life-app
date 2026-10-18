@@ -5,12 +5,14 @@
     {
       "src": "https://i.postimg.cc/85zX3V7J/logo.jpg",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
       "src": "https://i.postimg.cc/85zX3V7J/logo.jpg",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "./index.html",
