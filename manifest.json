@@ -1,7 +1,7 @@
 {
   "short_name": "Novara",
   "name": "Novara Life Tracker",
-  "description": "Novara is a personal life tracking application for daily objectives and routines.",
+  "description": "Novara life tracking application for daily objectives and routines.",
   "id": "https://aymankeroles3699-cyber.github.io/index.html",
   "start_url": "./index.html",
   "display": "standalone",
@@ -12,16 +12,10 @@
   "dir": "rtl",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/mdn/pwa-examples/main/js13kpwa/icons/icon-192.png",
-      "sizes": "192x192",
+      "src": "https://cdn-icons-png.flaticon.com/512/1042/1042339.png",
+      "sizes": "192x192 512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://raw.githubusercontent.com/mdn/pwa-examples/main/js13kpwa/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
