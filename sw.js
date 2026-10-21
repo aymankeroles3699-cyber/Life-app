@@ -2,7 +2,8 @@ const CACHE_NAME = 'novara-v1';
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './file_000000001db881f4bd7d2849b1eb775.png'
 ];
 
 self.addEventListener('install', event => {
