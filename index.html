@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novara</title>
-  <link rel="manifest" href="manifest.json?v=20">
+  <link rel="manifest" href="manifest.json">
   
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><circle cx='256' cy='256' r='240' fill='%230f172a'/><circle cx='256' cy='256' r='180' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z' fill='url(%23g2)'/><circle cx='256' cy='256' r='35' fill='%23ffffff'/><defs><linearGradient id='g' x1='0' y1='0' x2='512' y2='512'><stop offset='0%25' stop-color='%23f97316'/><stop offset='50%25' stop-color='%23a855f7'/><stop offset='100%25' stop-color='%230284c7'/></linearGradient><linearGradient id='g2' x1='100' y1='100' x2='400' y2='400'><stop offset='0%25' stop-color='%23ec4899'/><stop offset='50%25' stop-color='%238b5cf6'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230f172a' rx='100'/><circle cx='256' cy='256' r='180' fill='none' stroke='url(%23g)' stroke-width='24'/><path d='M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z' fill='url(%23g2)'/><circle cx='256' cy='256' r='35' fill='%23ffffff'/><defs><linearGradient id='g' x1='0' y1='0' x2='512' y2='512'><stop offset='0%25' stop-color='%23f97316'/><stop offset='50%25' stop-color='%23a855f7'/><stop offset='100%25' stop-color='%230284c7'/></linearGradient><linearGradient id='g2' x1='100' y1='100' x2='400' y2='400'><stop offset='0%25' stop-color='%23ec4899'/><stop offset='50%25' stop-color='%238b5cf6'/><stop offset='100%25' stop-color='%2306b6d4'/></linearGradient></defs></svg>">
+  <!-- ربط الشعار والأيقونة المرفوعة -->
+  <link rel="icon" type="image/png" href="./file_000000001db881f4bd7d2849b1eb775.png">
+  <link rel="apple-touch-icon" href="./file_000000001db881f4bd7d2849b1eb775.png">
   <meta name="theme-color" content="#0f172a">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -105,9 +106,12 @@
       gap: 10px;
     }
 
-    .app-logo-svg {
-      width: 34px;
-      height: 34px;
+    .app-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .lang-toggle-btn {
@@ -344,7 +348,7 @@
 
     <div class="top-header">
       <div class="app-brand">
-        <svg class="app-logo-svg" viewBox="0 0 512 512"><circle cx="256" cy="256" r="240" fill="#0f172a"/><circle cx="256" cy="256" r="180" fill="none" stroke="url(#g3)" stroke-width="24"/><path d="M256 120 C180 160 140 230 180 320 C220 400 310 380 340 310 C370 240 310 160 256 120 Z" fill="url(#g4)"/><circle cx="256" cy="256" r="35" fill="#ffffff"/><defs><linearGradient id="g3" x1="0" y1="0" x2="512" y2="512"><stop offset="0%" stop-color="#f97316"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#0284c7"/></linearGradient><linearGradient id="g4" x1="100" y1="100" x2="400" y2="400"><stop offset="0%" stop-color="#ec4899"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+        <img src="./file_000000001db881f4bd7d2849b1eb775.png" alt="Novara Logo" class="app-logo-img">
         <span style="font-weight:800; font-size:1.2rem; color:var(--primary);">Novara</span>
       </div>
       <button class="lang-toggle-btn" id="lang-btn" onclick="toggleLanguage()">🌐 English</button>
@@ -1359,7 +1363,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=20')
+        navigator.serviceWorker.register('./sw.js')
           .then(reg => console.log('SW Registered:', reg))
           .catch(err => console.error('SW Error:', err));
       });
