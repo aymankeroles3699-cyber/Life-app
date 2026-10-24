@@ -290,9 +290,9 @@
 
   <div class="container">
 
-    <!-- التابة الأولى: القانون الروحي 🕊️ -->
-    <div id="tab-spiritual" class="tab-content active">
-      <h2 style="margin-top: 0;">🕊️ القانون الروحي والالتزام</h2>
+    <!-- التابة الأولى: الرئيسية 🏠 -->
+    <div id="tab-home" class="tab-content active">
+      <h2 style="margin-top: 0;">🏠 الرئيسية</h2>
 
       <!-- 💡 كارت الإلهام اليومي -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
@@ -475,9 +475,9 @@
   </div>
 
   <div class="bottom-nav">
-    <button class="nav-btn active" id="btn-spiritual" onclick="switchTab('spiritual')">
-      <span style="font-size: 1.2rem;">🕊️</span>
-      <span>الروحي</span>
+    <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
+      <span style="font-size: 1.2rem;">🏠</span>
+      <span>الرئيسية</span>
     </button>
     <button class="nav-btn" id="btn-diet" onclick="switchTab('diet')">
       <span style="font-size: 1.2rem;">🥗</span>
@@ -567,9 +567,9 @@
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
-      if (tabName === 'spiritual') {
-        document.getElementById('tab-spiritual').classList.add('active');
-        document.getElementById('btn-spiritual').classList.add('active');
+      if (tabName === 'home') {
+        document.getElementById('tab-home').classList.add('active');
+        document.getElementById('btn-home').classList.add('active');
       } else if (tabName === 'diet') {
         document.getElementById('tab-diet').classList.add('active');
         document.getElementById('btn-diet').classList.add('active');
