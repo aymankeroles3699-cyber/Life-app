@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -290,224 +290,224 @@
 
   <div class="container">
 
-    <!-- Tab 1: Spiritual Rule 🕊️ -->
+    <!-- التابة الأولى: القانون الروحي 🕊️ -->
     <div id="tab-spiritual" class="tab-content active">
-      <h2 style="margin-top: 0;">🕊️ Spiritual Rule & Commitment</h2>
+      <h2 style="margin-top: 0;">🕊️ القانون الروحي والالتزام</h2>
 
-      <!-- 💡 Daily English Booster Card -->
+      <!-- 💡 كارت الكلمات الإنجليزية اليومية -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);">💡 Daily English Booster</span>
-          <span style="font-size:0.75rem; color:var(--subtext);" id="vocab-date">Today</span>
+          <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);">💡 كلمة إنجليزية يومية (Daily English)</span>
+          <span style="font-size:0.75rem; color:var(--subtext);" id="vocab-date">اليوم</span>
         </div>
         <div style="font-size:1.1rem; font-weight:bold; color:var(--text);" id="vocab-word">Perseverance</div>
-        <div style="font-size:0.8rem; color:var(--subtext); font-style:italic;" id="vocab-type">/ˌpɜːrsəˈvɪərəns/ • noun</div>
-        <div style="font-size:0.85rem; color:var(--text); margin-top:6px;" id="vocab-def">Persistence in doing something despite difficulty.</div>
+        <div style="font-size:0.8rem; color:var(--subtext); font-style:italic;" id="vocab-type">/ˌpɜːrsəˈvɪərəns/ • اسم</div>
+        <div style="font-size:0.85rem; color:var(--text); margin-top:6px;" id="vocab-def">المواظبة والمثابرة على فعل الشيء رغم الصعوبات.</div>
         <div style="font-size:0.8rem; color:var(--accent); margin-top:6px; border-top:1px dashed var(--card-border); padding-top:6px;" id="vocab-example">
           "Success is built through daily perseverance and commitment."
         </div>
       </div>
 
       <div class="card date-card">
-        <h3 style="margin: 0 0 10px 0; color: var(--text);">📅 Select Date: <span id="display-date-label"></span></h3>
+        <h3 style="margin: 0 0 10px 0; color: var(--text);">📅 تحديد اليوم: <span id="display-date-label"></span></h3>
         <input type="date" id="selected-date" class="date-picker-input" onchange="changeDate(this.value)">
         <div class="quick-btns">
-          <button onclick="setQuickDate(-1)">Yesterday</button>
-          <button onclick="setQuickDate(0)">Today</button>
-          <button onclick="setQuickDate(1)">Tomorrow</button>
+          <button onclick="setQuickDate(-1)">أمس</button>
+          <button onclick="setQuickDate(0)">اليوم</button>
+          <button onclick="setQuickDate(1)">غداً</button>
         </div>
       </div>
 
-      <!-- Spiritual Counter with Start Date -->
+      <!-- عداد الالتزام -->
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
-        <div style="font-size:0.85rem; color:var(--subtext);">Days of Continuous Commitment</div>
+        <div style="font-size:0.85rem; color:var(--subtext);">أيام الالتزام المستمرة</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-days">0</div>
         
         <div style="display:flex; justify-content:space-around; margin-top:8px; font-size:0.8rem;">
-          <span style="color:var(--subtext);" id="spiritual-start-date">📅 Start Date: Not set</span>
-          <span style="color:var(--accent);" id="spiritual-best-streak">🏆 Best Record: 0</span>
+          <span style="color:var(--subtext);" id="spiritual-start-date">📅 تاريخ البدء: غير محدد</span>
+          <span style="color:var(--accent);" id="spiritual-best-streak">🏆 أطول سجل التزام: 0</span>
         </div>
       </div>
 
-      <!-- Spiritual Rule Items -->
+      <!-- بنود القانون الروحي -->
       <div class="card">
-        <h3 style="margin:0 0 10px 0;">📜 Daily Spiritual Rule Checklist:</h3>
+        <h3 style="margin:0 0 10px 0;">📜 بنود القانون الروحي اليومي:</h3>
 
         <ul>
-          <li>🌅 Morning Prayer (First thing upon waking)</li>
-          <li>🌙 Night Prayer (Before going to sleep)</li>
-          <li>📖 Daily Bible Chapter</li>
-          <li>🍞 Holy Communion (At least once weekly)</li>
+          <li>🌅 صلاة باكر (أول ما أصحى)</li>
+          <li>🌙 صلاة النوم (قبل ما أنام)</li>
+          <li>📖 إصحاح إنجيل يومي</li>
+          <li>🍞 التناول المقدّس (مرة أسبوعياً كحد أدنى)</li>
         </ul>
 
         <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
           <button id="main-spiritual-btn" class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent);" onclick="toggleCompleteSpiritual()">
-            ✨ Click here to complete today's rule
+            ✨ اضغط هنا عند إكمال قانون اليوم
           </button>
           <button onclick="resetSpiritualStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">
-            🔄 Reset Counter & Start Date
+            🔄 إعادة ضبط العداد وتاريخ البدء
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Tab 2: Nutrition & Diet -->
+    <!-- التابة الثانية: التغذية والنظام الغذائي -->
     <div id="tab-diet" class="tab-content">
-      <h2 style="margin-top: 0;">🥗 Nutrition & Lifestyle System</h2>
+      <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
       <div id="diet-day-status" class="diet-badge badge-home">
-        🏠 Healthy Home Cooking
+        🏠 أكل البيت الصحي
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 4px 0;">📊 Weekly Tracker & Rules (1x per week limit)</h3>
+        <h3 style="margin: 0 0 4px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
         <div id="week-range-label" style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:12px;">
-          🗓️ Current Week: ...
+          🗓️ الأسبوع الحالي: ...
         </div>
         
         <div class="weekly-rule-item">
-          <span>🍔 Takeaway Meal</span>
-          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">Not Used (0/1)</button>
+          <span>🍔 وجبة تيك أواي (Takeaway)</span>
+          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُستخدم (0/1)</button>
         </div>
 
         <div class="weekly-rule-item">
-          <span>🥤 Soft Drink (Soda)</span>
-          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">Not Consumed (0/1)</button>
+          <span>🥤 مشروب غازي (Soda)</span>
+          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم يُشرب (0/1)</button>
         </div>
 
         <div class="weekly-rule-item">
-          <span>🥳 Weekly Outing Day</span>
-          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">Not Used Yet (0/1)</button>
+          <span>🥳 يوم خروج أسبوعي (Outing)</span>
+          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
         </div>
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--card-border); padding-top:8px;">
-          <span style="font-size:0.75rem; color:var(--subtext);">* Week resets every Sunday</span>
-          <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">Reset Weekly Rules</button>
+          <span style="font-size:0.75rem; color:var(--subtext);">* يبدأ الأسبوع كل يوم أحد</span>
+          <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">إعادة ضبط العداد يدويًا</button>
         </div>
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 8px 0;">📝 Meal Log for: <span id="diet-date-label" style="color:var(--primary);"></span></h3>
-        <textarea id="diet-meals-input" rows="4" placeholder="Log your daily meals here (e.g., Breakfast: Koshary / Lunch: Fasting Veggie Casserole...)" onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ Meals auto-saved for this date</div>
+        <h3 style="margin: 0 0 8px 0;">📝 وجبات يوم: <span id="diet-date-label" style="color:var(--primary);"></span></h3>
+        <textarea id="diet-meals-input" rows="4" placeholder="اكتب وجبات اليوم هنا (مثال: الفطار كشري / الغداء صينية خضار نباتي...)" onkeyup="saveDietData()" style="width:100%; resize:vertical;"></textarea>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ وجبات اليوم تلقائياً</div>
       </div>
     </div>
 
-    <!-- Tab 3: Wardrobe & Outfits -->
+    <!-- التابة الثالثة: الملابس -->
     <div id="tab-outfit" class="tab-content">
-      <h2 style="margin-top: 0;">👔 Wardrobe & Daily Outfit Log</h2>
+      <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
       <div class="card">
-        <h3 style="margin: 0 0 8px 0;">✨ Today's Outfit: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
-        <input type="text" id="outfit-place-input" placeholder="📍 Location / Event (e.g., Office, Gym, Outing...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-        <textarea id="outfit-input" rows="3" placeholder="Select items from your wardrobe below or type outfit details..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ Outfit details auto-saved</div>
+        <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
+        <input type="text" id="outfit-place-input" placeholder="📍 المكان / المناسبة (مثال: العمل، الشارع، الجيم...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
+        <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً لهذا التاريخ</div>
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 8px 0;">➕ Add New Item to Wardrobe</h3>
+        <h3 style="margin: 0 0 8px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
         <div class="input-group" style="flex-direction:column; gap:8px;">
-          <input type="text" id="wardrobe-item-input" placeholder="e.g., White Shirt, Olive Chinos...">
+          <input type="text" id="wardrobe-item-input" placeholder="مثال: قميص أبيض، بنطلون زيتي...">
           <div style="display:flex; gap:8px;">
             <select id="wardrobe-category-select">
-              <option value="top">👕 Tops (Shirt/T-Shirt)</option>
-              <option value="bottom">👖 Bottoms (Pants/Shorts)</option>
-              <option value="shoes">👟 Shoes</option>
-              <option value="accessory">⌚ Accessories / Other</option>
+              <option value="top">👕 علوي (قميص/تيشيرت)</option>
+              <option value="bottom">👖 سفلي (بنطلون/شورت)</option>
+              <option value="shoes">👟 أحذية</option>
+              <option value="accessory">⌚ إكسسوارات / أخرى</option>
             </select>
-            <button class="add-btn" onclick="addWardrobeItem()">Add Item</button>
+            <button class="add-btn" onclick="addWardrobeItem()">إضافة</button>
           </div>
         </div>
 
-        <h4 style="margin: 16px 0 8px 0; color:var(--subtext);">Filter Wardrobe & Tap to Append:</h4>
+        <h4 style="margin: 16px 0 8px 0; color:var(--subtext);">اختر الفئة للفلترة والضغط لإضافة الطقم:</h4>
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
-          <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">All</button>
-          <button class="cat-btn" id="filter-top" onclick="filterWardrobe('top')">👕 Tops</button>
-          <button class="cat-btn" id="filter-bottom" onclick="filterWardrobe('bottom')">👖 Bottoms</button>
-          <button class="cat-btn" id="filter-shoes" onclick="filterWardrobe('shoes')">👟 Shoes</button>
-          <button class="cat-btn" id="filter-accessory" onclick="filterWardrobe('accessory')">⌚ Other</button>
+          <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">الكل</button>
+          <button class="cat-btn" id="filter-top" onclick="filterWardrobe('top')">👕 علوي</button>
+          <button class="cat-btn" id="filter-bottom" onclick="filterWardrobe('bottom')">👖 سفلي</button>
+          <button class="cat-btn" id="filter-shoes" onclick="filterWardrobe('shoes')">👟 أحذية</button>
+          <button class="cat-btn" id="filter-accessory" onclick="filterWardrobe('accessory')">⌚ أخرى</button>
         </div>
 
         <div id="wardrobe-tags-container" class="wardrobe-tags"></div>
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">📜 Outfit History</h3>
+        <h3 style="margin: 0 0 10px 0;">📜 سجل الملابس (Outfit History)</h3>
         <div id="outfit-history-container"></div>
       </div>
     </div>
 
-    <!-- Tab 4: Recovery & Self-Control 🛡️ -->
+    <!-- التابة الرابعة: التعافي والسيطرة 🛡️ -->
     <div id="tab-recovery" class="tab-content">
-      <h2 style="margin-top: 0;">🛡️ Recovery & Self-Control Journey</h2>
+      <h2 style="margin-top: 0;">🛡️ رحلة التعافي والتحكم بالذات</h2>
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
-        <div style="font-size:0.9rem; color:var(--subtext);">Continuous Recovery Counter</div>
+        <div style="font-size:0.9rem; color:var(--subtext);">عداد التعافي المستمر</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">0</div>
-        <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">Every day you resist is a victory for your dignity and strength! 💪</div>
+        <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
       </div>
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
-          <!-- 🏆 العبارة المعدلة هنا -->
+          <!-- 🏆 العبارة العربية المطلوبة -->
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
           <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">0</div>
         </div>
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">📅 Start Date</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
           <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="streak-start-date">--</div>
         </div>
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">⚡ Control & Actions:</h3>
+        <h3 style="margin: 0 0 10px 0;">⚡ التحكم والإجراءات:</h3>
         <button class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent); margin-bottom:10px;" onclick="celebrateToday()">
-          🎉 Celebrate completing a new clean day!
+          🎉 احتفل بإكمال يوم جديد بنجاح!
         </button>
         <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
-          🔄 Relapse Occurred (Restart challenge from today)
+          🔄 حدثت زلة (بدء التحدي مجدداً من اليوم)
         </button>
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 8px 0; color:var(--primary);">💡 Rapid Urge Surfing Plan:</h3>
-        <ul style="margin:0; padding-left:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
-          <li><strong>Leave the room/bed immediately:</strong> Move to a public space or living area.</li>
-          <li><strong>Cold Water Shock:</strong> Splash cold water on your face/hands to break the urge loop.</li>
-          <li><strong>10-Minute Delay Rule:</strong> Tell yourself you will postpone the urge for 10 minutes and do 20 pushups.</li>
+        <h3 style="margin: 0 0 8px 0; color:var(--primary);">💡 خطة التعامل السريع مع الرغبة (اليوم):</h3>
+        <ul style="margin:0; padding-right:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
+          <li><strong>سيب الموبايل والسرير فوراً:</strong> غير مكانك واخرج للصالة أو مكان فيه ناس.</li>
+          <li><strong>المية الباردة:</strong> اغسل وشك أو ايديك بمية باردة فوراً لتغيير حالة جسمك.</li>
+          <li><strong>قاعدة الـ 10 دقائق:</strong> قول لنفسك هأجّل الفكرة 10 دقائق فقط واشغل نفسك بـ 20 تمرين ضغط أو مشي.</li>
         </ul>
       </div>
     </div>
 
-    <!-- Tab 5: Analytics & Backup -->
+    <!-- التابة الخامسة: التقارير والنسخ الاحتياطي -->
     <div id="tab-reports" class="tab-content">
-      <h2 style="margin-top: 0;">📊 Overview & Monthly Analytics</h2>
+      <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
       <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">Spiritual Rule Days</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">سجل الالتزام الروحي</div>
           <div style="font-size:1.5rem; font-weight:bold; color:var(--primary);" id="total-spiritual-streak">0</div>
         </div>
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">Recovery Days</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">سجل تعافي العادة</div>
           <div style="font-size:1.5rem; font-weight:bold; color:var(--accent);" id="total-recovery-streak">0</div>
         </div>
       </div>
 
       <div class="card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
-        <h3 style="margin: 0 0 8px 0; color: var(--accent);">💾 Data Backup & Restore</h3>
-        <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">Export or restore your application data anytime:</div>
+        <h3 style="margin: 0 0 8px 0; color: var(--accent);">💾 النسخ الاحتياطي للبيانات</h3>
+        <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">احفظ أهدافك وبياناتك واسترجعها في أي وقت:</div>
         <div style="display:flex; gap:8px;">
-          <button class="add-btn" style="flex:1; background:var(--accent);" onclick="exportData()">Export Backup 📥</button>
-          <button class="add-btn" style="flex:1; background:var(--primary);" onclick="document.getElementById('import-file').click()">Restore Data 📤</button>
+          <button class="add-btn" style="flex:1; background:var(--accent);" onclick="exportData()">تصدير نسخة 📥</button>
+          <button class="add-btn" style="flex:1; background:var(--primary);" onclick="document.getElementById('import-file').click()">استرجاع 📤</button>
           <input type="file" id="import-file" style="display:none;" onchange="importData(event)">
         </div>
       </div>
 
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(30, 41, 59, 0.85));">
-        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 Monthly Analytics Summary</h3>
+        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل (Monthly Analytics)</h3>
         <div style="font-size:0.85rem; line-height:1.6;" id="monthly-analytics-content">
-          Loading statistics...
+          جاري تحميل الإحصائيات...
         </div>
       </div>
     </div>
@@ -517,23 +517,23 @@
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-spiritual" onclick="switchTab('spiritual')">
       <span style="font-size: 1.2rem;">🕊️</span>
-      <span>Spiritual</span>
+      <span>الروحي</span>
     </button>
     <button class="nav-btn" id="btn-diet" onclick="switchTab('diet')">
       <span style="font-size: 1.2rem;">🥗</span>
-      <span>Nutrition</span>
+      <span>التغذية</span>
     </button>
     <button class="nav-btn" id="btn-outfit" onclick="switchTab('outfit')">
       <span style="font-size: 1.2rem;">👔</span>
-      <span>Wardrobe</span>
+      <span>الدولاب</span>
     </button>
     <button class="nav-btn" id="btn-recovery" onclick="switchTab('recovery')">
       <span style="font-size: 1.2rem;">🛡️</span>
-      <span>Recovery</span>
+      <span>التعافي</span>
     </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
       <span style="font-size: 1.2rem;">📊</span>
-      <span>Reports</span>
+      <span>التقارير</span>
     </button>
   </div>
 
@@ -576,10 +576,10 @@
     };
 
     let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
-      { text: 'White Shirt', cat: 'top' },
-      { text: 'Blue Jeans', cat: 'bottom' },
-      { text: 'Black T-Shirt', cat: 'top' },
-      { text: 'White Sneakers', cat: 'shoes' }
+      { text: 'قميص أبيض', cat: 'top' },
+      { text: 'بنطلون جينز أزرق', cat: 'bottom' },
+      { text: 'تيشيرت أسود', cat: 'top' },
+      { text: 'كوتشي أبيض', cat: 'shoes' }
     ];
 
     let myWardrobe = rawWardrobe.map(item => {
@@ -592,13 +592,13 @@
     });
 
     const vocabList = [
-      { word: "Perseverance", type: "/ˌpɜːrsəˈvɪərəns/ • noun", def: "Persistence in doing something despite difficulty.", ex: '"Perseverance turns daily goals into lifetime achievements."' },
-      { word: "Consistency", type: "/kənˈsɪstənsi/ • noun", def: "Conformity in the application of something, necessary for success.", ex: '"Small steps done with consistency yield huge results."' },
-      { word: "Discipline", type: "/ˈdɪsəplɪn/ • noun", def: "The practice of training yourself to obey rules and self-control.", ex: '"Discipline is choosing between what you want now and what you want most."' },
-      { word: "Resilience", type: "/rɪˈzɪliəns/ • noun", def: "The capacity to withstand or recover quickly from difficulties.", ex: '"Resilience allows you to bounce back stronger after every setback."' },
-      { word: "Mindfulness", type: "/ˈmaɪndflnəs/ • noun", def: "The state of being conscious or aware of something in the present.", ex: '"Practice mindfulness to remain calm and focused throughout your day."' },
-      { word: "Commitment", type: "/kəˈmɪtmənt/ • noun", def: "The state or quality of being dedicated to a cause or activity.", ex: '"Success is the result of unwavering commitment."' },
-      { word: "Focus", type: "/ˈfəʊkəs/ • noun", def: "The center of interest or activity.", ex: '"Keep your focus on long-term goals rather than short-term distractions."' }
+      { word: "Perseverance", type: "/ˌpɜːrsəˈvɪərəns/ • اسم", def: "المواظبة والمثابرة على فعل الشيء رغم الصعوبات.", ex: '"Success is built through daily perseverance and commitment."' },
+      { word: "Consistency", type: "/kənˈsɪstənsi/ • اسم", def: "الاستمرارية والانتظام في الأداء لبلوغ النجاح.", ex: '"Small steps done with consistency yield huge results."' },
+      { word: "Discipline", type: "/ˈdɪsəplɪn/ • اسم", def: "الانضباط الذاتي والقدرة على التحكم في رغباتك.", ex: '"Discipline is choosing between what you want now and what you want most."' },
+      { word: "Resilience", type: "/rɪˈzɪliəns/ • اسم", def: "المرونة والقدرة على التعافي السريع من الأزمات.", ex: '"Resilience allows you to bounce back stronger after every setback."' },
+      { word: "Mindfulness", type: "/ˈmaɪndflnəs/ • اسم", def: "اليقظة الذهنية والحضور التام في اللحظة الحالية.", ex: '"Practice mindfulness to remain calm and focused throughout your day."' },
+      { word: "Commitment", type: "/kəˈmɪtmənt/ • اسم", def: "الالتزام التام والوفاء بالعهود والأهداف.", ex: '"Success is the result of unwavering commitment."' },
+      { word: "Focus", type: "/ˈfəʊkəs/ • اسم", def: "التركيز وتوجيه الانتباه للهدف الأساسي.", ex: '"Keep your focus on long-term goals rather than short-term distractions."' }
     ];
 
     function renderDailyVocab() {
@@ -657,9 +657,9 @@
       const yesterday = getLocalDateString(-1);
       const tomorrow = getLocalDateString(1);
 
-      if (currentDate === today) label.innerText = `Today (${currentDate})`;
-      else if (currentDate === yesterday) label.innerText = `Yesterday (${currentDate})`;
-      else if (currentDate === tomorrow) label.innerText = `Tomorrow (${currentDate})`;
+      if (currentDate === today) label.innerText = `اليوم (${currentDate})`;
+      else if (currentDate === yesterday) label.innerText = `أمس (${currentDate})`;
+      else if (currentDate === tomorrow) label.innerText = `غداً (${currentDate})`;
       else label.innerText = currentDate;
 
       if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
@@ -694,19 +694,19 @@
       }
 
       document.getElementById('spiritual-streak-days').innerText = streak;
-      document.getElementById('spiritual-best-streak').innerText = `🏆 Best Record: ${spiritualData.bestStreak || 0}`;
+      document.getElementById('spiritual-best-streak').innerText = `🏆 أطول سجل التزام: ${spiritualData.bestStreak || 0}`;
       document.getElementById('spiritual-start-date').innerText = spiritualData.startDate 
-        ? `📅 Start Date: ${spiritualData.startDate}` 
-        : `📅 Start Date: Not set`;
+        ? `📅 تاريخ البدء: ${spiritualData.startDate}` 
+        : `📅 تاريخ البدء: غير محدد`;
 
       const isCompleted = spiritualData.completedDates && spiritualData.completedDates[currentDate];
       const mainBtn = document.getElementById('main-spiritual-btn');
 
       if (isCompleted) {
-        mainBtn.innerText = '✅ Spiritual Rule Completed for Today';
+        mainBtn.innerText = '✅ تم الإلتزام بالقانون الروحي لهذا اليوم';
         mainBtn.style.background = 'var(--accent)';
       } else {
-        mainBtn.innerText = "✨ Click here to complete today's rule";
+        mainBtn.innerText = '✨ اضغط هنا عند إكمال قانون اليوم';
         mainBtn.style.background = 'var(--primary)';
       }
     }
@@ -730,7 +730,7 @@
     }
 
     function resetSpiritualStreak() {
-      if (confirm('Are you sure you want to reset the spiritual counter, best streak, and start date to zero?')) {
+      if (confirm('هل تريد إعادة ضبط العداد والسجل القياسي وتاريخ البدء للبدء من جديد صفراً؟')) {
         spiritualData = { startDate: null, bestStreak: 0, completedDates: {} };
         localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
         renderSpiritualTab();
@@ -764,14 +764,14 @@
 
       if (dayOfWeek === 3 || dayOfWeek === 5) {
         statusBadge.className = "diet-badge badge-fasting";
-        statusBadge.innerHTML = "🌿 Fasting Day (Vegetarian / Church Fasting)";
+        statusBadge.innerHTML = "🌿 يوم صيام نباتي (أكل الكنيسة النباتي)";
       } else {
         statusBadge.className = "diet-badge badge-home";
-        statusBadge.innerHTML = "🏠 Healthy Home Cooking";
+        statusBadge.innerHTML = "🏠 أكل البيت الصحي";
       }
 
       const range = getWeekRange(currentDate);
-      document.getElementById('week-range-label').innerText = `🗓️ Current Week: Sun (${range.sunStr}) to Sat (${range.satStr})`;
+      document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: من الأحد (${range.sunStr}) إلى السبت (${range.satStr})`;
 
       updateWeeklyButtons();
     }
@@ -792,7 +792,7 @@
     }
 
     function resetWeeklyTracker() {
-      if (confirm('Reset weekly tracker rules for a new week?')) {
+      if (confirm('هل تريد إعادة ضبط القواعد الأسبوعية لبدء أسبوع جديد؟')) {
         weeklyTracker = { takeaway: false, soda: false, outing: false };
         localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
         updateWeeklyButtons();
@@ -805,26 +805,26 @@
       const btnOuting = document.getElementById('btn-outing');
 
       if (weeklyTracker.takeaway) {
-        btnTakeaway.innerText = "Used (1/1) ✅";
+        btnTakeaway.innerText = "تمت الوجبة (1/1) ✅";
         btnTakeaway.style.background = "var(--accent)";
       } else {
-        btnTakeaway.innerText = "Not Used (0/1)";
+        btnTakeaway.innerText = "لم تُستخدم (0/1)";
         btnTakeaway.style.background = "var(--primary)";
       }
 
       if (weeklyTracker.soda) {
-        btnSoda.innerText = "Consumed (1/1) ✅";
+        btnSoda.innerText = "تم الشرب (1/1) ✅";
         btnSoda.style.background = "var(--accent)";
       } else {
-        btnSoda.innerText = "Not Consumed (0/1)";
+        btnSoda.innerText = "لم يُشرب (0/1)";
         btnSoda.style.background = "var(--primary)";
       }
 
       if (weeklyTracker.outing) {
-        btnOuting.innerText = "Used (1/1) ✅";
+        btnOuting.innerText = "تمت الخروجة (1/1) ✅";
         btnOuting.style.background = "var(--accent)";
       } else {
-        btnOuting.innerText = "Not Used Yet (0/1)";
+        btnOuting.innerText = "لم تُخرج بعد (0/1)";
         btnOuting.style.background = "var(--primary)";
       }
     }
@@ -846,17 +846,17 @@
 
       document.getElementById('streak-days-count').innerText = currentStreak;
       document.getElementById('best-streak-count').innerText = recoveryData.bestStreak || 0;
-      document.getElementById('streak-start-date').innerText = recoveryData.startDate || 'Not Started';
+      document.getElementById('streak-start-date').innerText = recoveryData.startDate || 'لم يبدأ بعد';
 
       const mot = document.getElementById('streak-motivation');
       if (currentStreak === 0) {
-        mot.innerText = "Start your recovery challenge today! Determination makes all the difference 💪";
+        mot.innerText = "ابدأ تحدي التعافي اليوم! العزيمة تصنع الفرق 💪";
       } else if (currentStreak < 7) {
-        mot.innerText = "Champion start! Keep going, the first week is crucial 🔥";
+        mot.innerText = "بداية بطل! استمر الأسبوع الأول هو الأهم 🔥";
       } else if (currentStreak < 30) {
-        mot.innerText = "Great job! Your mind is adapting and forming strong new habits 🏆";
+        mot.innerText = "عاش يا بطل! عقلك بدأ يتأقلم ويبني عادات جديدة 🏆";
       } else {
-        mot.innerText = "Legendary milestone! Self-control has become your core strength 👑";
+        mot.innerText = "إنجاز أسطوري! التحكم في الذات أصبح قوتك الحقيقية 👑";
       }
     }
 
@@ -867,11 +867,11 @@
       }
       confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
       renderRecoveryTab();
-      alert(`Awesome job! Stay strong and focused! 🔥`);
+      alert(`عاش يا بطل! استمر وقوّي عزيمتك! 🔥`);
     }
 
     function resetStreak() {
-      if (confirm('It is okay, setbacks happen! The key is resuming immediately. Reset start date to today?')) {
+      if (confirm('لا بأس، الزلات تحدث والمهارة هي العودة فوراً! هل تريد إعادة ضبط التاريخ للبدء من جديد اليوم؟')) {
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
         renderRecoveryTab();
@@ -929,7 +929,7 @@
         : myWardrobe.filter(item => item.cat === currentCategoryFilter);
 
       if (filtered.length === 0) {
-        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">No wardrobe items in this category yet.</span>';
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">لا توجد قطع في هذه الفئة حالياً.</span>';
         return;
       }
 
@@ -947,7 +947,7 @@
 
         tag.innerHTML = `
           <span onclick="appendToOutfit('${item.text}')">${icon} ${item.text}</span>
-          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="color:var(--subtext); margin-left:4px;">✕</span>
+          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
         `;
         container.appendChild(tag);
       });
@@ -958,7 +958,7 @@
       historyContainer.innerHTML = '';
       const sortedDates = Object.keys(allOutfits).sort().reverse();
       if (sortedDates.length === 0) {
-        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">No outfit records logged yet.</div>';
+        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل ملابس.</div>';
         return;
       }
       sortedDates.forEach(date => {
@@ -975,7 +975,7 @@
             <span>📅 ${date}</span>
             ${placeText ? `<span style="color:var(--accent);">📍 ${placeText}</span>` : ''}
           </div>
-          <div style="font-size:0.9rem; color:var(--text); margin-top:4px;">👔 ${outfitText || 'No outfit details specified'}</div>
+          <div style="font-size:0.9rem; color:var(--text); margin-top:4px;">👔 ${outfitText || 'لم تُحدد تفاصيل الطقم'}</div>
         `;
         historyContainer.appendChild(item);
       });
@@ -1011,10 +1011,10 @@
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(imported.wardrobe));
           
-          alert('Data restored successfully! 🎉');
+          alert('تم استرجاع جميع بياناتك بنجاح! 🎉');
           location.reload();
         } catch (err) {
-          alert('Invalid file format!');
+          alert('عذراً، الملف غير صالح!');
         }
       };
       reader.readAsText(file);
@@ -1029,10 +1029,10 @@
       const totalDietDaysCount = Object.keys(allDietData).length;
 
       analyticsContainer.innerHTML = `
-        🕊️ <strong>Spiritual Rule:</strong> Total committed days logged: <strong>${calculateSpiritualStreak()}</strong> days.<br>
-        🛡️ <strong>Recovery Record:</strong> Current recovery streak: <strong>${calculateStreakDays()}</strong> days.<br>
-        👔 <strong>Wardrobe Log:</strong> Outfits logged across <strong>${totalOutfitsCount}</strong> days.<br>
-        🥗 <strong>Nutrition Log:</strong> Meals recorded across <strong>${totalDietDaysCount}</strong> days.
+        🕊️ <strong>القانون الروحي:</strong> إجمالي الأيام الملتزم بها: <strong>${calculateSpiritualStreak()}</strong> يوم.<br>
+        🛡️ <strong>سجل التعافي:</strong> أنت الآن في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
+        👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتدوين إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.<br>
+        🥗 <strong>سجل الوجبات:</strong> قمت بتدوين وجباتك اليومية والنباتية في <strong>${totalDietDaysCount}</strong> يوم.
       `;
     }
 
