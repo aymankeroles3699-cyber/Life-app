@@ -317,17 +317,6 @@
           <button onclick="setQuickDate(1)">غداً</button>
         </div>
       </div>
-
-      <!-- عداد الالتزام -->
-      <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.4);">
-        <div style="font-size:0.85rem; color:var(--subtext);">أيام الالتزام المستمرة</div>
-        <div style="font-size:3.8rem; font-weight:bold; color:var(--primary); margin:4px 0;" id="spiritual-streak-days">0</div>
-        
-        <div style="display:flex; justify-content:space-around; margin-top:8px; font-size:0.8rem;">
-          <span style="color:var(--subtext);" id="spiritual-start-date">📅 تاريخ البدء: غير محدد</span>
-          <span style="color:var(--accent);" id="spiritual-best-streak">🏆 أطول سجل التزام: 0</span>
-        </div>
-      </div>
     </div>
 
     <!-- التابة الثانية: التغذية والنظام الغذائي -->
@@ -458,11 +447,7 @@
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
-      <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
-        <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">سجل الالتزام الروحي</div>
-          <div style="font-size:1.5rem; font-weight:bold; color:var(--primary);" id="total-spiritual-streak">0</div>
-        </div>
+      <div class="card" style="display: grid; grid-template-columns: 1fr; gap: 10px; text-align: center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">سجل تعافي العادة</div>
           <div style="font-size:1.5rem; font-weight:bold; color:var(--accent);" id="total-recovery-streak">0</div>
@@ -539,12 +524,6 @@
     let allDietData = JSON.parse(localStorage.getItem('life_app_diet_by_date')) || {};
     let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
-    let spiritualData = JSON.parse(localStorage.getItem('life_app_spiritual_data')) || {
-      startDate: null,
-      bestStreak: 0,
-      completedDates: {}
-    };
-
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
       startDate: null,
       bestStreak: 0
@@ -591,7 +570,6 @@
       if (tabName === 'spiritual') {
         document.getElementById('tab-spiritual').classList.add('active');
         document.getElementById('btn-spiritual').classList.add('active');
-        renderSpiritualTab();
       } else if (tabName === 'diet') {
         document.getElementById('tab-diet').classList.add('active');
         document.getElementById('btn-diet').classList.add('active');
@@ -621,7 +599,6 @@
       document.getElementById('selected-date').value = currentDate;
       updateDateLabel();
       renderDailyVocab();
-      renderSpiritualTab();
     }
 
     function updateDateLabel() {
@@ -643,42 +620,12 @@
       if (!newDate) return;
       currentDate = newDate;
       updateDateLabel();
-      renderSpiritualTab();
     }
 
     function setQuickDate(offset) {
       currentDate = getLocalDateString(offset);
       document.getElementById('selected-date').value = currentDate;
       updateDateLabel();
-      renderSpiritualTab();
-    }
-
-    function calculateSpiritualStreak() {
-      if (!spiritualData.startDate) return 0;
-      const start = new Date(spiritualData.startDate);
-      const today = new Date(getLocalDateString(0));
-      const diffTime = Math.abs(today - start);
-      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    }
-
-    function renderSpiritualTab() {
-      if (!spiritualData.startDate) {
-        spiritualData.startDate = getLocalDateString(0);
-        localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
-      }
-
-      const streak = calculateSpiritualStreak();
-      
-      if (streak > (spiritualData.bestStreak || 0)) {
-        spiritualData.bestStreak = streak;
-        localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
-      }
-
-      document.getElementById('spiritual-streak-days').innerText = streak;
-      document.getElementById('spiritual-best-streak').innerText = `🏆 أطول سجل التزام: ${spiritualData.bestStreak || 0}`;
-      document.getElementById('spiritual-start-date').innerText = spiritualData.startDate 
-        ? `📅 تاريخ البدء: ${spiritualData.startDate}` 
-        : `📅 تاريخ البدء: غير محدد`;
     }
 
     function getWeekRange(dateStr) {
@@ -922,7 +869,6 @@
 
     function exportData() {
       const fullData = {
-        spiritual: spiritualData,
         outfits: allOutfits,
         diet: allDietData,
         weekly: weeklyTracker,
@@ -943,7 +889,6 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
-          if (imported.spiritual) localStorage.setItem('life_app_spiritual_data', JSON.stringify(imported.spiritual));
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.diet) localStorage.setItem('life_app_diet_by_date', JSON.stringify(imported.diet));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
@@ -960,7 +905,6 @@
     }
 
     function renderReports() {
-      document.getElementById('total-spiritual-streak').innerText = calculateSpiritualStreak();
       document.getElementById('total-recovery-streak').innerText = calculateStreakDays();
 
       const analyticsContainer = document.getElementById('monthly-analytics-content');
@@ -968,7 +912,6 @@
       const totalDietDaysCount = Object.keys(allDietData).length;
 
       analyticsContainer.innerHTML = `
-        🕊️ <strong>القانون الروحي:</strong> إجمالي الأيام الملتزم بها: <strong>${calculateSpiritualStreak()}</strong> يوم.<br>
         🛡️ <strong>سجل التعافي:</strong> أنت الآن في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
         👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتدوين إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.<br>
         🥗 <strong>سجل الوجبات:</strong> قمت بتدوين وجباتك اليومية والنباتية في <strong>${totalDietDaysCount}</strong> يوم.
