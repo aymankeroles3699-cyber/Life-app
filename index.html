@@ -284,6 +284,18 @@
       color: white;
       border-color: var(--primary);
     }
+
+    .fasting-schedule-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--card-border);
+      font-size: 0.85rem;
+    }
+    .fasting-schedule-item:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
@@ -325,6 +337,41 @@
 
       <div id="diet-day-status" class="diet-badge badge-home">
         🏠 أكل البيت الصحي
+      </div>
+
+      <!-- ⛪ كارت مواعيد الأصوام المسيحية -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.3);">
+        <h3 style="margin: 0 0 10px 0; color: var(--accent);">⛪ دليل مواعيد الأصوام المسيحية الرئيسية</h3>
+        
+        <div class="fasting-schedule-item">
+          <span>🎄 <strong>صوم الميلاد المجيد:</strong></span>
+          <span style="color:var(--text); font-weight:bold;">25 نوفمبر - 6 يناير (43 يوماً)</span>
+        </div>
+        
+        <div class="fasting-schedule-item">
+          <span>🐳 <strong>صوم يونان (نينوى):</strong></span>
+          <span style="color:var(--text); font-weight:bold;">3 أيام (قبل الصوم الكبير بأسبوعين)</span>
+        </div>
+
+        <div class="fasting-schedule-item">
+          <span>✝️ <strong>الصوم الكبير (الكبير المقدس):</strong></span>
+          <span style="color:var(--text); font-weight:bold;">55 يوماً (ينتهي بعيد القيامة)</span>
+        </div>
+
+        <div class="fasting-schedule-item">
+          <span>🕊️ <strong>صوم الرسل:</strong></span>
+          <span style="color:var(--text); font-weight:bold;">يبدأ بعد عيد العنصرة حتى 11 يوليو</span>
+        </div>
+
+        <div class="fasting-schedule-item">
+          <span>🌹 <strong>صوم السيدة العذراء:</strong></span>
+          <span style="color:var(--text); font-weight:bold;">7 أغسطس - 21 أغسطس (15 يوماً)</span>
+        </div>
+
+        <div class="fasting-schedule-item">
+          <span>📅 <strong>الصوم الأسبوعي:</strong></span>
+          <span style="color:var(--accent); font-weight:bold;">كل أربعاء وجعة (طوال العام عدا الخماسين)</span>
+        </div>
       </div>
 
       <div class="card">
