@@ -294,7 +294,7 @@
     <div id="tab-spiritual" class="tab-content active">
       <h2 style="margin-top: 0;">🕊️ القانون الروحي والالتزام</h2>
 
-      <!-- 💡 كارت الإلهام اليومي (معرّب بالكامل) -->
+      <!-- 💡 كارت الإلهام اليومي -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);">💡 إلهام وحكمة اليوم</span>
@@ -458,12 +458,10 @@
         </div>
       </div>
 
+      <!-- قسم التحكم بعد حذف زر الاحتفال -->
       <div class="card">
         <h3 style="margin: 0 0 10px 0;">⚡ التحكم والإجراءات:</h3>
-        <button class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent); margin-bottom:10px;" onclick="celebrateToday()">
-          🎉 احتفل بإكمال يوم جديد بنجاح!
-        </button>
-        <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
+        <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
           🔄 حدثت زلة (بدء التحدي مجدداً من اليوم)
         </button>
       </div>
@@ -835,6 +833,11 @@
     }
 
     function renderRecoveryTab() {
+      if (!recoveryData.startDate) {
+        recoveryData.startDate = getLocalDateString(0);
+        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+      }
+
       const currentStreak = calculateStreakDays();
       if (currentStreak > (recoveryData.bestStreak || 0)) {
         recoveryData.bestStreak = currentStreak;
@@ -855,16 +858,6 @@
       } else {
         mot.innerText = "إنجاز أسطوري! التحكم في الذات أصبح قوتك الحقيقية 👑";
       }
-    }
-
-    function celebrateToday() {
-      if (!recoveryData.startDate) {
-        recoveryData.startDate = getLocalDateString(0);
-        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
-      }
-      confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
-      renderRecoveryTab();
-      alert(`عاش يا بطل! استمر وقوّي عزيمتك! 🔥`);
     }
 
     function resetStreak() {
