@@ -328,27 +328,6 @@
           <span style="color:var(--accent);" id="spiritual-best-streak">🏆 أطول سجل التزام: 0</span>
         </div>
       </div>
-
-      <!-- بنود القانون الروحي -->
-      <div class="card">
-        <h3 style="margin:0 0 10px 0;">📜 بنود القانون الروحي اليومي:</h3>
-
-        <ul>
-          <li>🌅 صلاة باكر (أول ما أصحى)</li>
-          <li>🌙 صلاة النوم (قبل ما أنام)</li>
-          <li>📖 إصحاح إنجيل يومي</li>
-          <li>🍞 التناول المقدّس (مرة أسبوعياً كحد أدنى)</li>
-        </ul>
-
-        <div style="margin-top:16px; display:flex; flex-direction:column; gap:10px;">
-          <button id="main-spiritual-btn" class="add-btn" style="width:100%; padding:14px; font-size:1rem; background:var(--accent);" onclick="toggleCompleteSpiritual()">
-            ✨ اضغط هنا عند إكمال قانون اليوم
-          </button>
-          <button onclick="resetSpiritualStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:10px; border-radius:12px; font-weight:bold; cursor:pointer;">
-            🔄 إعادة ضبط العداد وتاريخ البدء
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- التابة الثانية: التغذية والنظام الغذائي -->
@@ -458,7 +437,6 @@
         </div>
       </div>
 
-      <!-- قسم التحكم بعد حذف زر الاحتفال -->
       <div class="card">
         <h3 style="margin: 0 0 10px 0;">⚡ التحكم والإجراءات:</h3>
         <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
@@ -676,11 +654,19 @@
     }
 
     function calculateSpiritualStreak() {
-      if (!spiritualData.completedDates) return 0;
-      return Object.keys(spiritualData.completedDates).filter(date => spiritualData.completedDates[date]).length;
+      if (!spiritualData.startDate) return 0;
+      const start = new Date(spiritualData.startDate);
+      const today = new Date(getLocalDateString(0));
+      const diffTime = Math.abs(today - start);
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     }
 
     function renderSpiritualTab() {
+      if (!spiritualData.startDate) {
+        spiritualData.startDate = getLocalDateString(0);
+        localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
+      }
+
       const streak = calculateSpiritualStreak();
       
       if (streak > (spiritualData.bestStreak || 0)) {
@@ -693,43 +679,6 @@
       document.getElementById('spiritual-start-date').innerText = spiritualData.startDate 
         ? `📅 تاريخ البدء: ${spiritualData.startDate}` 
         : `📅 تاريخ البدء: غير محدد`;
-
-      const isCompleted = spiritualData.completedDates && spiritualData.completedDates[currentDate];
-      const mainBtn = document.getElementById('main-spiritual-btn');
-
-      if (isCompleted) {
-        mainBtn.innerText = '✅ تم الإلتزام بالقانون الروحي لهذا اليوم';
-        mainBtn.style.background = 'var(--accent)';
-      } else {
-        mainBtn.innerText = '✨ اضغط هنا عند إكمال قانون اليوم';
-        mainBtn.style.background = 'var(--primary)';
-      }
-    }
-
-    function toggleCompleteSpiritual() {
-      if (!spiritualData.completedDates) spiritualData.completedDates = {};
-      
-      if (!spiritualData.startDate) {
-        spiritualData.startDate = currentDate;
-      }
-
-      const newState = !spiritualData.completedDates[currentDate];
-      spiritualData.completedDates[currentDate] = newState;
-
-      localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
-
-      if (newState) {
-        confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
-      }
-      renderSpiritualTab();
-    }
-
-    function resetSpiritualStreak() {
-      if (confirm('هل تريد إعادة ضبط العداد والسجل القياسي وتاريخ البدء للبدء من جديد صفراً؟')) {
-        spiritualData = { startDate: null, bestStreak: 0, completedDates: {} };
-        localStorage.setItem('life_app_spiritual_data', JSON.stringify(spiritualData));
-        renderSpiritualTab();
-      }
     }
 
     function getWeekRange(dateStr) {
