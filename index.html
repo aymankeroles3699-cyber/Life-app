@@ -294,17 +294,17 @@
     <div id="tab-spiritual" class="tab-content active">
       <h2 style="margin-top: 0;">🕊️ القانون الروحي والالتزام</h2>
 
-      <!-- 💡 كارت الكلمات الإنجليزية اليومية -->
+      <!-- 💡 كارت الإلهام اليومي (معرّب بالكامل) -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);">💡 كلمة إنجليزية يومية (Daily English)</span>
+          <span style="font-size:0.8rem; font-weight:bold; color:var(--accent);">💡 إلهام وحكمة اليوم</span>
           <span style="font-size:0.75rem; color:var(--subtext);" id="vocab-date">اليوم</span>
         </div>
-        <div style="font-size:1.1rem; font-weight:bold; color:var(--text);" id="vocab-word">Perseverance</div>
-        <div style="font-size:0.8rem; color:var(--subtext); font-style:italic;" id="vocab-type">/ˌpɜːrsəˈvɪərəns/ • اسم</div>
-        <div style="font-size:0.85rem; color:var(--text); margin-top:6px;" id="vocab-def">المواظبة والمثابرة على فعل الشيء رغم الصعوبات.</div>
+        <div style="font-size:1.1rem; font-weight:bold; color:var(--text);" id="vocab-word">التركيز والوضوح</div>
+        <div style="font-size:0.8rem; color:var(--subtext); font-style:italic;" id="vocab-type">• حكمة في تطوير الذات</div>
+        <div style="font-size:0.85rem; color:var(--text); margin-top:6px;" id="vocab-def">القدرة على توجيه انتباهك وإرادتك نحو الهدف الأساسي دون التشتت.</div>
         <div style="font-size:0.8rem; color:var(--accent); margin-top:6px; border-top:1px dashed var(--card-border); padding-top:6px;" id="vocab-example">
-          "Success is built through daily perseverance and commitment."
+          "حافظ على تركيزك على الأهداف طويلة المدى بدلاً من المشتتات المؤقتة."
         </div>
       </div>
 
@@ -366,17 +366,17 @@
         </div>
         
         <div class="weekly-rule-item">
-          <span>🍔 وجبة تيك أواي (Takeaway)</span>
+          <span>🍔 وجبة طعام جاهز (تيك أواي)</span>
           <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُستخدم (0/1)</button>
         </div>
 
         <div class="weekly-rule-item">
-          <span>🥤 مشروب غازي (Soda)</span>
+          <span>🥤 مشروب غازي</span>
           <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم يُشرب (0/1)</button>
         </div>
 
         <div class="weekly-rule-item">
-          <span>🥳 يوم خروج أسبوعي (Outing)</span>
+          <span>🥳 يوم خروج أسبوعي</span>
           <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
         </div>
         
@@ -432,7 +432,7 @@
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">📜 سجل الملابس (Outfit History)</h3>
+        <h3 style="margin: 0 0 10px 0;">📜 سجل الملابس اليومي</h3>
         <div id="outfit-history-container"></div>
       </div>
     </div>
@@ -449,7 +449,6 @@
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
-          <!-- 🏆 العبارة العربية المطلوبة -->
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
           <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">0</div>
         </div>
@@ -505,7 +504,7 @@
       </div>
 
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(30, 41, 59, 0.85));">
-        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل (Monthly Analytics)</h3>
+        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل</h3>
         <div style="font-size:0.85rem; line-height:1.6;" id="monthly-analytics-content">
           جاري تحميل الإحصائيات...
         </div>
@@ -592,13 +591,11 @@
     });
 
     const vocabList = [
-      { word: "Perseverance", type: "/ˌpɜːrsəˈvɪərəns/ • اسم", def: "المواظبة والمثابرة على فعل الشيء رغم الصعوبات.", ex: '"Success is built through daily perseverance and commitment."' },
-      { word: "Consistency", type: "/kənˈsɪstənsi/ • اسم", def: "الاستمرارية والانتظام في الأداء لبلوغ النجاح.", ex: '"Small steps done with consistency yield huge results."' },
-      { word: "Discipline", type: "/ˈdɪsəplɪn/ • اسم", def: "الانضباط الذاتي والقدرة على التحكم في رغباتك.", ex: '"Discipline is choosing between what you want now and what you want most."' },
-      { word: "Resilience", type: "/rɪˈzɪliəns/ • اسم", def: "المرونة والقدرة على التعافي السريع من الأزمات.", ex: '"Resilience allows you to bounce back stronger after every setback."' },
-      { word: "Mindfulness", type: "/ˈmaɪndflnəs/ • اسم", def: "اليقظة الذهنية والحضور التام في اللحظة الحالية.", ex: '"Practice mindfulness to remain calm and focused throughout your day."' },
-      { word: "Commitment", type: "/kəˈmɪtmənt/ • اسم", def: "الالتزام التام والوفاء بالعهود والأهداف.", ex: '"Success is the result of unwavering commitment."' },
-      { word: "Focus", type: "/ˈfəʊkəs/ • اسم", def: "التركيز وتوجيه الانتباه للهدف الأساسي.", ex: '"Keep your focus on long-term goals rather than short-term distractions."' }
+      { word: "المثابرة والاستمرار", type: "حكمة اليوم", def: "المواظبة والاستمرار على تحقيق هدفك رغم كل الصعوبات.", ex: '"النجاح يتحقق بالالتزام والإصرار اليومي."' },
+      { word: "الانتظام والاستمرارية", type: "حكمة اليوم", def: "الاستمرار في فعل الخطوات الصغيرة يومياً يبني نجاحاً باهراً.", ex: '"الخطوات الصغيره اليومية تصنع الفارق الكبير."' },
+      { word: "الانضباط الذاتي", type: "حكمة اليوم", def: "القدرة على التحكم في الذات واختيار ما تنشده مستقبلاً على اللذة المؤقتة.", ex: '"الانضباط هو الاختيار بين ما تريده الآن وما تريده بشدة لاحقاً."' },
+      { word: "المرونة النفسية", type: "حكمة اليوم", def: "القدرة على النهوض والتعافي السريع بعد كل زلة أو كبوة.", ex: '"المرونة تجعلك تعود أقوى بعد كل تحدٍ."' },
+      { word: "التركيز والوضوح", type: "حكمة اليوم", def: "توجيه انتباهك وإرادتك نحو الهدف الأساسي دون التشتت.", ex: '"حافظ على تركيزك على الأهداف طويلة المدى بدلاً من المشتتات المؤقتة."' }
     ];
 
     function renderDailyVocab() {
