@@ -6,9 +6,10 @@
   <title>Novara</title>
   <link rel="manifest" href="manifest.json">
   
-  <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3209/3209865.png">
-  <meta name="theme-color" content="#0f172a">
+  <!-- نحدث روابط الأيقونات في الـ Meta Tags برابط صورتك الجديدة على GitHub -->
+  <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="theme-color" content="#090d16">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -99,11 +100,10 @@
     }
 
     #splash-screen img {
-      width: 140px;
-      height: 140px;
-      border-radius: 35px;
+      width: 250px; /* نكبر حجم الصورة الجديدة شوية */
+      height: 250px;
+      border-radius: 50%; /* نخليها دائرية عشان الأيقونة الجديدة */
       box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3);
-      border: 2px solid rgba(99, 102, 241, 0.4);
       margin-bottom: 20px;
       object-fit: cover;
     }
@@ -329,7 +329,8 @@
 
   <!-- واجهة البداية (Splash Screen) المقترحة -->
   <div id="splash-screen" onclick="hideSplash()">
-    <img src="https://cdn-icons-png.flaticon.com/512/3209/3209865.png" alt="Novara Logo">
+    <!-- نحدث الصورة بصورتك الجديدة اللي اسمها icon.png على GitHub -->
+    <img src="icon.png" alt="Novara Logo">
     <div class="splash-title">Novara</div>
     <div class="splash-subtitle">رحلة الانضباط وتطوير الذات</div>
     <div style="margin-top: 24px; font-size: 0.8rem; color: var(--subtext); opacity: 0.8;">اضغط في أي مكان للمتابعة...</div>
