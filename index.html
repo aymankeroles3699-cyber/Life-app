@@ -522,8 +522,36 @@
     let currentCategoryFilter = 'all';
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
-    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { takeaway: false, soda: false, outing: false };
     
+    // نظام فحص وتصفير القواعد الأسبوعية تلقائياً بناءً على بداية ونهاية الأسبوع (الأحد إلى السبت)
+    function getWeekRange(dateObj) {
+      const d = new Date(dateObj);
+      const day = d.getDay();
+      const sun = new Date(d);
+      sun.setDate(d.getDate() - day);
+      const sat = new Date(sun);
+      sat.setDate(sun.getDate() + 6);
+      
+      const format = (dateObj) => {
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const dayNum = String(dateObj.getDate()).padStart(2, '0');
+        return `${m}/${dayNum}`;
+      };
+      return `${format(sun)} إلى ${format(sat)}`;
+    }
+
+    let currentWeekKey = getWeekRange(new Date());
+    let savedWeeklyData = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || {};
+
+    let weeklyTracker = { takeaway: false, soda: false, outing: false };
+    
+    if (savedWeeklyData.weekKey === currentWeekKey) {
+      weeklyTracker = savedWeeklyData.tracker || { takeaway: false, soda: false, outing: false };
+    } else {
+      // لو دخلنا أسبوع جديد، يتم التصفير تلقائياً وتحديث مفتاح الأسبوع
+      localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
+    }
+
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
       startDate: null,
       bestStreak: 0
@@ -627,23 +655,6 @@
       updateDateLabel();
     }
 
-    function getWeekRange(dateStr) {
-      const d = new Date(dateStr);
-      const day = d.getDay();
-      const sun = new Date(d);
-      sun.setDate(d.getDate() - day);
-      const sat = new Date(sun);
-      sat.setDate(sun.getDate() + 6);
-      
-      const format = (dateObj) => {
-        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const dayNum = String(dateObj.getDate()).padStart(2, '0');
-        return `${m}/${dayNum}`;
-      };
-
-      return { sunStr: format(sun), satStr: format(sat) };
-    }
-
     function renderDietTab() {
       const selectedDateObj = new Date(currentDate);
       const dayOfWeek = selectedDateObj.getDay();
@@ -657,15 +668,13 @@
         statusBadge.innerHTML = "🏠 أكل البيت الصحي";
       }
 
-      const range = getWeekRange(currentDate);
-      document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: من الأحد (${range.sunStr}) إلى السبت (${range.satStr})`;
-
+      document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: من الأحد (${currentWeekKey})`;
       updateWeeklyButtons();
     }
 
     function toggleWeeklyRule(key) {
       weeklyTracker[key] = !weeklyTracker[key];
-      localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
+      localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
       if (weeklyTracker[key]) {
         confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
       }
@@ -675,7 +684,7 @@
     function resetWeeklyTracker() {
       if (confirm('هل تريد إعادة ضبط القواعد الأسبوعية لبدء أسبوع جديد؟')) {
         weeklyTracker = { takeaway: false, soda: false, outing: false };
-        localStorage.setItem('life_app_weekly_tracker', JSON.stringify(weeklyTracker));
+        localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
         updateWeeklyButtons();
       }
     }
