@@ -1,21 +1,20 @@
 {
+  "name": "Novara",
   "short_name": "Novara",
-  "name": "Novara Life Tracker",
-  "description": "Novara life tracking application for daily objectives and routines.",
-  "id": "https://aymankeroles3699-cyber.github.io/index.html",
-  "start_url": "https://aymankeroles3699-cyber.github.io/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "lang": "ar",
-  "dir": "rtl",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
   "icons": [
     {
-      "src": "https://aymankeroles3699-cyber.github.io/file_000000001db881f4bd7d2849b1eb775.png",
-      "sizes": "192x192 512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
