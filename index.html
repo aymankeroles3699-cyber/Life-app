@@ -82,7 +82,6 @@
       transition: background 0.8s ease, color 0.8s ease;
     }
 
-    /* واجهة البداية (Splash Screen) */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -214,7 +213,6 @@
       transition: background 0.3s;
     }
 
-    /* شبكة قطع الملابس بالصور */
     .wardrobe-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -259,7 +257,6 @@
       justify-content: space-around;
       align-items: center;
       z-index: 1000;
-      transition: background 0.5s;
     }
 
     .nav-btn {
@@ -322,7 +319,6 @@
       background: var(--primary);
       color: white;
       border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
     .outfit-timeline-card {
@@ -376,7 +372,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية -->
+    <!-- التابة الثانية: التغذية 🥗 -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -413,7 +409,7 @@
       </div>
     </div>
 
-    <!-- التابة الثالثة: دولاب الملابس بالصور 👔 -->
+    <!-- التابة الثالثة: دولاب الملابس 👔 -->
     <div id="tab-outfit" class="tab-content">
       <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
@@ -447,7 +443,6 @@
         <textarea id="outfit-input" rows="3" placeholder="اضغط على أي قطعة من دولابك بالأسفل لتضاف لطقمك..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
       </div>
 
-      <!-- إضافة قطعة جديدة بصورة مضغوطة تلقائياً -->
       <div class="card">
         <h3 style="margin: 0 0 10px 0;">➕ إضافة قطعة جديدة بصورتها</h3>
         <div class="input-group" style="flex-direction:column; gap:8px;">
@@ -498,18 +493,51 @@
         <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">0</div>
         <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
       </div>
+
+      <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
+          <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">0</div>
+        </div>
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
+          <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="streak-start-date">--</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0;">⚡ التحكم والإجراءات:</h3>
+        <button onclick="resetStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
+          🔄 حدثت زلة (بدء التحدي مجدداً من اليوم)
+        </button>
+      </div>
     </div>
 
-    <!-- التابة الخامسة: التقارير -->
+    <!-- التابة الخامسة: التقارير 📊 -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
+      <div class="card" style="display: grid; grid-template-columns: 1fr; gap: 10px; text-align: center;">
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">سجل تعافي العادة</div>
+          <div style="font-size:1.5rem; font-weight:bold; color:var(--accent);" id="total-recovery-streak">0</div>
+        </div>
+      </div>
+
       <div class="card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
         <h3 style="margin: 0 0 8px 0; color: var(--accent);">💾 النسخ الاحتياطي للبيانات</h3>
+        <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">احفظ أهدافك وبياناتك واسترجعها في أي وقت:</div>
         <div style="display:flex; gap:8px;">
           <button class="add-btn" style="flex:1; background:var(--accent);" onclick="exportData()">تصدير نسخة 📥</button>
           <button class="add-btn" style="flex:1; background:var(--primary);" onclick="document.getElementById('import-file').click()">استرجاع 📤</button>
           <input type="file" id="import-file" style="display:none;" onchange="importData(event)">
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(30, 41, 59, 0.85));">
+        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل</h3>
+        <div style="font-size:0.85rem; line-height:1.6;" id="monthly-analytics-content">
+          جاري تحميل الإحصائيات...
         </div>
       </div>
     </div>
@@ -602,6 +630,7 @@
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         document.getElementById('btn-reports').classList.add('active');
+        renderReports();
       }
     }
 
@@ -630,7 +659,6 @@
       }
     }
 
-    // دالة ضغط وضبط مساحة الصورة تلقائياً لكي تحفظ بسلاسة بدون امتلاء الذاكرة
     function compressAndSaveImage(file, callback) {
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -643,15 +671,9 @@
           let height = img.height;
 
           if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
           } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
           }
 
           canvas.width = width;
@@ -659,7 +681,6 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
           
-          // ضغط الصورة بجودة 70% بصيغة jpeg لتكون خفيفة جداً
           const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
           callback(dataUrl);
         };
@@ -805,7 +826,7 @@
     function renderOutfitInsights() {
       const totalCount = Object.keys(allOutfits).length;
       document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مدون`;
-      document.getElementById('outfit-insights-content').innerHTML = `⭐ تمت إضافة ميزة ضغط وحفظ صور الملابس الشخصية بنجاح لتنظيم دولابك بدون أي مشاكل في التخزين!`;
+      document.getElementById('outfit-insights-content').innerHTML = `⭐ تم تفعيل ضغط وحفظ صور الملابس الشخصية بكفاءة عالية!`;
     }
 
     function calculateStreakDays() {
@@ -825,8 +846,25 @@
       document.getElementById('streak-start-date').innerText = recoveryData.startDate;
     }
 
+    function resetStreak() {
+      if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
+        recoveryData.startDate = getLocalDateString(0);
+        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+        renderRecoveryTab();
+      }
+    }
+
+    function renderReports() {
+      document.getElementById('total-recovery-streak').innerText = calculateStreakDays();
+      const totalOutfitsCount = Object.keys(allOutfits).length;
+      document.getElementById('monthly-analytics-content').innerHTML = `
+        🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
+        👔 <strong>سجل الملابس:</strong> قمت بتنسيق إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
+      `;
+    }
+
     function exportData() {
-      const fullData = { outfits: allOutfits, wardrobe: myWardrobe };
+      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -843,6 +881,7 @@
           const imported = JSON.parse(e.target.result);
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
+          if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
           alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
         } catch (err) { alert('الملف غير صالح!'); }
