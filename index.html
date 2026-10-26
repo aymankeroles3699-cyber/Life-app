@@ -330,6 +330,22 @@
       margin-bottom: 12px;
       border-right: 4px solid var(--primary);
     }
+
+    /* تنسيق صور القطع داخل السجل اليومي */
+    .history-outfit-images {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .history-thumb {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.05);
+    }
   </style>
 </head>
 <body>
@@ -372,7 +388,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية 🥗 (مع استعادة تفاصيل الأسبوع بالكامل) -->
+    <!-- التابة الثانية: التغذية 🥗 (بدون خانة وجبات اليوم) -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -386,7 +402,6 @@
         <div style="font-size: 0.9rem; color: var(--subtext);" id="next-fasting-date">📅 يبدأ في: 25 نوفمبر (43 يوماً)</div>
       </div>
 
-      <!-- كارت القواعد والتتبع الأسبوعي مع توضيح بداية ونهاية الأسبوع -->
       <div class="card">
         <h3 style="margin: 0 0 4px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
         <div id="week-range-label" style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom:12px; background: rgba(99, 102, 241, 0.1); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--card-border);">
@@ -412,13 +427,6 @@
           <span style="font-size:0.75rem; color:var(--subtext);">* يبدأ الأسبوع كل يوم أحد</span>
           <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">إعادة ضبط العداد يدويًا</button>
         </div>
-      </div>
-
-      <!-- كارت سجل وجبات اليوم -->
-      <div class="card">
-        <h3 style="margin: 0 0 8px 0;">📝 وجبات يوم: <span id="diet-date-label" style="color:var(--primary);"></span></h3>
-        <textarea id="diet-meal-input" rows="3" placeholder="اكتب وجبات اليوم هنا (مثال: الفطار كشري / الغداء صينية خضار نباتي...)" onkeyup="saveDietMeal()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ وجبات اليوم تلقائياً</div>
       </div>
     </div>
 
@@ -492,7 +500,7 @@
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 12px 0; color:var(--text);">📜 سجل إطلالات الملابس اليومي</h3>
+        <h3 style="margin: 0 0 12px 0; color:var(--text);">📜 سجل إطلالات الملابس اليومي بالصور</h3>
         <div id="outfit-history-container"></div>
       </div>
     </div>
@@ -612,7 +620,6 @@
     let currentCategoryFilter = 'all';
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
-    let allDietMeals = JSON.parse(localStorage.getItem('life_app_diet_meals_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: null, bestStreak: 0 };
     
@@ -684,7 +691,6 @@
       currentDate = newDate;
       document.getElementById('display-date-label').innerText = currentDate;
       if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
-      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
       renderDietTab();
     }
 
@@ -692,7 +698,6 @@
       currentDate = getLocalDateString(offset);
       document.getElementById('selected-date').value = currentDate;
       document.getElementById('display-date-label').innerText = currentDate;
-      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
       renderDietTab();
     }
 
@@ -710,15 +715,7 @@
       }
 
       document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: ${currentWeekKey}`;
-      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
-      if (document.getElementById('diet-meal-input')) document.getElementById('diet-meal-input').value = allDietMeals[currentDate] || '';
       updateWeeklyButtons();
-    }
-
-    function saveDietMeal() {
-      const mealInput = document.getElementById('diet-meal-input');
-      allDietMeals[currentDate] = mealInput.value;
-      localStorage.setItem('life_app_diet_meals_by_date', JSON.stringify(allDietMeals));
     }
 
     function toggleWeeklyRule(key) {
@@ -903,6 +900,7 @@
       saveOutfit();
     }
 
+    // دالة استخراج وتوليد الصور المصغرة المرتبطة بأسماء القطع في الطقم
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       historyContainer.innerHTML = '';
@@ -925,6 +923,23 @@
         else if (placeText === 'Gym') placeIcon = '🏋️';
         else if (placeText === 'Outing') placeIcon = '🥳';
 
+        // مطابقة الأسماء في الطقم مع صور القطع المخزنة في الدولاب
+        let thumbsHTML = '';
+        if (outfitText) {
+          const parts = outfitText.split('+').map(p => p.trim());
+          let matchedImgs = [];
+          parts.forEach(partName => {
+            const foundItem = myWardrobe.find(w => w.text.toLowerCase() === partName.toLowerCase() || partName.toLowerCase().includes(w.text.toLowerCase()));
+            if (foundItem && foundItem.img) {
+              matchedImgs.push(foundItem.img);
+            }
+          });
+
+          if (matchedImgs.length > 0) {
+            thumbsHTML = `<div class="history-outfit-images">` + matchedImgs.map(img => `<img src="${img}" class="history-thumb">`).join('') + `</div>`;
+          }
+        }
+
         const item = document.createElement('div');
         item.className = 'outfit-timeline-card';
         item.innerHTML = `
@@ -933,6 +948,7 @@
             <span style="color:var(--accent);">${placeIcon} ${placeText}</span>
           </div>
           <div style="font-size:0.9rem; color:var(--text); margin-top:6px; font-weight:600;">👔 ${outfitText}</div>
+          ${thumbsHTML}
         `;
         historyContainer.appendChild(item);
       });
@@ -941,7 +957,7 @@
     function renderOutfitInsights() {
       const totalCount = Object.keys(allOutfits).length;
       document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مدون`;
-      document.getElementById('outfit-insights-content').innerHTML = `⭐ تم تفعيل ضغط وحفظ صور الملابس الشخصية بكفاءة عالية!`;
+      document.getElementById('outfit-insights-content').innerHTML = `⭐ سجل الملابس يعرض إطلالاتك مدعومة بصور القطع الشخصية بوضوح تام!`;
     }
 
     function calculateStreakDays() {
@@ -979,7 +995,7 @@
     }
 
     function exportData() {
-      const fullData = { outfits: allOutfits, dietMeals: allDietMeals, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker };
+      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -995,7 +1011,6 @@
         try {
           const imported = JSON.parse(e.target.result);
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
-          if (imported.dietMeals) localStorage.setItem('life_app_diet_meals_by_date', JSON.stringify(imported.dietMeals));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
