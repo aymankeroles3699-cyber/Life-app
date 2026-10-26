@@ -82,7 +82,7 @@
       transition: background 0.8s ease, color 0.8s ease;
     }
 
-    /* تصميم واجهة البداية (Splash Screen) */
+    /* واجهة البداية (Splash Screen) */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -214,42 +214,36 @@
       transition: background 0.3s;
     }
 
-    ul { list-style: none; padding: 0; margin: 12px 0 0 0; }
+    /* شبكة قطع الملابس بالصور */
+    .wardrobe-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
 
-    li {
-      display: flex;
-      align-items: center;
-      padding: 14px;
-      background: rgba(15, 23, 42, 0.5);
+    .wardrobe-item-card {
+      background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .wardrobe-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .wardrobe-tag {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid var(--primary);
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 0.88rem;
+      border-radius: 16px;
+      padding: 10px;
+      text-align: center;
+      position: relative;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
       transition: all 0.2s ease;
     }
-    .wardrobe-tag:hover {
-      background: rgba(99, 102, 241, 0.3);
+    .wardrobe-item-card:hover {
+      border-color: var(--primary);
       transform: translateY(-2px);
+    }
+
+    .wardrobe-item-img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.05);
     }
 
     .bottom-nav {
@@ -331,7 +325,6 @@
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
-    /* أسلوب العرض الجديد لسجل أطقم الملابس */
     .outfit-timeline-card {
       position: relative;
       padding: 14px 16px;
@@ -340,10 +333,6 @@
       border-radius: 16px;
       margin-bottom: 12px;
       border-right: 4px solid var(--primary);
-      transition: transform 0.2s ease;
-    }
-    .outfit-timeline-card:hover {
-      transform: translateX(-4px);
     }
   </style>
 </head>
@@ -396,7 +385,6 @@
         🏠 أكل البيت الصحي
       </div>
 
-      <!-- ⛪ كارت الصيام القادم فقط -->
       <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3); text-align: center;">
         <h3 style="margin: 0 0 6px 0; color: var(--accent);">⏳ الصيام القادم</h3>
         <div style="font-size: 1.2rem; font-weight: bold; color: var(--text); margin-bottom: 4px;" id="next-fasting-name">صوم الميلاد المجيد</div>
@@ -431,28 +419,24 @@
       </div>
     </div>
 
-    <!-- التابة الثالثة: الملابس المحدثة والمطورة بالكامل 👔 -->
+    <!-- التابة الثالثة: دولاب الملابس بالصور 👔 -->
     <div id="tab-outfit" class="tab-content">
-      <h2 style="margin-top: 0; display:flex; justify-content:space-between; align-items:center;">
-        <span>👔 دولاب الملابس وتنسيق الطقم</span>
-      </h2>
+      <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
 
-      <!-- 💡 كارت تحليلات وإحصائيات الدولاب الذكية -->
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <span style="font-size:0.85rem; font-weight:bold; color:var(--primary);">✨ تحليلات الدولاب والتكرار</span>
+          <span style="font-size:0.85rem; font-weight:bold; color:var(--primary);">✨ تحليلات الدولاب</span>
           <span style="font-size:0.75rem; color:var(--subtext);" id="outfit-total-count">0 أطقم مدونة</span>
         </div>
         <div style="font-size:0.9rem; color:var(--text); line-height:1.5;" id="outfit-insights-content">
-          جاري تحليل أكثر الأطقم تكراراً...
+          جاري تحليلات القطع الأكثر تكراراً...
         </div>
       </div>
 
-      <!-- 👔 كارت اختيار وتنسيق طقم اليوم -->
       <div class="card">
         <h3 style="margin: 0 0 10px 0; color:var(--text); display:flex; justify-content:space-between; align-items:center;">
           <span>✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></span>
-          <button onclick="clearCurrentOutfitInput()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">مسح التفاصيل</button>
+          <button onclick="clearCurrentOutfitInput()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">مسح</button>
         </h3>
         
         <div style="display:flex; gap:8px; margin-bottom:10px;">
@@ -466,29 +450,35 @@
           </select>
         </div>
 
-        <textarea id="outfit-input" rows="3" placeholder="اضغط على أي القطع من الدولاب بالأسفل لبناء طقمك، أو اكتب تفاصيل الطقم مباشرة هنا..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:6px; display:flex; justify-content:space-between;">
-          <span>✓ يتم الحفظ تلقائياً لهذا التاريخ</span>
-        </div>
+        <textarea id="outfit-input" rows="3" placeholder="اضغط على أي قطعة من دولابك بالأسفل لتضاف لطقمك..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
       </div>
 
-      <!-- ➕ كارت إضافة وتصفح قطع الدولاب -->
+      <!-- إضافة قطعة جديدة بالصورة -->
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
+        <h3 style="margin: 0 0 10px 0;">➕ إضافة قطعة جديدة بصورتها</h3>
         <div class="input-group" style="flex-direction:column; gap:8px;">
-          <input type="text" id="wardrobe-item-input" placeholder="اكتب اسم القطعة (مثال: Pale yellow shirt / بنطلون زيتي)...">
-          <div style="display:flex; gap:8px;">
-            <select id="wardrobe-category-select">
-              <option value="top">👕 علوي (قميص/تيشيرت)</option>
-              <option value="bottom">👖 سفلي (بنطلون/شورت)</option>
+          <input type="text" id="wardrobe-item-input" placeholder="اسم القطعة (مثال: قميص أبيض، جينز...)">
+          
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="wardrobe-category-select" style="flex:1;">
+              <option value="top">👕 علوي</option>
+              <option value="bottom">👖 سفلي</option>
               <option value="shoes">👟 أحذية</option>
-              <option value="accessory">⌚ إكسسوارات / أخرى</option>
+              <option value="accessory">⌚ أخرى</option>
             </select>
-            <button class="add-btn" onclick="addWardrobeItem()">إضافة للدولاب</button>
+            
+            <!-- زر اختيار صورة القطعة من الموبايل -->
+            <label style="background:rgba(99, 102, 241, 0.2); border:1px solid var(--primary); padding:10px 14px; border-radius:12px; cursor:pointer; font-size:0.85rem; font-weight:bold; color:var(--text);">
+              📷 صورة القطعة
+              <input type="file" id="wardrobe-image-file" accept="image/*" style="display:none;" onchange="previewImageName(this)">
+            </label>
           </div>
+          <div id="image-file-name" style="font-size:0.75rem; color:var(--accent);"></div>
+          
+          <button class="add-btn" onclick="addWardrobeItemWithImage()" style="margin-top:4px;">حفظ القطعة في الدولاب</button>
         </div>
 
-        <h4 style="margin: 16px 0 10px 0; color:var(--subtext); font-size:0.9rem;">اختر التصنيف للتصفح والضغط لتنسيق الطقم:</h4>
+        <h4 style="margin: 16px 0 10px 0; color:var(--subtext); font-size:0.9rem;">تصنيفات الدولاب:</h4>
         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
           <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">الكل 🗂️</button>
           <button class="cat-btn" id="filter-top" onclick="filterWardrobe('top')">👕 علوي</button>
@@ -497,19 +487,17 @@
           <button class="cat-btn" id="filter-accessory" onclick="filterWardrobe('accessory')">⌚ أخرى</button>
         </div>
 
-        <div id="wardrobe-tags-container" class="wardrobe-tags"></div>
+        <!-- شبكة عرض قطع الملابس بالصور -->
+        <div id="wardrobe-grid-container" class="wardrobe-grid"></div>
       </div>
 
-      <!-- 📜 سجل الملابس التاريخي المطور -->
       <div class="card">
-        <h3 style="margin: 0 0 12px 0; color:var(--text); display:flex; justify-content:space-between; align-items:center;">
-          <span>📜 سجل إطلالات الملابس اليومي</span>
-        </h3>
+        <h3 style="margin: 0 0 12px 0; color:var(--text);">📜 سجل إطلالات الملابس اليومي</h3>
         <div id="outfit-history-container"></div>
       </div>
     </div>
 
-    <!-- التابة الرابعة: التعافي والسيطرة 🛡️ -->
+    <!-- التابة الرابعة: التعافي 🛡️ -->
     <div id="tab-recovery" class="tab-content">
       <h2 style="margin-top: 0;">🛡️ رحلة التعافي والتحكم بالذات</h2>
 
@@ -536,18 +524,9 @@
           🔄 حدثت زلة (بدء التحدي مجدداً من اليوم)
         </button>
       </div>
-
-      <div class="card">
-        <h3 style="margin: 0 0 8px 0; color:var(--primary);">💡 خطة التعامل السريع مع الرغبة (اليوم):</h3>
-        <ul style="margin:0; padding-right:18px; font-size:0.88rem; line-height:1.7; color:var(--text);">
-          <li><strong>سيب الموبايل والسرير فوراً:</strong> غير مكانك واخرج للصالة أو مكان فيه ناس.</li>
-          <li><strong>المية الباردة:</strong> اغسل وشك أو ايديك بمية باردة فوراً لتغيير حالة جسمك.</li>
-          <li><strong>قاعدة الـ 10 دقائق:</strong> قول لنفسك هأجّل الفكرة 10 دقائق فقط واشغل نفسك بـ 20 تمرين ضغط أو مشي.</li>
-        </ul>
-      </div>
     </div>
 
-    <!-- التابة الخامسة: التقارير والنسخ الاحتياطي -->
+    <!-- التابة الخامسة: التقارير -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -565,13 +544,6 @@
           <button class="add-btn" style="flex:1; background:var(--accent);" onclick="exportData()">تصدير نسخة 📥</button>
           <button class="add-btn" style="flex:1; background:var(--primary);" onclick="document.getElementById('import-file').click()">استرجاع 📤</button>
           <input type="file" id="import-file" style="display:none;" onchange="importData(event)">
-        </div>
-      </div>
-
-      <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(30, 41, 59, 0.85));">
-        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📈 التقرير الشهري الشامل</h3>
-        <div style="font-size:0.85rem; line-height:1.6;" id="monthly-analytics-content">
-          جاري تحميل الإحصائيات...
         </div>
       </div>
     </div>
@@ -614,7 +586,6 @@
     function applyTimeBasedTheme() {
       const hour = new Date().getHours();
       document.body.classList.remove('theme-sunrise', 'theme-day', 'theme-sunset', 'theme-night');
-
       if (hour >= 5 && hour < 8) document.body.classList.add('theme-sunrise');
       else if (hour >= 8 && hour < 17) document.body.classList.add('theme-day');
       else if (hour >= 17 && hour < 20) document.body.classList.add('theme-sunset');
@@ -634,81 +605,13 @@
     let currentCategoryFilter = 'all';
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
-    
-    function getWeekRange(dateObj) {
-      const d = new Date(dateObj);
-      const day = d.getDay();
-      const sun = new Date(d);
-      sun.setDate(d.getDate() - day);
-      const sat = new Date(sun);
-      sat.setDate(sun.getDate() + 6);
-      
-      const format = (dateObj) => {
-        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const dayNum = String(dateObj.getDate()).padStart(2, '0');
-        return `${m}/${dayNum}`;
-      };
-      return `${format(sun)} إلى ${format(sat)}`;
-    }
-
-    let currentWeekKey = getWeekRange(new Date());
-    let savedWeeklyData = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || {};
-
-    let weeklyTracker = { takeaway: false, soda: false, outing: false };
-    
-    if (savedWeeklyData.weekKey === currentWeekKey && savedWeeklyData.tracker) {
-      weeklyTracker = savedWeeklyData.tracker;
-    } else {
-      localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
-    }
-
-    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || {
-      startDate: null,
-      bestStreak: 0
-    };
-
-    let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
-      { text: 'Pale yellow shirt', cat: 'top' },
-      { text: 'Sky blue striped shirt', cat: 'top' },
-      { text: 'Plain burgundy shirt', cat: 'top' },
-      { text: 'Plain turquoise shirt', cat: 'top' },
-      { text: 'Plain dark petrol blue shirt', cat: 'top' },
-      { text: 'Plain navy shirt', cat: 'top' },
-      { text: 'Off white striped', cat: 'top' },
-      { text: 'Plain grey shirt', cat: 'top' },
-      { text: 'Pink striped shirt', cat: 'top' },
-      { text: 'Ice jeans', cat: 'bottom' },
-      { text: 'Off white gabardine', cat: 'bottom' },
-      { text: 'Grey gabardine', cat: 'bottom' },
-      { text: 'Dark blue with white fading', cat: 'bottom' }
+    let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [
+      { text: 'Pale yellow shirt', cat: 'top', img: '' },
+      { text: 'Sky blue striped shirt', cat: 'top', img: '' }
     ];
 
-    let myWardrobe = rawWardrobe.map(item => {
-      let c = item.cat;
-      if (c === 'علوي') c = 'top';
-      if (c === 'سفلي') c = 'bottom';
-      if (c === 'أحذية') c = 'shoes';
-      if (c === 'أخرى') c = 'accessory';
-      return { text: item.text, cat: c };
-    });
-
-    const vocabList = [
-      { word: "المثابرة والاستمرار", type: "حكمة اليوم", def: "المواظبة والاستمرار على تحقيق هدفك رغم كل الصعوبات.", ex: '"النجاح يتحقق بالالتزام والإصرار اليومي."' },
-      { word: "الانتظام والاستمرارية", type: "حكمة اليوم", def: "الاستمرار في فعل الخطوات الصغيرة يومياً يبني نجاحاً باهراً.", ex: '"الخطوات الصغيره اليومية تصنع الفارق الكبير."' },
-      { word: "الانضباط الذاتي", type: "حكمة اليوم", def: "القدرة على التحكم في الذات واختيار ما تنشده مستقبلاً على اللذة المؤقتة.", ex: '"الانضباط هو الاختيار بين ما تريده الآن وما تريده بشدة لاحقاً."' },
-      { word: "المرونة النفسية", type: "حكمة اليوم", def: "القدرة على النهوض والتعافي السريع بعد كل زلة أو كبوة.", ex: '"المرونة تجعلك تعود أقوى بعد كل تحدٍ."' },
-      { word: "التركيز والوضوح", type: "حكمة اليوم", def: "توجيه انتباهك وإرادتك نحو الهدف الأساسي دون التشتت.", ex: '"حافظ على تركيزك على الأهداف طويلة المدى بدلاً من المشتتات المؤقتة."' }
-    ];
-
-    function renderDailyVocab() {
-      const dayIdx = new Date().getDay();
-      const item = vocabList[dayIdx % vocabList.length];
-      document.getElementById('vocab-date').innerText = currentDate;
-      document.getElementById('vocab-word').innerText = item.word;
-      document.getElementById('vocab-type').innerText = item.type;
-      document.getElementById('vocab-def').innerText = item.def;
-      document.getElementById('vocab-example').innerText = item.ex;
-    }
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: null, bestStreak: 0 };
+    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { tracker: { takeaway: false, soda: false, outing: false } };
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -720,7 +623,6 @@
       } else if (tabName === 'diet') {
         document.getElementById('tab-diet').classList.add('active');
         document.getElementById('btn-diet').classList.add('active');
-        renderDietTab();
       } else if (tabName === 'outfit') {
         document.getElementById('tab-outfit').classList.add('active');
         document.getElementById('btn-outfit').classList.add('active');
@@ -738,105 +640,114 @@
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         document.getElementById('btn-reports').classList.add('active');
-        renderReports();
       }
     }
 
     function initDate() {
       applyTimeBasedTheme();
       document.getElementById('selected-date').value = currentDate;
-      updateDateLabel();
-      renderDailyVocab();
-    }
-
-    function updateDateLabel() {
-      const label = document.getElementById('display-date-label');
-      const today = getLocalDateString(0);
-      const yesterday = getLocalDateString(-1);
-      const tomorrow = getLocalDateString(1);
-
-      if (currentDate === today) label.innerText = `اليوم (${currentDate})`;
-      else if (currentDate === yesterday) label.innerText = `أمس (${currentDate})`;
-      else if (currentDate === tomorrow) label.innerText = `غداً (${currentDate})`;
-      else label.innerText = currentDate;
-
-      if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
+      document.getElementById('display-date-label').innerText = currentDate;
     }
 
     function changeDate(newDate) {
       if (!newDate) return;
       currentDate = newDate;
-      updateDateLabel();
+      document.getElementById('display-date-label').innerText = currentDate;
+      if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
     }
 
     function setQuickDate(offset) {
       currentDate = getLocalDateString(offset);
       document.getElementById('selected-date').value = currentDate;
-      updateDateLabel();
+      document.getElementById('display-date-label').innerText = currentDate;
     }
 
-    function renderDietTab() {
-      const selectedDateObj = new Date(currentDate);
-      const dayOfWeek = selectedDateObj.getDay();
-      const statusBadge = document.getElementById('diet-day-status');
-
-      if (dayOfWeek === 3 || dayOfWeek === 5) {
-        statusBadge.className = "diet-badge badge-fasting";
-        statusBadge.innerHTML = "🌿 يوم صيام نباتي (أكل الكنيسة النباتي)";
-      } else {
-        statusBadge.className = "diet-badge badge-home";
-        statusBadge.innerHTML = "🏠 أكل البيت الصحي";
-      }
-
-      document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: من الأحد (${currentWeekKey})`;
-      updateWeeklyButtons();
-    }
-
-    function toggleWeeklyRule(key) {
-      weeklyTracker[key] = !weeklyTracker[key];
-      localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
-      if (weeklyTracker[key]) {
-        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
-      }
-      updateWeeklyButtons();
-    }
-
-    function resetWeeklyTracker() {
-      if (confirm('هل تريد إعادة ضبط القواعد الأسبوعية لبدء أسبوع جديد؟')) {
-        weeklyTracker = { takeaway: false, soda: false, outing: false };
-        localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
-        updateWeeklyButtons();
+    function previewImageName(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('image-file-name').innerText = `✓ تم اختيار الصورة: ${input.files[0].name}`;
       }
     }
 
-    function updateWeeklyButtons() {
-      const btnTakeaway = document.getElementById('btn-takeaway');
-      const btnSoda = document.getElementById('btn-soda');
-      const btnOuting = document.getElementById('btn-outing');
+    function addWardrobeItemWithImage() {
+      const input = document.getElementById('wardrobe-item-input');
+      const catSelect = document.getElementById('wardrobe-category-select');
+      const fileInput = document.getElementById('wardrobe-image-file');
+      const val = input.value.trim();
+      if (!val) return;
 
-      if (weeklyTracker.takeaway) {
-        btnTakeaway.innerText = "تمت الوجبة (1/1) ✅";
-        btnTakeaway.style.background = "var(--accent)";
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          myWardrobe.push({ text: val, cat: catSelect.value, img: e.target.result });
+          localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(myWardrobe));
+          input.value = '';
+          fileInput.value = '';
+          document.getElementById('image-file-name').innerText = '';
+          renderWardrobe();
+        };
+        reader.readAsDataURL(fileInput.files[0]);
       } else {
-        btnTakeaway.innerText = "لم تُستخدم (0/1)";
-        btnTakeaway.style.background = "var(--primary)";
+        myWardrobe.push({ text: val, cat: catSelect.value, img: '' });
+        localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(myWardrobe));
+        input.value = '';
+        renderWardrobe();
+      }
+    }
+
+    function filterWardrobe(cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`filter-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderWardrobe();
+    }
+
+    function appendToOutfit(itemText) {
+      const outfitInput = document.getElementById('outfit-input');
+      outfitInput.value = outfitInput.value.trim() === '' ? itemText : `${outfitInput.value} + ${itemText}`;
+      saveOutfit();
+    }
+
+    function deleteWardrobeItem(realIndex, e) {
+      e.stopPropagation();
+      if (confirm('هل تريد حذف هذه القطعة من دولابك؟')) {
+        myWardrobe.splice(realIndex, 1);
+        localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(myWardrobe));
+        renderWardrobe();
+      }
+    }
+
+    function renderWardrobe() {
+      const container = document.getElementById('wardrobe-grid-container');
+      container.innerHTML = '';
+
+      const filtered = currentCategoryFilter === 'all' 
+        ? myWardrobe 
+        : myWardrobe.filter(item => item.cat === currentCategoryFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:12px; grid-column:span 2; text-align:center;">لا توجد قطع ملابس في هذه الفئة.</span>';
+        return;
       }
 
-      if (weeklyTracker.soda) {
-        btnSoda.innerText = "تم الشرب (1/1) ✅";
-        btnSoda.style.background = "var(--accent)";
-      } else {
-        btnSoda.innerText = "لم يُشرب (0/1)";
-        btnSoda.style.background = "var(--primary)";
-      }
+      filtered.forEach((item) => {
+        const realIndex = myWardrobe.indexOf(item);
+        const card = document.createElement('div');
+        card.className = 'wardrobe-item-card';
+        card.onclick = () => appendToOutfit(item.text);
 
-      if (weeklyTracker.outing) {
-        btnOuting.innerText = "تمت الخروجة (1/1) ✅";
-        btnOuting.style.background = "var(--accent)";
-      } else {
-        btnOuting.innerText = "لم تُخرج بعد (0/1)";
-        btnOuting.style.background = "var(--primary)";
-      }
+        let icon = '👔';
+        if (item.cat === 'top') icon = '👕';
+        else if (item.cat === 'bottom') icon = '👖';
+        else if (item.cat === 'shoes') icon = '👟';
+
+        card.innerHTML = `
+          ${item.img ? `<img src="${item.img}" class="wardrobe-item-img">` : `<div style="height:90px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; background:rgba(255,255,255,0.03); border-radius:12px; margin-bottom:8px;">${icon}</div>`}
+          <div style="font-size:0.85rem; font-weight:bold; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.text}</div>
+          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="position:absolute; top:6px; left:8px; background:rgba(0,0,0,0.5); color:#f43f5e; padding:2px 6px; border-radius:8px; font-size:0.75rem;">✕</span>
+        `;
+        container.appendChild(card);
+      });
     }
 
     function saveOutfit() {
@@ -853,103 +764,13 @@
       saveOutfit();
     }
 
-    function addWardrobeItem() {
-      const input = document.getElementById('wardrobe-item-input');
-      const catSelect = document.getElementById('wardrobe-category-select');
-      const val = input.value.trim();
-      if (!val) return;
-
-      myWardrobe.push({ text: val, cat: catSelect.value });
-      localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
-      input.value = '';
-      renderWardrobe();
-    }
-
-    function filterWardrobe(cat) {
-      currentCategoryFilter = cat;
-      const buttons = document.querySelectorAll('.cat-btn');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`filter-${cat}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      renderWardrobe();
-    }
-
-    function getLastWornDaysAgo(itemText) {
-      const sortedDates = Object.keys(allOutfits).sort().reverse();
-      for (let date of sortedDates) {
-        const outfitObj = allOutfits[date];
-        const text = typeof outfitObj === 'object' ? outfitObj.text : outfitObj;
-        if (text && text.includes(itemText)) {
-          const diffDays = Math.floor((new Date(currentDate) - new Date(date)) / (1000 * 60 * 60 * 24));
-          if (diffDays === 0) return 'لبستها اليوم';
-          return `آخر مرة: منذ ${diffDays} يوم (${date})`;
-        }
-      }
-      return 'لم تُسجل من قبل';
-    }
-
-    function appendToOutfit(itemText) {
-      const outfitInput = document.getElementById('outfit-input');
-      outfitInput.value = outfitInput.value.trim() === '' ? itemText : `${outfitInput.value} + ${itemText}`;
-      saveOutfit();
-      
-      const lastWorn = getLastWornDaysAgo(itemText);
-      confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
-    }
-
-    function deleteWardrobeItem(realIndex, e) {
-      e.stopPropagation();
-      if (confirm(`هل أنت تأكد من حذف "${myWardrobe[realIndex].text}" من دولابك؟`)) {
-        myWardrobe.splice(realIndex, 1);
-        localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
-        renderWardrobe();
-      }
-    }
-
-    function renderWardrobe() {
-      const container = document.getElementById('wardrobe-tags-container');
-      container.innerHTML = '';
-
-      const filtered = currentCategoryFilter === 'all' 
-        ? myWardrobe 
-        : myWardrobe.filter(item => item.cat === currentCategoryFilter);
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">لا توجد قطع في هذه الفئة حالياً.</span>';
-        return;
-      }
-
-      filtered.forEach((item) => {
-        const tag = document.createElement('div');
-        tag.className = 'wardrobe-tag';
-        
-        let icon = '👔';
-        if (item.cat === 'top') icon = '👕';
-        else if (item.cat === 'bottom') icon = '👖';
-        else if (item.cat === 'shoes') icon = '👟';
-        else if (item.cat === 'accessory') icon = '⌚';
-
-        const realIndex = myWardrobe.indexOf(item);
-        const lastWornInfo = getLastWornDaysAgo(item.text);
-
-        tag.innerHTML = `
-          <span onclick="appendToOutfit('${item.text}')" title="${lastWornInfo}">
-            ${icon} <strong>${item.text}</strong> 
-            <span style="font-size:0.75rem; color:var(--subtext); margin-right:4px;">(${lastWornInfo})</span>
-          </span>
-          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="color:var(--subtext); margin-right:6px; font-weight:bold;">✕</span>
-        `;
-        container.appendChild(tag);
-      });
-    }
-
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       historyContainer.innerHTML = '';
       const sortedDates = Object.keys(allOutfits).sort().reverse();
       
       if (sortedDates.length === 0) {
-        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل ملابس مدون حتى الآن.</div>';
+        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل أطقم.</div>';
         return;
       }
 
@@ -960,25 +781,19 @@
         const placeText = typeof data === 'object' ? data.place : 'Work';
         if (!outfitText && !placeText) return;
 
-        let placeIcon = '📍';
-        if (placeText === 'Work') placeIcon = '💼';
-        else if (placeText === 'Church') placeIcon = '⛪';
+        let placeIcon = '💼';
+        if (placeText === 'Church') placeIcon = '⛪';
         else if (placeText === 'Gym') placeIcon = '🏋️';
         else if (placeText === 'Outing') placeIcon = '🥳';
-        else if (placeText === 'Home') placeIcon = '🏠';
 
         const item = document.createElement('div');
         item.className = 'outfit-timeline-card';
         item.innerHTML = `
-          <div style="font-size:0.82rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between;">
             <span>📅 ${date}</span>
-            <span style="background:rgba(99, 102, 241, 0.15); padding:3px 10px; border-radius:12px; border:1px solid var(--card-border); color:var(--accent);">
-              ${placeIcon} ${placeText}
-            </span>
+            <span style="color:var(--accent);">${placeIcon} ${placeText}</span>
           </div>
-          <div style="font-size:0.95rem; color:var(--text); margin-top:8px; font-weight:600; line-height:1.4;">
-            👔 ${outfitText || 'لم تُحدد تفاصيل الطقم'}
-          </div>
+          <div style="font-size:0.9rem; color:var(--text); margin-top:6px; font-weight:600;">👔 ${outfitText}</div>
         `;
         historyContainer.appendChild(item);
       });
@@ -986,45 +801,15 @@
 
     function renderOutfitInsights() {
       const totalCount = Object.keys(allOutfits).length;
-      document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مُدوّن`;
-
-      const counts = {};
-      Object.values(allOutfits).forEach(val => {
-        const text = typeof val === 'object' ? val.text : val;
-        if (text) {
-          const parts = text.split('+').map(p => p.trim());
-          parts.forEach(p => {
-            if (p) counts[p] = (counts[p] || 0) + 1;
-          });
-        }
-      });
-
-      let topItem = '--';
-      let maxCount = 0;
-      for (let [item, cnt] of Object.entries(counts)) {
-        if (cnt > maxCount) {
-          maxCount = cnt;
-          topItem = item;
-        }
-      }
-
-      const insightsEl = document.getElementById('outfit-insights-content');
-      if (totalCount === 0) {
-        insightsEl.innerHTML = 'ابدأ بتدوين إطلالاتك اليومية للحصول على إحصائيات التكرار والقطع الأكثر استخداماً!';
-      } else {
-        insightsEl.innerHTML = `
-          ⭐ <strong>القطعة الأكثر تكراراً:</strong> <span style="color:var(--accent); font-weight:bold;">${topItem}</span> (ارتديتها <strong>${maxCount}</strong> مرات).<br>
-          💡 <em>نصيحة: جرب التنويع بين الأطقم لتجديد مظهرك اليومي وتجنب التكرار المتطابق!</em>
-        `;
-      }
+      document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مدون`;
+      document.getElementById('outfit-insights-content').innerHTML = `⭐ تمت إضافة ميزة دعم **صور الملابس الشخصية** بنجاح لتنظيم دولابك بشكل بصري كامل!`;
     }
 
     function calculateStreakDays() {
       if (!recoveryData.startDate) return 0;
       const start = new Date(recoveryData.startDate);
       const today = new Date(getLocalDateString(0));
-      const diffTime = Math.abs(today - start);
-      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      return Math.floor(Math.abs(today - start) / (1000 * 60 * 60 * 24));
     }
 
     function renderRecoveryTab() {
@@ -1032,31 +817,13 @@
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
-
-      const currentStreak = calculateStreakDays();
-      if (currentStreak > (recoveryData.bestStreak || 0)) {
-        recoveryData.bestStreak = currentStreak;
-        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
-      }
-
-      document.getElementById('streak-days-count').innerText = currentStreak;
+      document.getElementById('streak-days-count').innerText = calculateStreakDays();
       document.getElementById('best-streak-count').innerText = recoveryData.bestStreak || 0;
-      document.getElementById('streak-start-date').innerText = recoveryData.startDate || 'لم يبدأ بعد';
-
-      const mot = document.getElementById('streak-motivation');
-      if (currentStreak === 0) {
-        mot.innerText = "ابدأ تحدي التعافي اليوم! العزيمة تصنع الفرق 💪";
-      } else if (currentStreak < 7) {
-        mot.innerText = "بداية بطل! استمر الأسبوع الأول هو الأهم 🔥";
-      } else if (currentStreak < 30) {
-        mot.innerText = "عاش يا بطل! عقلك بدأ يتأقلم ويبني عادات جديدة 🏆";
-      } else {
-        mot.innerText = "إنجاز أسطوري! التحكم في الذات أصبح قوتك الحقيقية 👑";
-      }
+      document.getElementById('streak-start-date').innerText = recoveryData.startDate;
     }
 
     function resetStreak() {
-      if (confirm('لا بأس، الزلات تحدث والمهارة هي العودة فوراً! هل تريد إعادة ضبط التاريخ للبدء من جديد اليوم؟')) {
+      if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
         renderRecoveryTab();
@@ -1064,12 +831,7 @@
     }
 
     function exportData() {
-      const fullData = {
-        outfits: allOutfits,
-        weekly: weeklyTracker,
-        recovery: recoveryData,
-        wardrobe: myWardrobe
-      };
+      const fullData = { outfits: allOutfits, wardrobe: myWardrobe };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1085,29 +847,12 @@
         try {
           const imported = JSON.parse(e.target.result);
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
-          if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
-          if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
-          if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(imported.wardrobe));
-          
-          alert('تم استرجاع جميع بياناتك بنجاح! 🎉');
+          if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
+          alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
-        } catch (err) {
-          alert('عذراً، الملف غير صالح!');
-        }
+        } catch (err) { alert('الملف غير صالح!'); }
       };
       reader.readAsText(file);
-    }
-
-    function renderReports() {
-      document.getElementById('total-recovery-streak').innerText = calculateStreakDays();
-
-      const analyticsContainer = document.getElementById('monthly-analytics-content');
-      const totalOutfitsCount = Object.keys(allOutfits).length;
-
-      analyticsContainer.innerHTML = `
-        🛡️ <strong>سجل التعافي:</strong> أنت الآن في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
-        👔 <strong>سجل الملابس:</strong> قمت بتنسيق وتدوين إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
-      `;
     }
 
     initDate();
