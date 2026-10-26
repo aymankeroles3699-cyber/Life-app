@@ -372,7 +372,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية 🥗 -->
+    <!-- التابة الثانية: التغذية 🥗 (مع استعادة تفاصيل الأسبوع بالكامل) -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -386,10 +386,11 @@
         <div style="font-size: 0.9rem; color: var(--subtext);" id="next-fasting-date">📅 يبدأ في: 25 نوفمبر (43 يوماً)</div>
       </div>
 
+      <!-- كارت القواعد والتتبع الأسبوعي مع توضيح بداية ونهاية الأسبوع -->
       <div class="card">
         <h3 style="margin: 0 0 4px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
-        <div id="week-range-label" style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:12px;">
-          🗓️ الأسبوع الحالي: ...
+        <div id="week-range-label" style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom:12px; background: rgba(99, 102, 241, 0.1); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--card-border);">
+          🗓️ الأسبوع الحالي: من الأحد (...) إلى السبت (...)
         </div>
         
         <div class="weekly-rule-item">
@@ -406,6 +407,18 @@
           <span>🥳 يوم خروج أسبوعي</span>
           <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
         </div>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--card-border); padding-top:8px;">
+          <span style="font-size:0.75rem; color:var(--subtext);">* يبدأ الأسبوع كل يوم أحد</span>
+          <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">إعادة ضبط العداد يدويًا</button>
+        </div>
+      </div>
+
+      <!-- كارت سجل وجبات اليوم -->
+      <div class="card">
+        <h3 style="margin: 0 0 8px 0;">📝 وجبات يوم: <span id="diet-date-label" style="color:var(--primary);"></span></h3>
+        <textarea id="diet-meal-input" rows="3" placeholder="اكتب وجبات اليوم هنا (مثال: الفطار كشري / الغداء صينية خضار نباتي...)" onkeyup="saveDietMeal()" style="width:100%; resize:vertical;"></textarea>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ وجبات اليوم تلقائياً</div>
       </div>
     </div>
 
@@ -599,9 +612,34 @@
     let currentCategoryFilter = 'all';
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
+    let allDietMeals = JSON.parse(localStorage.getItem('life_app_diet_meals_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: null, bestStreak: 0 };
-    let weeklyTracker = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || { tracker: { takeaway: false, soda: false, outing: false } };
+    
+    function getWeekRange(dateObj) {
+      const d = new Date(dateObj);
+      const day = d.getDay();
+      const sun = new Date(d);
+      sun.setDate(d.getDate() - day);
+      const sat = new Date(sun);
+      sat.setDate(sun.getDate() + 6);
+      
+      const format = (dt) => {
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const dayNum = String(dt.getDate()).padStart(2, '0');
+        return `${m}/${dayNum}`;
+      };
+      return `من الأحد (${format(sun)}) إلى السبت (${format(sat)})`;
+    }
+
+    let currentWeekKey = getWeekRange(new Date());
+    let savedWeeklyData = JSON.parse(localStorage.getItem('life_app_weekly_tracker')) || {};
+    let weeklyTracker = { takeaway: false, soda: false, outing: false };
+    if (savedWeeklyData.weekKey === currentWeekKey && savedWeeklyData.tracker) {
+      weeklyTracker = savedWeeklyData.tracker;
+    } else {
+      localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
+    }
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -613,6 +651,7 @@
       } else if (tabName === 'diet') {
         document.getElementById('tab-diet').classList.add('active');
         document.getElementById('btn-diet').classList.add('active');
+        renderDietTab();
       } else if (tabName === 'outfit') {
         document.getElementById('tab-outfit').classList.add('active');
         document.getElementById('btn-outfit').classList.add('active');
@@ -645,12 +684,88 @@
       currentDate = newDate;
       document.getElementById('display-date-label').innerText = currentDate;
       if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
+      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
+      renderDietTab();
     }
 
     function setQuickDate(offset) {
       currentDate = getLocalDateString(offset);
       document.getElementById('selected-date').value = currentDate;
       document.getElementById('display-date-label').innerText = currentDate;
+      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
+      renderDietTab();
+    }
+
+    function renderDietTab() {
+      const selectedDateObj = new Date(currentDate);
+      const dayOfWeek = selectedDateObj.getDay();
+      const statusBadge = document.getElementById('diet-day-status');
+
+      if (dayOfWeek === 3 || dayOfWeek === 5) {
+        statusBadge.className = "diet-badge badge-fasting";
+        statusBadge.innerHTML = "🌿 يوم صيام نباتي (أكل الكنيسة النباتي)";
+      } else {
+        statusBadge.className = "diet-badge badge-home";
+        statusBadge.innerHTML = "🏠 أكل البيت الصحي";
+      }
+
+      document.getElementById('week-range-label').innerText = `🗓️ الأسبوع الحالي: ${currentWeekKey}`;
+      if (document.getElementById('diet-date-label')) document.getElementById('diet-date-label').innerText = currentDate;
+      if (document.getElementById('diet-meal-input')) document.getElementById('diet-meal-input').value = allDietMeals[currentDate] || '';
+      updateWeeklyButtons();
+    }
+
+    function saveDietMeal() {
+      const mealInput = document.getElementById('diet-meal-input');
+      allDietMeals[currentDate] = mealInput.value;
+      localStorage.setItem('life_app_diet_meals_by_date', JSON.stringify(allDietMeals));
+    }
+
+    function toggleWeeklyRule(key) {
+      weeklyTracker[key] = !weeklyTracker[key];
+      localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
+      if (weeklyTracker[key]) {
+        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+      }
+      updateWeeklyButtons();
+    }
+
+    function resetWeeklyTracker() {
+      if (confirm('هل تريد إعادة ضبط القواعد الأسبوعية لبدء أسبوع جديد؟')) {
+        weeklyTracker = { takeaway: false, soda: false, outing: false };
+        localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
+        updateWeeklyButtons();
+      }
+    }
+
+    function updateWeeklyButtons() {
+      const btnTakeaway = document.getElementById('btn-takeaway');
+      const btnSoda = document.getElementById('btn-soda');
+      const btnOuting = document.getElementById('btn-outing');
+
+      if (weeklyTracker.takeaway) {
+        btnTakeaway.innerText = "تمت الوجبة (1/1) ✅";
+        btnTakeaway.style.background = "var(--accent)";
+      } else {
+        btnTakeaway.innerText = "لم تُستخدم (0/1)";
+        btnTakeaway.style.background = "var(--primary)";
+      }
+
+      if (weeklyTracker.soda) {
+        btnSoda.innerText = "تم الشرب (1/1) ✅";
+        btnSoda.style.background = "var(--accent)";
+      } else {
+        btnSoda.innerText = "لم يُشرب (0/1)";
+        btnSoda.style.background = "var(--primary)";
+      }
+
+      if (weeklyTracker.outing) {
+        btnOuting.innerText = "تمت الخروجة (1/1) ✅";
+        btnOuting.style.background = "var(--accent)";
+      } else {
+        btnOuting.innerText = "لم تُخرج بعد (0/1)";
+        btnOuting.style.background = "var(--primary)";
+      }
     }
 
     function previewImageName(input) {
@@ -864,7 +979,7 @@
     }
 
     function exportData() {
-      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData };
+      const fullData = { outfits: allOutfits, dietMeals: allDietMeals, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -880,8 +995,10 @@
         try {
           const imported = JSON.parse(e.target.result);
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
+          if (imported.dietMeals) localStorage.setItem('life_app_diet_meals_by_date', JSON.stringify(imported.dietMeals));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
+          if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
         } catch (err) { alert('الملف غير صالح!'); }
