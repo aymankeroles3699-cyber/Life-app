@@ -238,13 +238,18 @@
       background: rgba(99, 102, 241, 0.15);
       border: 1px solid var(--primary);
       color: var(--text);
-      padding: 6px 12px;
+      padding: 8px 14px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .wardrobe-tag:hover {
+      background: rgba(99, 102, 241, 0.3);
+      transform: translateY(-2px);
     }
 
     .bottom-nav {
@@ -312,15 +317,33 @@
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
       color: var(--subtext);
-      padding: 6px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 0.85rem;
       cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
     }
     .cat-btn.active {
       background: var(--primary);
       color: white;
       border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    /* أسلوب العرض الجديد لسجل أطقم الملابس */
+    .outfit-timeline-card {
+      position: relative;
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      border-right: 4px solid var(--primary);
+      transition: transform 0.2s ease;
+    }
+    .outfit-timeline-card:hover {
+      transform: translateX(-4px);
     }
   </style>
 </head>
@@ -408,21 +431,52 @@
       </div>
     </div>
 
-    <!-- التابة الثالثة: الملابس -->
+    <!-- التابة الثالثة: الملابس المحدثة والمطورة بالكامل 👔 -->
     <div id="tab-outfit" class="tab-content">
-      <h2 style="margin-top: 0;">👔 دولاب الملابس وإطلالة اليوم</h2>
+      <h2 style="margin-top: 0; display:flex; justify-content:space-between; align-items:center;">
+        <span>👔 دولاب الملابس وتنسيق الطقم</span>
+      </h2>
 
-      <div class="card">
-        <h3 style="margin: 0 0 8px 0;">✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></h3>
-        <input type="text" id="outfit-place-input" placeholder="📍 المكان / المناسبة (مثال: العمل، الشارع، الجيم...)" onkeyup="saveOutfit()" style="width:100%; margin-bottom:10px; box-sizing:border-box;">
-        <textarea id="outfit-input" rows="3" placeholder="اختر من دولابك بالأسفل أو اكتب تفاصيل الطقم مباشرة..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
-        <div style="font-size:0.75rem; color:var(--accent); margin-top:4px;">✓ يتم حفظ طقم اليوم والمكان تلقائياً لهذا التاريخ</div>
+      <!-- 💡 كارت تحليلات وإحصائيات الدولاب الذكية -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.85rem; font-weight:bold; color:var(--primary);">✨ تحليلات الدولاب والتكرار</span>
+          <span style="font-size:0.75rem; color:var(--subtext);" id="outfit-total-count">0 أطقم مدونة</span>
+        </div>
+        <div style="font-size:0.9rem; color:var(--text); line-height:1.5;" id="outfit-insights-content">
+          جاري تحليل أكثر الأطقم تكراراً...
+        </div>
       </div>
 
+      <!-- 👔 كارت اختيار وتنسيق طقم اليوم -->
       <div class="card">
-        <h3 style="margin: 0 0 8px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
+        <h3 style="margin: 0 0 10px 0; color:var(--text); display:flex; justify-content:space-between; align-items:center;">
+          <span>✨ طقم يوم: <span id="outfit-date-label" style="color:var(--primary);"></span></span>
+          <button onclick="clearCurrentOutfitInput()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">مسح التفاصيل</button>
+        </h3>
+        
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <select id="outfit-place-select" style="flex:1;" onchange="saveOutfit()">
+            <option value="Work">💼 العمل (Work)</option>
+            <option value="Church">⛪ الكنيسة (Church)</option>
+            <option value="Gym">🏋️ الجيم (Gym)</option>
+            <option value="Outing">🥳 خروجة (Outing)</option>
+            <option value="Home">🏠 البيت (Home)</option>
+            <option value="Other">📍 أخرى</option>
+          </select>
+        </div>
+
+        <textarea id="outfit-input" rows="3" placeholder="اضغط على أي القطع من الدولاب بالأسفل لبناء طقمك، أو اكتب تفاصيل الطقم مباشرة هنا..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
+        <div style="font-size:0.75rem; color:var(--accent); margin-top:6px; display:flex; justify-content:space-between;">
+          <span>✓ يتم الحفظ تلقائياً لهذا التاريخ</span>
+        </div>
+      </div>
+
+      <!-- ➕ كارت إضافة وتصفح قطع الدولاب -->
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0;">➕ إضافة قطعة جديدة لدولابك</h3>
         <div class="input-group" style="flex-direction:column; gap:8px;">
-          <input type="text" id="wardrobe-item-input" placeholder="مثال: قميص أبيض، بنطلون زيتي...">
+          <input type="text" id="wardrobe-item-input" placeholder="اكتب اسم القطعة (مثال: Pale yellow shirt / بنطلون زيتي)...">
           <div style="display:flex; gap:8px;">
             <select id="wardrobe-category-select">
               <option value="top">👕 علوي (قميص/تيشيرت)</option>
@@ -430,13 +484,13 @@
               <option value="shoes">👟 أحذية</option>
               <option value="accessory">⌚ إكسسوارات / أخرى</option>
             </select>
-            <button class="add-btn" onclick="addWardrobeItem()">إضافة</button>
+            <button class="add-btn" onclick="addWardrobeItem()">إضافة للدولاب</button>
           </div>
         </div>
 
-        <h4 style="margin: 16px 0 8px 0; color:var(--subtext);">اختر الفئة للفلترة والضغط لإضافة الطقم:</h4>
-        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
-          <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">الكل</button>
+        <h4 style="margin: 16px 0 10px 0; color:var(--subtext); font-size:0.9rem;">اختر التصنيف للتصفح والضغط لتنسيق الطقم:</h4>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+          <button class="cat-btn active" id="filter-all" onclick="filterWardrobe('all')">الكل 🗂️</button>
           <button class="cat-btn" id="filter-top" onclick="filterWardrobe('top')">👕 علوي</button>
           <button class="cat-btn" id="filter-bottom" onclick="filterWardrobe('bottom')">👖 سفلي</button>
           <button class="cat-btn" id="filter-shoes" onclick="filterWardrobe('shoes')">👟 أحذية</button>
@@ -446,8 +500,11 @@
         <div id="wardrobe-tags-container" class="wardrobe-tags"></div>
       </div>
 
+      <!-- 📜 سجل الملابس التاريخي المطور -->
       <div class="card">
-        <h3 style="margin: 0 0 10px 0;">📜 سجل الملابس اليومي</h3>
+        <h3 style="margin: 0 0 12px 0; color:var(--text); display:flex; justify-content:space-between; align-items:center;">
+          <span>📜 سجل إطلالات الملابس اليومي</span>
+        </h3>
         <div id="outfit-history-container"></div>
       </div>
     </div>
@@ -611,10 +668,19 @@
     };
 
     let rawWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_v2')) || [
-      { text: 'قميص أبيض', cat: 'top' },
-      { text: 'بنطلون جينز أزرق', cat: 'bottom' },
-      { text: 'تيشيرت أسود', cat: 'top' },
-      { text: 'كوتشي أبيض', cat: 'shoes' }
+      { text: 'Pale yellow shirt', cat: 'top' },
+      { text: 'Sky blue striped shirt', cat: 'top' },
+      { text: 'Plain burgundy shirt', cat: 'top' },
+      { text: 'Plain turquoise shirt', cat: 'top' },
+      { text: 'Plain dark petrol blue shirt', cat: 'top' },
+      { text: 'Plain navy shirt', cat: 'top' },
+      { text: 'Off white striped', cat: 'top' },
+      { text: 'Plain grey shirt', cat: 'top' },
+      { text: 'Pink striped shirt', cat: 'top' },
+      { text: 'Ice jeans', cat: 'bottom' },
+      { text: 'Off white gabardine', cat: 'bottom' },
+      { text: 'Grey gabardine', cat: 'bottom' },
+      { text: 'Dark blue with white fading', cat: 'bottom' }
     ];
 
     let myWardrobe = rawWardrobe.map(item => {
@@ -660,10 +726,11 @@
         document.getElementById('btn-outfit').classList.add('active');
         document.getElementById('outfit-date-label').innerText = currentDate;
         const currentData = allOutfits[currentDate] || {};
-        document.getElementById('outfit-place-input').value = typeof currentData === 'object' ? (currentData.place || '') : '';
+        document.getElementById('outfit-place-select').value = typeof currentData === 'object' ? (currentData.place || 'Work') : 'Work';
         document.getElementById('outfit-input').value = typeof currentData === 'object' ? (currentData.text || '') : currentData;
         renderWardrobe();
         renderOutfitHistory();
+        renderOutfitInsights();
       } else if (tabName === 'recovery') {
         document.getElementById('tab-recovery').classList.add('active');
         document.getElementById('btn-recovery').classList.add('active');
@@ -727,9 +794,7 @@
 
     function toggleWeeklyRule(key) {
       weeklyTracker[key] = !weeklyTracker[key];
-      // حفظ فوري ومؤكد في الذاكرة لضمان عدم ضياع التحديث عند الخروج من التطبيق
       localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
-      
       if (weeklyTracker[key]) {
         confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
       }
@@ -771,6 +836,186 @@
       } else {
         btnOuting.innerText = "لم تُخرج بعد (0/1)";
         btnOuting.style.background = "var(--primary)";
+      }
+    }
+
+    function saveOutfit() {
+      const outfitInput = document.getElementById('outfit-input');
+      const placeSelect = document.getElementById('outfit-place-select');
+      allOutfits[currentDate] = { text: outfitInput.value, place: placeSelect.value };
+      localStorage.setItem('life_app_outfits_by_date', JSON.stringify(allOutfits));
+      renderOutfitHistory();
+      renderOutfitInsights();
+    }
+
+    function clearCurrentOutfitInput() {
+      document.getElementById('outfit-input').value = '';
+      saveOutfit();
+    }
+
+    function addWardrobeItem() {
+      const input = document.getElementById('wardrobe-item-input');
+      const catSelect = document.getElementById('wardrobe-category-select');
+      const val = input.value.trim();
+      if (!val) return;
+
+      myWardrobe.push({ text: val, cat: catSelect.value });
+      localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
+      input.value = '';
+      renderWardrobe();
+    }
+
+    function filterWardrobe(cat) {
+      currentCategoryFilter = cat;
+      const buttons = document.querySelectorAll('.cat-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`filter-${cat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderWardrobe();
+    }
+
+    function getLastWornDaysAgo(itemText) {
+      const sortedDates = Object.keys(allOutfits).sort().reverse();
+      for (let date of sortedDates) {
+        const outfitObj = allOutfits[date];
+        const text = typeof outfitObj === 'object' ? outfitObj.text : outfitObj;
+        if (text && text.includes(itemText)) {
+          const diffDays = Math.floor((new Date(currentDate) - new Date(date)) / (1000 * 60 * 60 * 24));
+          if (diffDays === 0) return 'لبستها اليوم';
+          return `آخر مرة: منذ ${diffDays} يوم (${date})`;
+        }
+      }
+      return 'لم تُسجل من قبل';
+    }
+
+    function appendToOutfit(itemText) {
+      const outfitInput = document.getElementById('outfit-input');
+      outfitInput.value = outfitInput.value.trim() === '' ? itemText : `${outfitInput.value} + ${itemText}`;
+      saveOutfit();
+      
+      const lastWorn = getLastWornDaysAgo(itemText);
+      confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
+    }
+
+    function deleteWardrobeItem(realIndex, e) {
+      e.stopPropagation();
+      if (confirm(`هل أنت تأكد من حذف "${myWardrobe[realIndex].text}" من دولابك؟`)) {
+        myWardrobe.splice(realIndex, 1);
+        localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
+        renderWardrobe();
+      }
+    }
+
+    function renderWardrobe() {
+      const container = document.getElementById('wardrobe-tags-container');
+      container.innerHTML = '';
+
+      const filtered = currentCategoryFilter === 'all' 
+        ? myWardrobe 
+        : myWardrobe.filter(item => item.cat === currentCategoryFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">لا توجد قطع في هذه الفئة حالياً.</span>';
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const tag = document.createElement('div');
+        tag.className = 'wardrobe-tag';
+        
+        let icon = '👔';
+        if (item.cat === 'top') icon = '👕';
+        else if (item.cat === 'bottom') icon = '👖';
+        else if (item.cat === 'shoes') icon = '👟';
+        else if (item.cat === 'accessory') icon = '⌚';
+
+        const realIndex = myWardrobe.indexOf(item);
+        const lastWornInfo = getLastWornDaysAgo(item.text);
+
+        tag.innerHTML = `
+          <span onclick="appendToOutfit('${item.text}')" title="${lastWornInfo}">
+            ${icon} <strong>${item.text}</strong> 
+            <span style="font-size:0.75rem; color:var(--subtext); margin-right:4px;">(${lastWornInfo})</span>
+          </span>
+          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="color:var(--subtext); margin-right:6px; font-weight:bold;">✕</span>
+        `;
+        container.appendChild(tag);
+      });
+    }
+
+    function renderOutfitHistory() {
+      const historyContainer = document.getElementById('outfit-history-container');
+      historyContainer.innerHTML = '';
+      const sortedDates = Object.keys(allOutfits).sort().reverse();
+      
+      if (sortedDates.length === 0) {
+        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل ملابس مدون حتى الآن.</div>';
+        return;
+      }
+
+      sortedDates.forEach(date => {
+        const data = allOutfits[date];
+        if (!data) return;
+        const outfitText = typeof data === 'object' ? data.text : data;
+        const placeText = typeof data === 'object' ? data.place : 'Work';
+        if (!outfitText && !placeText) return;
+
+        let placeIcon = '📍';
+        if (placeText === 'Work') placeIcon = '💼';
+        else if (placeText === 'Church') placeIcon = '⛪';
+        else if (placeText === 'Gym') placeIcon = '🏋️';
+        else if (placeText === 'Outing') placeIcon = '🥳';
+        else if (placeText === 'Home') placeIcon = '🏠';
+
+        const item = document.createElement('div');
+        item.className = 'outfit-timeline-card';
+        item.innerHTML = `
+          <div style="font-size:0.82rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+            <span>📅 ${date}</span>
+            <span style="background:rgba(99, 102, 241, 0.15); padding:3px 10px; border-radius:12px; border:1px solid var(--card-border); color:var(--accent);">
+              ${placeIcon} ${placeText}
+            </span>
+          </div>
+          <div style="font-size:0.95rem; color:var(--text); margin-top:8px; font-weight:600; line-height:1.4;">
+            👔 ${outfitText || 'لم تُحدد تفاصيل الطقم'}
+          </div>
+        `;
+        historyContainer.appendChild(item);
+      });
+    }
+
+    function renderOutfitInsights() {
+      const totalCount = Object.keys(allOutfits).length;
+      document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مُدوّن`;
+
+      const counts = {};
+      Object.values(allOutfits).forEach(val => {
+        const text = typeof val === 'object' ? val.text : val;
+        if (text) {
+          const parts = text.split('+').map(p => p.trim());
+          parts.forEach(p => {
+            if (p) counts[p] = (counts[p] || 0) + 1;
+          });
+        }
+      });
+
+      let topItem = '--';
+      let maxCount = 0;
+      for (let [item, cnt] of Object.entries(counts)) {
+        if (cnt > maxCount) {
+          maxCount = cnt;
+          topItem = item;
+        }
+      }
+
+      const insightsEl = document.getElementById('outfit-insights-content');
+      if (totalCount === 0) {
+        insightsEl.innerHTML = 'ابدأ بتدوين إطلالاتك اليومية للحصول على إحصائيات التكرار والقطع الأكثر استخداماً!';
+      } else {
+        insightsEl.innerHTML = `
+          ⭐ <strong>القطعة الأكثر تكراراً:</strong> <span style="color:var(--accent); font-weight:bold;">${topItem}</span> (ارتديتها <strong>${maxCount}</strong> مرات).<br>
+          💡 <em>نصيحة: جرب التنويع بين الأطقم لتجديد مظهرك اليومي وتجنب التكرار المتطابق!</em>
+        `;
       }
     }
 
@@ -816,109 +1061,6 @@
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
         renderRecoveryTab();
       }
-    }
-
-    function saveOutfit() {
-      const outfitInput = document.getElementById('outfit-input');
-      const placeInput = document.getElementById('outfit-place-input');
-      allOutfits[currentDate] = { text: outfitInput.value, place: placeInput.value };
-      localStorage.setItem('life_app_outfits_by_date', JSON.stringify(allOutfits));
-      renderOutfitHistory();
-    }
-
-    function addWardrobeItem() {
-      const input = document.getElementById('wardrobe-item-input');
-      const catSelect = document.getElementById('wardrobe-category-select');
-      const val = input.value.trim();
-      if (!val) return;
-
-      myWardrobe.push({ text: val, cat: catSelect.value });
-      localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
-      input.value = '';
-      renderWardrobe();
-    }
-
-    function filterWardrobe(cat) {
-      currentCategoryFilter = cat;
-      const buttons = document.querySelectorAll('.cat-btn');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`filter-${cat}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      renderWardrobe();
-    }
-
-    function appendToOutfit(itemText) {
-      const outfitInput = document.getElementById('outfit-input');
-      outfitInput.value = outfitInput.value.trim() === '' ? itemText : `${outfitInput.value} + ${itemText}`;
-      saveOutfit();
-    }
-
-    function deleteWardrobeItem(realIndex, e) {
-      e.stopPropagation();
-      myWardrobe.splice(realIndex, 1);
-      localStorage.setItem('life_app_my_wardrobe_v2', JSON.stringify(myWardrobe));
-      renderWardrobe();
-    }
-
-    function renderWardrobe() {
-      const container = document.getElementById('wardrobe-tags-container');
-      container.innerHTML = '';
-
-      const filtered = currentCategoryFilter === 'all' 
-        ? myWardrobe 
-        : myWardrobe.filter(item => item.cat === currentCategoryFilter);
-
-      if (filtered.length === 0) {
-        container.innerHTML = '<span style="color:var(--subtext); font-size:0.85rem; padding:8px 0;">لا توجد قطع في هذه الفئة حالياً.</span>';
-        return;
-      }
-
-      filtered.forEach((item) => {
-        const tag = document.createElement('div');
-        tag.className = 'wardrobe-tag';
-        
-        let icon = '👔';
-        if (item.cat === 'top') icon = '👕';
-        else if (item.cat === 'bottom') icon = '👖';
-        else if (item.cat === 'shoes') icon = '👟';
-        else if (item.cat === 'accessory') icon = '⌚';
-
-        const realIndex = myWardrobe.indexOf(item);
-
-        tag.innerHTML = `
-          <span onclick="appendToOutfit('${item.text}')">${icon} ${item.text}</span>
-          <span onclick="deleteWardrobeItem(${realIndex}, event)" style="color:var(--subtext); margin-right:4px;">✕</span>
-        `;
-        container.appendChild(tag);
-      });
-    }
-
-    function renderOutfitHistory() {
-      const historyContainer = document.getElementById('outfit-history-container');
-      historyContainer.innerHTML = '';
-      const sortedDates = Object.keys(allOutfits).sort().reverse();
-      if (sortedDates.length === 0) {
-        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل ملابس.</div>';
-        return;
-      }
-      sortedDates.forEach(date => {
-        const data = allOutfits[date];
-        if (!data) return;
-        const outfitText = typeof data === 'object' ? data.text : data;
-        const placeText = typeof data === 'object' ? data.place : '';
-        if (!outfitText && !placeText) return;
-
-        const item = document.createElement('div');
-        item.style.cssText = "padding:10px; background:rgba(15,23,42,0.5); border:1px solid var(--card-border); border-radius:10px; margin-bottom:8px;";
-        item.innerHTML = `
-          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between;">
-            <span>📅 ${date}</span>
-            ${placeText ? `<span style="color:var(--accent);">📍 ${placeText}</span>` : ''}
-          </div>
-          <div style="font-size:0.9rem; color:var(--text); margin-top:4px;">👔 ${outfitText || 'لم تُحدد تفاصيل الطقم'}</div>
-        `;
-        historyContainer.appendChild(item);
-      });
     }
 
     function exportData() {
