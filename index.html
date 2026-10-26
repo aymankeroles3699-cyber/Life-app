@@ -6,7 +6,6 @@
   <title>Novara</title>
   <link rel="manifest" href="manifest.json">
   
-  <!-- نحدث روابط الأيقونات في الـ Meta Tags برابط صورتك الجديدة على GitHub -->
   <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
   <link rel="apple-touch-icon" href="icon.png">
   <meta name="theme-color" content="#090d16">
@@ -83,7 +82,7 @@
       transition: background 0.8s ease, color 0.8s ease;
     }
 
-    /* تصميم واجهة البداية (Splash Screen) المقترحة */
+    /* تصميم واجهة البداية (Splash Screen) */
     #splash-screen {
       position: fixed;
       top: 0;
@@ -100,9 +99,9 @@
     }
 
     #splash-screen img {
-      width: 250px; /* نكبر حجم الصورة الجديدة شوية */
+      width: 250px;
       height: 250px;
-      border-radius: 50%; /* نخليها دائرية عشان الأيقونة الجديدة */
+      border-radius: 50%;
       box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3);
       margin-bottom: 20px;
       object-fit: cover;
@@ -327,9 +326,8 @@
 </head>
 <body>
 
-  <!-- واجهة البداية (Splash Screen) المقترحة -->
+  <!-- واجهة البداية (Splash Screen) -->
   <div id="splash-screen" onclick="hideSplash()">
-    <!-- نحدث الصورة بصورتك الجديدة اللي اسمها icon.png على GitHub -->
     <img src="icon.png" alt="Novara Logo">
     <div class="splash-title">Novara</div>
     <div class="splash-subtitle">رحلة الانضباط وتطوير الذات</div>
@@ -547,7 +545,6 @@
   </div>
 
   <script>
-    // إخفاء واجهة البداية تلقائياً بعد ثانيتين أو عند الضغط عليها
     function hideSplash() {
       const splash = document.getElementById('splash-screen');
       if (splash) {
@@ -602,8 +599,8 @@
 
     let weeklyTracker = { takeaway: false, soda: false, outing: false };
     
-    if (savedWeeklyData.weekKey === currentWeekKey) {
-      weeklyTracker = savedWeeklyData.tracker || { takeaway: false, soda: false, outing: false };
+    if (savedWeeklyData.weekKey === currentWeekKey && savedWeeklyData.tracker) {
+      weeklyTracker = savedWeeklyData.tracker;
     } else {
       localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
     }
@@ -730,7 +727,9 @@
 
     function toggleWeeklyRule(key) {
       weeklyTracker[key] = !weeklyTracker[key];
+      // حفظ فوري ومؤكد في الذاكرة لضمان عدم ضياع التحديث عند الخروج من التطبيق
       localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
+      
       if (weeklyTracker[key]) {
         confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
       }
