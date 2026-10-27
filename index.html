@@ -207,11 +207,12 @@
       background: var(--primary);
       color: white;
       border: none;
-      padding: 12px 18px;
+      padding: 10px 16px;
       border-radius: 12px;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s;
+      font-size: 0.8rem;
     }
 
     .wardrobe-grid {
@@ -456,7 +457,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية 🥗 -->
+    <!-- التابة الثانية: التغذية 🥗 (بالمصطلحات الإنجليزية) -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0; margin-bottom: 16px;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -484,18 +485,18 @@
         </div>
         
         <div class="weekly-rule-row">
-          <span style="font-size: 0.9rem; font-weight: 500;">🍔 وجبة طعام جاهز (تيك أواي)</span>
-          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.8rem;">لم تُستخدم (0/1)</button>
+          <span style="font-size: 0.85rem; font-weight: 500;">🍔 Cheat Meal</span>
+          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn">Not Used (0/1)</button>
         </div>
 
         <div class="weekly-rule-row">
-          <span style="font-size: 0.9rem; font-weight: 500;">🥤 مشروب غازي</span>
-          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.8rem;">لم يُشرب (0/1)</button>
+          <span style="font-size: 0.85rem; font-weight: 500;">🥤 Soft Drink</span>
+          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn">Not Used (0/1)</button>
         </div>
 
         <div class="weekly-rule-row">
-          <span style="font-size: 0.9rem; font-weight: 500;">🥳 يوم خروج أسبوعي</span>
-          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.8rem;">لم تُخرج بعد (0/1)</button>
+          <span style="font-size: 0.85rem; font-weight: 500;">🥳 Weekly Outing</span>
+          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn">Not Used (0/1)</button>
         </div>
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--card-border); padding-top:10px;">
@@ -559,7 +560,7 @@
           </div>
           <div id="image-file-name" style="font-size:0.75rem; color:var(--accent);"></div>
           
-          <button class="add-btn" onclick="addWardrobeItemWithImage()" style="margin-top:4px;">حفظ القطعة في الدولاب</button>
+          <button class="add-btn" onclick="addWardrobeItemWithImage()" style="margin-top:4px; padding:12px;">حفظ القطعة في الدولاب</button>
         </div>
 
         <h4 style="margin: 16px 0 10px 0; color:var(--subtext); font-size:0.9rem;">تصنيفات الدولاب:</h4>
@@ -643,8 +644,8 @@
         <h3 style="margin: 0 0 8px 0; color: var(--accent);">💾 النسخ الاحتياطي للبيانات</h3>
         <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">احفظ أهدافك وبياناتك واسترجعها في أي وقت:</div>
         <div style="display:flex; gap:8px;">
-          <button class="add-btn" style="flex:1; background:var(--accent);" onclick="exportData()">تصدير نسخة 📥</button>
-          <button class="add-btn" style="flex:1; background:var(--primary);" onclick="document.getElementById('import-file').click()">استرجاع 📤</button>
+          <button class="add-btn" style="flex:1; background:var(--accent); padding:12px;" onclick="exportData()">تصدير نسخة 📥</button>
+          <button class="add-btn" style="flex:1; background:var(--primary); padding:12px;" onclick="document.getElementById('import-file').click()">استرجاع 📤</button>
           <input type="file" id="import-file" style="display:none;" onchange="importData(event)">
         </div>
       </div>
@@ -691,7 +692,6 @@
       }
     }
 
-    // إخفاء شاشة البداية تلقائياً بعد ثانيتين أو عند النقر عليها
     setTimeout(hideSplash, 2000);
 
     function applyTimeBasedTheme() {
@@ -838,26 +838,26 @@
       const btnOuting = document.getElementById('btn-outing');
 
       if (weeklyTracker.takeaway) {
-        btnTakeaway.innerText = "تمت الوجبة (1/1) ✅";
+        btnTakeaway.innerText = "Used (1/1) ✅";
         btnTakeaway.style.background = "var(--accent)";
       } else {
-        btnTakeaway.innerText = "لم تُستخدم (0/1)";
+        btnTakeaway.innerText = "Not Used (0/1)";
         btnTakeaway.style.background = "var(--primary)";
       }
 
       if (weeklyTracker.soda) {
-        btnSoda.innerText = "تم الشرب (1/1) ✅";
+        btnSoda.innerText = "Used (1/1) ✅";
         btnSoda.style.background = "var(--accent)";
       } else {
-        btnSoda.innerText = "لم يُشرب (0/1)";
+        btnSoda.innerText = "Not Used (0/1)";
         btnSoda.style.background = "var(--primary)";
       }
 
       if (weeklyTracker.outing) {
-        btnOuting.innerText = "تمت الخروجة (1/1) ✅";
+        btnOuting.innerText = "Used (1/1) ✅";
         btnOuting.style.background = "var(--accent)";
       } else {
-        btnOuting.innerText = "لم تُخرج بعد (0/1)";
+        btnOuting.innerText = "Not Used (0/1)";
         btnOuting.style.background = "var(--primary)";
       }
     }
