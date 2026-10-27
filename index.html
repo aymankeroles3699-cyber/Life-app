@@ -331,7 +331,6 @@
       border-right: 4px solid var(--primary);
     }
 
-    /* تنسيق صور القطع داخل السجل اليومي */
     .history-outfit-images {
       display: flex;
       gap: 8px;
@@ -388,7 +387,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية 🥗 (بدون خانة وجبات اليوم) -->
+    <!-- التابة الثانية: التغذية 🥗 -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -900,7 +899,6 @@
       saveOutfit();
     }
 
-    // دالة استخراج وتوليد الصور المصغرة المرتبطة بأسماء القطع في الطقم
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       historyContainer.innerHTML = '';
@@ -923,7 +921,6 @@
         else if (placeText === 'Gym') placeIcon = '🏋️';
         else if (placeText === 'Outing') placeIcon = '🥳';
 
-        // مطابقة الأسماء في الطقم مع صور القطع المخزنة في الدولاب
         let thumbsHTML = '';
         if (outfitText) {
           const parts = outfitText.split('+').map(p => p.trim());
@@ -972,13 +969,27 @@
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
-      document.getElementById('streak-days-count').innerText = calculateStreakDays();
-      document.getElementById('best-streak-count').innerText = recoveryData.bestStreak || 0;
+      
+      const currentStreak = calculateStreakDays();
+      
+      // تحديث الرقم القياسي تلقائياً ليناسب العداد الحالي أو يتجاوزه
+      if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
+        recoveryData.bestStreak = currentStreak;
+        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+      }
+
+      document.getElementById('streak-days-count').innerText = currentStreak;
+      document.getElementById('best-streak-count').innerText = recoveryData.bestStreak;
       document.getElementById('streak-start-date').innerText = recoveryData.startDate;
     }
 
     function resetStreak() {
       if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
+        const currentStreak = calculateStreakDays();
+        // حفظ الرقم القياسي الحالي كأعلى رقم قبل إعادة الضبط
+        if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
+          recoveryData.bestStreak = currentStreak;
+        }
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
         renderRecoveryTab();
