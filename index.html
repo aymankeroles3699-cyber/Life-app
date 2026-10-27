@@ -351,6 +351,24 @@
       border: 1px solid var(--card-border);
       background: rgba(255,255,255,0.05);
     }
+
+    /* أزرار فلترة السجل */
+    .history-filter-btn {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--subtext);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .history-filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
   </style>
 </head>
 <body>
@@ -505,7 +523,20 @@
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 12px 0; color:var(--text);">📜 سجل إطلالات الملابس اليومي</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin: 0; color:var(--text);">📜 سجل الإطلالات</h3>
+        </div>
+        
+        <!-- أزرار فلترة سجل الإطلالات -->
+        <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px;" id="history-filters-container">
+          <button class="history-filter-btn active" id="hist-filter-all" onclick="filterHistory('all')">الكل 🗂️</button>
+          <button class="history-filter-btn" id="hist-filter-Work" onclick="filterHistory('Work')">💼 العمل</button>
+          <button class="history-filter-btn" id="hist-filter-Church" onclick="filterHistory('Church')">⛪ الكنيسة</button>
+          <button class="history-filter-btn" id="hist-filter-Gym" onclick="filterHistory('Gym')">🏋️ الجيم</button>
+          <button class="history-filter-btn" id="hist-filter-Outing" onclick="filterHistory('Outing')">🥳 خروجة</button>
+          <button class="history-filter-btn" id="hist-filter-Home" onclick="filterHistory('Home')">🏠 البيت</button>
+        </div>
+
         <div id="outfit-history-container"></div>
       </div>
     </div>
@@ -623,6 +654,7 @@
 
     let currentDate = getLocalDateString(0);
     let currentCategoryFilter = 'all';
+    let currentHistoryFilter = 'all'; // متغير فلتر السجل
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
@@ -843,6 +875,15 @@
       renderWardrobe();
     }
 
+    // دالة فلترة سجل الإطلالات
+    function filterHistory(placeCat) {
+      currentHistoryFilter = placeCat;
+      document.querySelectorAll('.history-filter-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`hist-filter-${placeCat}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderOutfitHistory();
+    }
+
     function appendToOutfit(itemText) {
       const outfitInput = document.getElementById('outfit-input');
       outfitInput.value = outfitInput.value.trim() === '' ? itemText : `${outfitInput.value} + ${itemText}`;
@@ -905,7 +946,7 @@
       saveOutfit();
     }
 
-    // سجل إطلالات الملابس بتصميم آمن وخفيف بدون أي تكرار
+    // سجل الإطلالات مع دعم الفلترة الكاملة وصور القطع
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       if (!historyContainer) return;
@@ -917,12 +958,21 @@
         return;
       }
 
+      let displayedCount = 0;
+
       sortedDates.forEach(date => {
         const data = allOutfits[date];
         if (!data) return;
         const outfitText = typeof data === 'object' ? data.text : data;
         const placeText = typeof data === 'object' ? data.place : 'Work';
         if (!outfitText && !placeText) return;
+
+        // تطبيق الفلتر المختار
+        if (currentHistoryFilter !== 'all' && placeText !== currentHistoryFilter) {
+          return;
+        }
+
+        displayedCount++;
 
         let placeIcon = '💼';
         let placeName = 'العمل';
@@ -963,9 +1013,12 @@
         `;
         historyContainer.appendChild(item);
       });
+
+      if (displayedCount === 0) {
+        historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center; padding: 10px;">لا توجد إطلالات مسجلة لهذه الفئة.</div>';
+      }
     }
 
-    // تحليلات الدولاب السريعة والمستقرة
     function renderOutfitInsights() {
       const totalCount = Object.keys(allOutfits).length;
       const countEl = document.getElementById('outfit-total-count');
@@ -995,7 +1048,7 @@
       insightsEl.innerHTML = `
         📊 إجمالي الأطقم المسجلة: <strong>${totalCount} يوم</strong><br>
         🎯 الوجهة الأكثر ارتياداً: <strong>${favoritePlace}</strong><br>
-        💡 يتم عرض صور القطع بوضوح داخل السجل لتسهيل متابعة إطلالاتك.
+        💡 استخدم أزرار الفلترة أعلاه لعرض إطلالات كل وجهة بسهولة.
       `;
     }
 
