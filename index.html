@@ -276,32 +276,68 @@
       color: var(--primary);
     }
 
-    .diet-badge {
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-weight: bold;
+    /* تصميم جديد وعصري لتاب التغذية */
+    .diet-hero-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(16, 185, 129, 0.25));
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+      padding: 20px;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
-    .badge-fasting {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid var(--accent);
-      color: #34d399;
+
+    .diet-status-pill {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
     }
-    .badge-home {
-      background: rgba(99, 102, 241, 0.2);
+    .pill-home {
+      background: rgba(99, 102, 241, 0.25);
       border: 1px solid var(--primary);
       color: #a5b4fc;
     }
-    .weekly-rule-item {
+    .pill-fasting {
+      background: rgba(16, 185, 129, 0.25);
+      border: 1px solid var(--accent);
+      color: #34d399;
+    }
+
+    .fasting-countdown-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .weekly-tracker-container {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .weekly-rule-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px dashed var(--card-border);
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
     }
-    .weekly-rule-item:last-child {
-      border-bottom: none;
+    .weekly-rule-row:hover {
+      border-color: var(--primary);
     }
 
     .cat-btn {
@@ -369,7 +405,6 @@
       border-color: var(--primary);
     }
 
-    /* تصميم شبكة الأوسمة */
     .badges-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -433,42 +468,52 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية 🥗 -->
+    <!-- التابة الثانية: التغذية 🥗 (بتصميم جديد وعصري) -->
     <div id="tab-diet" class="tab-content">
-      <h2 style="margin-top: 0;">🥗 نظام التغذية واللايف ستايل</h2>
+      <h2 style="margin-top: 0; margin-bottom: 16px;">🥗 نظام التغذية واللايف ستايل</h2>
 
-      <div id="diet-day-status" class="diet-badge badge-home">
-        🏠 أكل البيت الصحي
+      <!-- بطالة حالة اليوم -->
+      <div class="diet-hero-card">
+        <div id="diet-day-status" class="diet-status-pill pill-home">
+          🏠 أكل البيت الصحي
+        </div>
+        <div style="font-size: 0.85rem; color: var(--subtext); margin-top: 4px;">حالة النظام الغذائي لليوم المحدد</div>
       </div>
 
-      <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3); text-align: center;">
-        <h3 style="margin: 0 0 6px 0; color: var(--accent);">⏳ الصيام القادم</h3>
-        <div style="font-size: 1.2rem; font-weight: bold; color: var(--text); margin-bottom: 4px;" id="next-fasting-name">صوم الميلاد المجيد</div>
-        <div style="font-size: 0.9rem; color: var(--subtext);" id="next-fasting-date">📅 يبدأ في: 25 نوفمبر (43 يوماً)</div>
+      <!-- بطاقة الصيام القادم -->
+      <div class="fasting-countdown-card">
+        <div style="font-size: 0.8rem; font-weight: bold; color: var(--accent); margin-bottom: 6px;">⏳ العد التنازلي للصيام</div>
+        <div style="font-size: 1.25rem; font-weight: bold; color: var(--text); margin-bottom: 4px;" id="next-fasting-name">صوم الميلاد المجيد</div>
+        <div style="font-size: 0.85rem; color: var(--subtext);" id="next-fasting-date">📅 يبدأ في: 25 نوفمبر (43 يوماً)</div>
       </div>
 
-      <div class="card">
-        <h3 style="margin: 0 0 4px 0;">📊 القواعد والتتبع الأسبوعي (1 مرة/أسبوع)</h3>
-        <div id="week-range-label" style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom:12px; background: rgba(99, 102, 241, 0.1); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--card-border);">
+      <!-- بطاقة القواعد والتتبع الأسبوعي -->
+      <div class="weekly-tracker-container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="margin: 0; font-size: 1rem; color: var(--text);">📊 التتبع الأسبوعي</h3>
+          <span style="font-size: 0.75rem; color: var(--accent); background: rgba(16, 185, 129, 0.15); padding: 3px 8px; border-radius: 8px;">معدل (1 مرة/أسبوع)</span>
+        </div>
+
+        <div id="week-range-label" style="font-size:0.8rem; color:var(--primary); font-weight:bold; margin-bottom:14px; background: rgba(99, 102, 241, 0.1); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--card-border); text-align: center;">
           🗓️ الأسبوع الحالي: من الأحد (...) إلى السبت (...)
         </div>
         
-        <div class="weekly-rule-item">
-          <span>🍔 وجبة طعام جاهز (تيك أواي)</span>
-          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُستخدم (0/1)</button>
+        <div class="weekly-rule-row">
+          <span style="font-size: 0.9rem; font-weight: 500;">🍔 وجبة طعام جاهز (تيك أواي)</span>
+          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="padding:6px 14px; font-size:0.8rem;">لم تُستخدم (0/1)</button>
         </div>
 
-        <div class="weekly-rule-item">
-          <span>🥤 مشروب غازي</span>
-          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم يُشرب (0/1)</button>
+        <div class="weekly-rule-row">
+          <span style="font-size: 0.9rem; font-weight: 500;">🥤 مشروب غازي</span>
+          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="padding:6px 14px; font-size:0.8rem;">لم يُشرب (0/1)</button>
         </div>
 
-        <div class="weekly-rule-item">
-          <span>🥳 يوم خروج أسبوعي</span>
-          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.85rem;">لم تُخرج بعد (0/1)</button>
+        <div class="weekly-rule-row">
+          <span style="font-size: 0.9rem; font-weight: 500;">🥳 يوم خروج أسبوعي</span>
+          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="padding:6px 14px; font-size:0.8rem;">لم تُخرج بعد (0/1)</button>
         </div>
         
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--card-border); padding-top:8px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--card-border); padding-top:10px;">
           <span style="font-size:0.75rem; color:var(--subtext);">* يبدأ الأسبوع كل يوم أحد</span>
           <button onclick="resetWeeklyTracker()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline;">إعادة ضبط العداد يدويًا</button>
         </div>
@@ -562,25 +607,21 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التعافي 🛡️ (محدثة بالعداد الدقيق والأوسمة) -->
+    <!-- التابة الرابعة: التعافي 🛡️ -->
     <div id="tab-recovery" class="tab-content">
       <h2 style="margin-top: 0;">🛡️ رحلة التعافي والتحكم بالذات</h2>
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
         <div style="font-size:0.9rem; color:var(--subtext);">عداد التعافي المستمر</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">0</div>
-        <!-- عداد الساعات والدقائق الدقيق -->
         <div style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom: 6px;" id="streak-time-detail">⏱️ 0 ساعة و 0 دقيقة</div>
         <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
       </div>
 
-      <!-- كارت الأوسمة والإنجازات -->
       <div class="card">
         <h3 style="margin: 0 0 8px 0; color:var(--accent); font-size:1rem;">🏅 أوسمة الإنجاز والبطولة</h3>
         <div style="font-size:0.75rem; color:var(--subtext); margin-bottom:10px;">تنفتح الأوسمة تلقائياً كلما تقدمت في رحلة انتصارك:</div>
-        <div class="badges-grid" id="badges-container">
-          <!-- يتم تعبئتها ديناميكياً -->
-        </div>
+        <div class="badges-grid" id="badges-container"></div>
       </div>
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
@@ -776,10 +817,10 @@
       const statusBadge = document.getElementById('diet-day-status');
 
       if (dayOfWeek === 3 || dayOfWeek === 5) {
-        statusBadge.className = "diet-badge badge-fasting";
-        statusBadge.innerHTML = "🌿 يوم صيام نباتي (أكل الكنيسة النباتي)";
+        statusBadge.className = "diet-status-pill pill-fasting";
+        statusBadge.innerHTML = "🌿 صيام نباتي (أكل الكنيسة)";
       } else {
-        statusBadge.className = "diet-badge badge-home";
+        statusBadge.className = "diet-status-pill pill-home";
         statusBadge.innerHTML = "🏠 أكل البيت الصحي";
       }
 
@@ -1081,7 +1122,6 @@
       `;
     }
 
-    // حساب العداد الدقيق (بالأيام والساعات والدقائق)
     function getDetailedStreak() {
       if (!recoveryData.startDate) return { days: 0, hours: 0, minutes: 0 };
       const start = new Date(recoveryData.startDate + 'T00:00:00');
@@ -1186,7 +1226,7 @@
     }
 
     function importData(event) {
-      const file = event.target.files[0];
+      The file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
