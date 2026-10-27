@@ -352,7 +352,6 @@
       background: rgba(255,255,255,0.05);
     }
 
-    /* أزرار فلترة السجل */
     .history-filter-btn {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
@@ -368,6 +367,29 @@
       background: var(--primary);
       color: white;
       border-color: var(--primary);
+    }
+
+    /* تصميم شبكة الأوسمة */
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .badge-item {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+      opacity: 0.4;
+      transition: all 0.3s;
+    }
+    .badge-item.unlocked {
+      opacity: 1;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(99, 102, 241, 0.2));
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
     }
   </style>
 </head>
@@ -527,7 +549,6 @@
           <h3 style="margin: 0; color:var(--text);">📜 سجل الإطلالات</h3>
         </div>
         
-        <!-- أزرار فلترة سجل الإطلالات -->
         <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px;" id="history-filters-container">
           <button class="history-filter-btn active" id="hist-filter-all" onclick="filterHistory('all')">الكل 🗂️</button>
           <button class="history-filter-btn" id="hist-filter-Work" onclick="filterHistory('Work')">💼 العمل</button>
@@ -541,14 +562,25 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التعافي 🛡️ -->
+    <!-- التابة الرابعة: التعافي 🛡️ (محدثة بالعداد الدقيق والأوسمة) -->
     <div id="tab-recovery" class="tab-content">
       <h2 style="margin-top: 0;">🛡️ رحلة التعافي والتحكم بالذات</h2>
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
         <div style="font-size:0.9rem; color:var(--subtext);">عداد التعافي المستمر</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">0</div>
+        <!-- عداد الساعات والدقائق الدقيق -->
+        <div style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom: 6px;" id="streak-time-detail">⏱️ 0 ساعة و 0 دقيقة</div>
         <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
+      </div>
+
+      <!-- كارت الأوسمة والإنجازات -->
+      <div class="card">
+        <h3 style="margin: 0 0 8px 0; color:var(--accent); font-size:1rem;">🏅 أوسمة الإنجاز والبطولة</h3>
+        <div style="font-size:0.75rem; color:var(--subtext); margin-bottom:10px;">تنفتح الأوسمة تلقائياً كلما تقدمت في رحلة انتصارك:</div>
+        <div class="badges-grid" id="badges-container">
+          <!-- يتم تعبئتها ديناميكياً -->
+        </div>
       </div>
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
@@ -654,7 +686,7 @@
 
     let currentDate = getLocalDateString(0);
     let currentCategoryFilter = 'all';
-    let currentHistoryFilter = 'all'; // متغير فلتر السجل
+    let currentHistoryFilter = 'all';
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
@@ -875,7 +907,6 @@
       renderWardrobe();
     }
 
-    // دالة فلترة سجل الإطلالات
     function filterHistory(placeCat) {
       currentHistoryFilter = placeCat;
       document.querySelectorAll('.history-filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -946,7 +977,6 @@
       saveOutfit();
     }
 
-    // سجل الإطلالات مع دعم الفلترة الكاملة وصور القطع
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       if (!historyContainer) return;
@@ -967,7 +997,6 @@
         const placeText = typeof data === 'object' ? data.place : 'Work';
         if (!outfitText && !placeText) return;
 
-        // تطبيق الفلتر المختار
         if (currentHistoryFilter !== 'all' && placeText !== currentHistoryFilter) {
           return;
         }
@@ -1052,11 +1081,44 @@
       `;
     }
 
-    function calculateStreakDays() {
-      if (!recoveryData.startDate) return 0;
-      const start = new Date(recoveryData.startDate);
-      const today = new Date(getLocalDateString(0));
-      return Math.floor(Math.abs(today - start) / (1000 * 60 * 60 * 24));
+    // حساب العداد الدقيق (بالأيام والساعات والدقائق)
+    function getDetailedStreak() {
+      if (!recoveryData.startDate) return { days: 0, hours: 0, minutes: 0 };
+      const start = new Date(recoveryData.startDate + 'T00:00:00');
+      const now = new Date();
+      const diffMs = now - start;
+      if (diffMs < 0) return { days: 0, hours: 0, minutes: 0 };
+
+      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      return { days, hours, minutes };
+    }
+
+    function renderBadges(daysCount) {
+      const container = document.getElementById('badges-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const milestones = [
+        { days: 3, label: '3 أيام', icon: '🥉' },
+        { days: 7, label: 'أسبوع', icon: '🥈' },
+        { days: 14, label: 'أسبوعين', icon: '🥇' },
+        { days: 30, label: 'شهر', icon: '🏆' },
+        { days: 50, label: '50 يوم', icon: '💎' },
+        { days: 100, label: '100 يوم', icon: '👑' }
+      ];
+
+      milestones.forEach(m => {
+        const isUnlocked = daysCount >= m.days;
+        const badgeDiv = document.createElement('div');
+        badgeDiv.className = `badge-item ${isUnlocked ? 'unlocked' : ''}`;
+        badgeDiv.innerHTML = `
+          <div style="font-size:1.5rem;">${m.icon}</div>
+          <div style="font-size:0.75rem; font-weight:bold; margin-top:4px; color:var(--text);">${m.label}</div>
+        `;
+        container.appendChild(badgeDiv);
+      });
     }
 
     function renderRecoveryTab() {
@@ -1065,24 +1127,31 @@
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
       
-      const currentStreak = calculateStreakDays();
+      const streak = getDetailedStreak();
+      const currentStreak = streak.days;
+
       if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
         recoveryData.bestStreak = currentStreak;
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
 
       const streakEl = document.getElementById('streak-days-count');
+      const timeDetailEl = document.getElementById('streak-time-detail');
       const bestEl = document.getElementById('best-streak-count');
       const startEl = document.getElementById('streak-start-date');
 
       if (streakEl) streakEl.innerText = currentStreak;
+      if (timeDetailEl) timeDetailEl.innerText = `⏱️ ${streak.hours} ساعة و ${streak.minutes} دقيقة`;
       if (bestEl) bestEl.innerText = recoveryData.bestStreak;
       if (startEl) startEl.innerText = recoveryData.startDate;
+
+      renderBadges(currentStreak);
     }
 
     function resetStreak() {
       if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
-        const currentStreak = calculateStreakDays();
+        const streak = getDetailedStreak();
+        const currentStreak = streak.days;
         if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
           recoveryData.bestStreak = currentStreak;
         }
@@ -1093,14 +1162,15 @@
     }
 
     function renderReports() {
+      const streak = getDetailedStreak();
       const totalStreakEl = document.getElementById('total-recovery-streak');
       const monthlyEl = document.getElementById('monthly-analytics-content');
       
-      if (totalStreakEl) totalStreakEl.innerText = calculateStreakDays();
+      if (totalStreakEl) totalStreakEl.innerText = streak.days;
       if (monthlyEl) {
         const totalOutfitsCount = Object.keys(allOutfits).length;
         monthlyEl.innerHTML = `
-          🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
+          🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${streak.days}</strong> من التعافي.<br>
           👔 <strong>سجل الملابس:</strong> قمت بتنسيق إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
         `;
       }
