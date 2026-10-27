@@ -323,27 +323,39 @@
 
     .outfit-timeline-card {
       position: relative;
-      padding: 14px 16px;
-      background: rgba(15, 23, 42, 0.6);
+      padding: 16px;
+      background: rgba(15, 23, 42, 0.7);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      margin-bottom: 12px;
+      border-radius: 18px;
+      margin-bottom: 14px;
       border-right: 4px solid var(--primary);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    .history-outfit-images {
+    /* تنسيق حديث ومميز لصور السجل اليومي */
+    .history-outfit-container {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .history-thumbs-grid {
+      display: flex;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-top: 8px;
     }
     .history-thumb {
-      width: 50px;
-      height: 50px;
+      width: 65px;
+      height: 65px;
       object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      border: 2px solid var(--card-border);
       background: rgba(255,255,255,0.05);
+      transition: transform 0.2s;
+    }
+    .history-thumb:hover {
+      transform: scale(1.05);
+      border-color: var(--primary);
     }
   </style>
 </head>
@@ -435,11 +447,11 @@
 
       <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.3);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <span style="font-size:0.85rem; font-weight:bold; color:var(--primary);">✨ تحليلات الدولاب</span>
+          <span style="font-size:0.85rem; font-weight:bold; color:var(--primary);">✨ تحليلات الدولاب الذكية</span>
           <span style="font-size:0.75rem; color:var(--subtext);" id="outfit-total-count">0 أطقم مدونة</span>
         </div>
-        <div style="font-size:0.9rem; color:var(--text); line-height:1.5;" id="outfit-insights-content">
-          جاري تحليلات القطع الأكثر تكراراً...
+        <div style="font-size:0.9rem; color:var(--text); line-height:1.6;" id="outfit-insights-content">
+          جاري حساب الإحصائيات...
         </div>
       </div>
 
@@ -499,7 +511,7 @@
       </div>
 
       <div class="card">
-        <h3 style="margin: 0 0 12px 0; color:var(--text);">📜 سجل إطلالات الملابس اليومي بالصور</h3>
+        <h3 style="margin: 0 0 12px 0; color:var(--text);">📜 سجل إطلالات الملابس اليومي</h3>
         <div id="outfit-history-container"></div>
       </div>
     </div>
@@ -899,6 +911,7 @@
       saveOutfit();
     }
 
+    // سجل إطلالات الملابس بتصميم حديث ومميز مع صور القطع
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
       historyContainer.innerHTML = '';
@@ -917,9 +930,12 @@
         if (!outfitText && !placeText) return;
 
         let placeIcon = '💼';
-        if (placeText === 'Church') placeIcon = '⛪';
-        else if (placeText === 'Gym') placeIcon = '🏋️';
-        else if (placeText === 'Outing') placeIcon = '🥳';
+        let placeName = 'العمل';
+        if (placeText === 'Church') { placeIcon = '⛪'; placeName = 'الكنيسة'; }
+        else if (placeText === 'Gym') { placeIcon = '🏋️'; placeName = 'الجيم'; }
+        else if (placeText === 'Outing') { placeIcon = '🥳'; placeName = 'خروجة'; }
+        else if (placeText === 'Home') { placeIcon = '🏠'; placeName = 'البيت'; }
+        else if (placeText === 'Other') { placeIcon = '📍'; placeName = 'أخرى'; }
 
         let thumbsHTML = '';
         if (outfitText) {
@@ -933,28 +949,54 @@
           });
 
           if (matchedImgs.length > 0) {
-            thumbsHTML = `<div class="history-outfit-images">` + matchedImgs.map(img => `<img src="${img}" class="history-thumb">`).join('') + `</div>`;
+            thumbsHTML = `<div class="history-thumbs-grid">` + matchedImgs.map(img => `<img src="${img}" class="history-thumb">`).join('') + `</div>`;
           }
         }
 
         const item = document.createElement('div');
         item.className = 'outfit-timeline-card';
         item.innerHTML = `
-          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between;">
-            <span>📅 ${date}</span>
-            <span style="color:var(--accent);">${placeIcon} ${placeText}</span>
+          <div style="font-size:0.8rem; color:var(--primary); font-weight:bold; display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+            <span style="background:rgba(99, 102, 241, 0.15); padding: 3px 8px; border-radius: 8px; border: 1px solid var(--card-border);">${placeIcon} ${placeName}</span>
+            <span style="color:var(--subtext);">📅 ${date}</span>
           </div>
-          <div style="font-size:0.9rem; color:var(--text); margin-top:6px; font-weight:600;">👔 ${outfitText}</div>
-          ${thumbsHTML}
+          <div class="history-outfit-container">
+            ${thumbsHTML}
+            <div style="font-size:0.9rem; color:var(--text); font-weight:600; flex:1; line-height: 1.4;">👔 ${outfitText}</div>
+          </div>
         `;
         historyContainer.appendChild(item);
       });
     }
 
+    // تحليلات الدولاب الفعالة والمحدثة
     function renderOutfitInsights() {
       const totalCount = Object.keys(allOutfits).length;
       document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مدون`;
-      document.getElementById('outfit-insights-content').innerHTML = `⭐ سجل الملابس يعرض إطلالاتك مدعومة بصور القطع الشخصية بوضوح تام!`;
+      
+      let placeCounts = {};
+      Object.values(allOutfits).forEach(item => {
+        let p = typeof item === 'object' ? item.place : 'Work';
+        placeCounts[p] = (placeCounts[p] || 0) + 1;
+      });
+
+      let favoritePlace = 'العمل (Work)';
+      let maxP = -1;
+      for (let p in placeCounts) {
+        if (placeCounts[p] > maxP) {
+          maxP = placeCounts[p];
+          if (p === 'Church') favoritePlace = 'الكنيسة (Church)';
+          else if (p === 'Gym') favoritePlace = 'الجيم (Gym)';
+          else if (p === 'Outing') favoritePlace = 'الخروجات (Outing)';
+          else if (p === 'Home') favoritePlace = 'البيت (Home)';
+        }
+      }
+
+      document.getElementById('outfit-insights-content').innerHTML = `
+        📊 إجمالي الأطقم المسجلة: <strong>${totalCount} يوم</strong><br>
+        🎯 الوجهة الأكثر ارتياداً: <strong>${favoritePlace}</strong><br>
+        💡 يتم عرض صور القطع بوضوح داخل السجل لتسهيل متابعة إطلالاتك.
+      `;
     }
 
     function calculateStreakDays() {
@@ -971,8 +1013,6 @@
       }
       
       const currentStreak = calculateStreakDays();
-      
-      // تحديث الرقم القياسي تلقائياً ليناسب العداد الحالي أو يتجاوزه
       if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
         recoveryData.bestStreak = currentStreak;
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
@@ -986,7 +1026,6 @@
     function resetStreak() {
       if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
         const currentStreak = calculateStreakDays();
-        // حفظ الرقم القياسي الحالي كأعلى رقم قبل إعادة الضبط
         if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
           recoveryData.bestStreak = currentStreak;
         }
