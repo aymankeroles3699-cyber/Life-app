@@ -332,7 +332,6 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
-    /* تنسيق حديث ومميز لصور السجل اليومي */
     .history-outfit-container {
       display: flex;
       align-items: center;
@@ -345,17 +344,12 @@
       flex-wrap: wrap;
     }
     .history-thumb {
-      width: 65px;
-      height: 65px;
+      width: 55px;
+      height: 55px;
       object-fit: cover;
-      border-radius: 12px;
-      border: 2px solid var(--card-border);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
       background: rgba(255,255,255,0.05);
-      transition: transform 0.2s;
-    }
-    .history-thumb:hover {
-      transform: scale(1.05);
-      border-color: var(--primary);
     }
   </style>
 </head>
@@ -911,12 +905,13 @@
       saveOutfit();
     }
 
-    // سجل إطلالات الملابس بتصميم حديث ومميز مع صور القطع
+    // سجل إطلالات الملابس بتصميم آمن وخفيف بدون أي تكرار
     function renderOutfitHistory() {
       const historyContainer = document.getElementById('outfit-history-container');
+      if (!historyContainer) return;
       historyContainer.innerHTML = '';
-      const sortedDates = Object.keys(allOutfits).sort().reverse();
       
+      const sortedDates = Object.keys(allOutfits).sort().reverse();
       if (sortedDates.length === 0) {
         historyContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center;">لا يوجد سجل أطقم.</div>';
         return;
@@ -938,12 +933,13 @@
         else if (placeText === 'Other') { placeIcon = '📍'; placeName = 'أخرى'; }
 
         let thumbsHTML = '';
-        if (outfitText) {
+        if (outfitText && myWardrobe.length > 0) {
           const parts = outfitText.split('+').map(p => p.trim());
           let matchedImgs = [];
+          
           parts.forEach(partName => {
-            const foundItem = myWardrobe.find(w => w.text.toLowerCase() === partName.toLowerCase() || partName.toLowerCase().includes(w.text.toLowerCase()));
-            if (foundItem && foundItem.img) {
+            const foundItem = myWardrobe.find(w => w && w.text && (w.text.toLowerCase() === partName.toLowerCase() || partName.toLowerCase().includes(w.text.toLowerCase())));
+            if (foundItem && foundItem.img && !matchedImgs.includes(foundItem.img)) {
               matchedImgs.push(foundItem.img);
             }
           });
@@ -969,14 +965,18 @@
       });
     }
 
-    // تحليلات الدولاب الفعالة والمحدثة
+    // تحليلات الدولاب السريعة والمستقرة
     function renderOutfitInsights() {
       const totalCount = Object.keys(allOutfits).length;
-      document.getElementById('outfit-total-count').innerText = `${totalCount} يوم مدون`;
+      const countEl = document.getElementById('outfit-total-count');
+      const insightsEl = document.getElementById('outfit-insights-content');
       
+      if (countEl) countEl.innerText = `${totalCount} يوم مدون`;
+      if (!insightsEl) return;
+
       let placeCounts = {};
       Object.values(allOutfits).forEach(item => {
-        let p = typeof item === 'object' ? item.place : 'Work';
+        let p = typeof item === 'object' && item.place ? item.place : 'Work';
         placeCounts[p] = (placeCounts[p] || 0) + 1;
       });
 
@@ -992,7 +992,7 @@
         }
       }
 
-      document.getElementById('outfit-insights-content').innerHTML = `
+      insightsEl.innerHTML = `
         📊 إجمالي الأطقم المسجلة: <strong>${totalCount} يوم</strong><br>
         🎯 الوجهة الأكثر ارتياداً: <strong>${favoritePlace}</strong><br>
         💡 يتم عرض صور القطع بوضوح داخل السجل لتسهيل متابعة إطلالاتك.
@@ -1018,9 +1018,13 @@
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
 
-      document.getElementById('streak-days-count').innerText = currentStreak;
-      document.getElementById('best-streak-count').innerText = recoveryData.bestStreak;
-      document.getElementById('streak-start-date').innerText = recoveryData.startDate;
+      const streakEl = document.getElementById('streak-days-count');
+      const bestEl = document.getElementById('best-streak-count');
+      const startEl = document.getElementById('streak-start-date');
+
+      if (streakEl) streakEl.innerText = currentStreak;
+      if (bestEl) bestEl.innerText = recoveryData.bestStreak;
+      if (startEl) startEl.innerText = recoveryData.startDate;
     }
 
     function resetStreak() {
@@ -1036,17 +1040,22 @@
     }
 
     function renderReports() {
-      document.getElementById('total-recovery-streak').innerText = calculateStreakDays();
-      const totalOutfitsCount = Object.keys(allOutfits).length;
-      document.getElementById('monthly-analytics-content').innerHTML = `
-        🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
-        👔 <strong>سجل الملابس:</strong> قمت بتنسيق إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
-      `;
+      const totalStreakEl = document.getElementById('total-recovery-streak');
+      const monthlyEl = document.getElementById('monthly-analytics-content');
+      
+      if (totalStreakEl) totalStreakEl.innerText = calculateStreakDays();
+      if (monthlyEl) {
+        const totalOutfitsCount = Object.keys(allOutfits).length;
+        monthlyEl.innerHTML = `
+          🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${calculateStreakDays()}</strong> من التعافي.<br>
+          👔 <strong>سجل الملابس:</strong> قمت بتنسيق إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
+        `;
+      }
     }
 
     function exportData() {
       const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker };
-      const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `novara-backup-${getLocalDateString(0)}.json`;
