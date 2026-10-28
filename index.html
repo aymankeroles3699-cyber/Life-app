@@ -613,12 +613,12 @@
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
-          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:2px;" id="best-streak-count">0 يوم</div>
+          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:2px;" id="best-streak-count">9 أيام</div>
           <div style="font-size:0.75rem; color:var(--subtext); margin-top:2px;" id="best-streak-time">⏱️ 0 ساعة و 0 دقيقة</div>
         </div>
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
-          <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="streak-start-date">--</div>
+          <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="streak-start-date">2026-10-18</div>
         </div>
       </div>
 
@@ -719,7 +719,16 @@
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
-    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: null, bestStreak: 0, bestStart: null };
+    
+    // ضبط تاريخ البداية المخصص ليوم 18 أكتوبر
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestStreak: 9, bestMs: 9 * 24 * 60 * 60 * 1000, bestStart: "2026-10-18" };
+    if (!recoveryData.startDate) {
+      recoveryData.startDate = "2026-10-18";
+      recoveryData.bestStreak = 9;
+      recoveryData.bestMs = 9 * 24 * 60 * 60 * 1000;
+      recoveryData.bestStart = "2026-10-18";
+      localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+    }
     
     function getWeekRange(dateObj) {
       const d = new Date(dateObj);
@@ -1133,7 +1142,6 @@
         "الانتصار على النفس هو أعظم انتصار في الحياة! ⚡",
         "استمر، كل ساعة تمضي تزيد من صلابتك وقوتك الداخلية! 🎯"
       ];
-      // اختيار رسالة تتغير بناءً على اليوم الحالي في السنة
       const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
       return messages[dayOfYear % messages.length];
     }
@@ -1165,18 +1173,10 @@
     }
 
     function renderRecoveryTab() {
-      if (!recoveryData.startDate) {
-        recoveryData.startDate = getLocalDateString(0);
-        recoveryData.bestStreak = 0;
-        recoveryData.bestStart = recoveryData.startDate;
-        localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
-      }
-      
       const currentStreakObj = getDetailedStreak(recoveryData.startDate);
       const currentDays = currentStreakObj.days;
-
-      // حساب أفضل رقم قياسي بالـ ملي ثانية مقارنة بالـ Start الحالي أو السابق
       let currentTotalMs = currentStreakObj.totalMs;
+
       let storedBestMs = recoveryData.bestMs || (recoveryData.bestStreak ? recoveryData.bestStreak * 24 * 60 * 60 * 1000 : 0);
 
       if (currentTotalMs >= storedBestMs) {
@@ -1186,7 +1186,6 @@
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
 
-      // حساب ساعات ودقائق أفضل رقم قياسي
       const bestMs = recoveryData.bestMs || currentTotalMs;
       const bestDays = Math.floor(bestMs / (1000 * 60 * 60 * 24));
       const bestHours = Math.floor((bestMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
