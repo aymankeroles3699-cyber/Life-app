@@ -457,7 +457,7 @@
       </div>
     </div>
 
-    <!-- التابة الثانية: التغذية 🥗 (بالمصطلحات الإنجليزية) -->
+    <!-- التابة الثانية: التغذية 🥗 -->
     <div id="tab-diet" class="tab-content">
       <h2 style="margin-top: 0; margin-bottom: 16px;">🥗 نظام التغذية واللايف ستايل</h2>
 
@@ -613,7 +613,8 @@
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
-          <div style="font-size:1.4rem; font-weight:bold; color:var(--primary);" id="best-streak-count">0</div>
+          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:2px;" id="best-streak-count">0 يوم</div>
+          <div style="font-size:0.75rem; color:var(--subtext); margin-top:2px;" id="best-streak-time">⏱️ 0 ساعة و 0 دقيقة</div>
         </div>
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
@@ -718,7 +719,7 @@
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
-    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: null, bestStreak: 0 };
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: null, bestStreak: 0, bestStart: null };
     
     function getWeekRange(dateObj) {
       const d = new Date(dateObj);
@@ -1109,17 +1110,32 @@
       `;
     }
 
-    function getDetailedStreak() {
-      if (!recoveryData.startDate) return { days: 0, hours: 0, minutes: 0 };
-      const start = new Date(recoveryData.startDate + 'T00:00:00');
+    function getDetailedStreak(startDateStr) {
+      if (!startDateStr) return { totalMs: 0, days: 0, hours: 0, minutes: 0 };
+      const start = new Date(startDateStr + 'T00:00:00');
       const now = new Date();
       const diffMs = now - start;
-      if (diffMs < 0) return { days: 0, hours: 0, minutes: 0 };
+      if (diffMs < 0) return { totalMs: 0, days: 0, hours: 0, minutes: 0 };
 
       const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      return { days, hours, minutes };
+      return { totalMs: diffMs, days, hours, minutes };
+    }
+
+    function getDailyMotivationMessage() {
+      const messages = [
+        "كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪",
+        "الإرادة القوية تصنع المستحيل، استمر في طريقك ولا تلتفت للوراء! 🌟",
+        "خطوة كل يوم تقربك من نسختك الأفضل والأكثر انضباطاً! 🦅",
+        "الصبر والثبات اليوم هما أساس فخرك غداً! 🏆",
+        "أنت تبني حياة جديدة بكل لحظة تحكم فيها نفسك! 🔥",
+        "الانتصار على النفس هو أعظم انتصار في الحياة! ⚡",
+        "استمر، كل ساعة تمضي تزيد من صلابتك وقوتك الداخلية! 🎯"
+      ];
+      // اختيار رسالة تتغير بناءً على اليوم الحالي في السنة
+      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+      return messages[dayOfYear % messages.length];
     }
 
     function renderBadges(daysCount) {
@@ -1151,37 +1167,61 @@
     function renderRecoveryTab() {
       if (!recoveryData.startDate) {
         recoveryData.startDate = getLocalDateString(0);
+        recoveryData.bestStreak = 0;
+        recoveryData.bestStart = recoveryData.startDate;
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
       
-      const streak = getDetailedStreak();
-      const currentStreak = streak.days;
+      const currentStreakObj = getDetailedStreak(recoveryData.startDate);
+      const currentDays = currentStreakObj.days;
 
-      if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
-        recoveryData.bestStreak = currentStreak;
+      // حساب أفضل رقم قياسي بالـ ملي ثانية مقارنة بالـ Start الحالي أو السابق
+      let currentTotalMs = currentStreakObj.totalMs;
+      let storedBestMs = recoveryData.bestMs || (recoveryData.bestStreak ? recoveryData.bestStreak * 24 * 60 * 60 * 1000 : 0);
+
+      if (currentTotalMs >= storedBestMs) {
+        recoveryData.bestMs = currentTotalMs;
+        recoveryData.bestStreak = currentDays;
+        recoveryData.bestStart = recoveryData.startDate;
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
 
+      // حساب ساعات ودقائق أفضل رقم قياسي
+      const bestMs = recoveryData.bestMs || currentTotalMs;
+      const bestDays = Math.floor(bestMs / (1000 * 60 * 60 * 24));
+      const bestHours = Math.floor((bestMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const bestMinutes = Math.floor((bestMs % (1000 * 60 * 60)) / (1000 * 60));
+
       const streakEl = document.getElementById('streak-days-count');
       const timeDetailEl = document.getElementById('streak-time-detail');
+      const motivationEl = document.getElementById('streak-motivation');
       const bestEl = document.getElementById('best-streak-count');
+      const bestTimeEl = document.getElementById('best-streak-time');
       const startEl = document.getElementById('streak-start-date');
 
-      if (streakEl) streakEl.innerText = currentStreak;
-      if (timeDetailEl) timeDetailEl.innerText = `⏱️ ${streak.hours} ساعة و ${streak.minutes} دقيقة`;
-      if (bestEl) bestEl.innerText = recoveryData.bestStreak;
-      if (startEl) startEl.innerText = recoveryData.startDate;
+      if (streakEl) streakEl.innerText = currentDays;
+      if (timeDetailEl) timeDetailEl.innerText = `⏱️ ${currentStreakObj.hours} ساعة و ${currentStreakObj.minutes} دقيقة`;
+      if (motivationEl) motivationEl.innerText = getDailyMotivationMessage();
+      
+      if (bestEl) bestEl.innerText = `${bestDays} يوم`;
+      if (bestTimeEl) bestTimeEl.innerText = `⏱️ ${bestHours} ساعة و ${bestMinutes} دقيقة`;
+      if (startEl) startEl.innerText = recoveryData.bestStart || recoveryData.startDate;
 
-      renderBadges(currentStreak);
+      renderBadges(currentDays);
     }
 
     function resetStreak() {
       if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
-        const streak = getDetailedStreak();
-        const currentStreak = streak.days;
-        if (!recoveryData.bestStreak || currentStreak > recoveryData.bestStreak) {
-          recoveryData.bestStreak = currentStreak;
+        const currentStreakObj = getDetailedStreak(recoveryData.startDate);
+        const currentTotalMs = currentStreakObj.totalMs;
+
+        let storedBestMs = recoveryData.bestMs || 0;
+        if (currentTotalMs > storedBestMs) {
+          recoveryData.bestMs = currentTotalMs;
+          recoveryData.bestStreak = currentStreakObj.days;
+          recoveryData.bestStart = recoveryData.startDate;
         }
+
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
         renderRecoveryTab();
@@ -1189,7 +1229,7 @@
     }
 
     function renderReports() {
-      const streak = getDetailedStreak();
+      const streak = getDetailedStreak(recoveryData.startDate);
       const totalStreakEl = document.getElementById('total-recovery-streak');
       const monthlyEl = document.getElementById('monthly-analytics-content');
       
