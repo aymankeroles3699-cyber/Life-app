@@ -593,7 +593,7 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التعافي 🛡️ (بالأيام الصافية فقط بدون ساعات ودقائق) -->
+    <!-- التابة الرابعة: التعافي 🛡️ -->
     <div id="tab-recovery" class="tab-content">
       <h2 style="margin-top: 0;">🛡️ رحلة التعافي والتحكم بالذات</h2>
 
@@ -628,53 +628,14 @@
       </div>
     </div>
 
-    <!-- التابة الخامسة: تعلم الإنجليزية 🎓 (بالأيام الصافية فقط) -->
-    <div id="tab-english" class="tab-content">
-      <h2 style="margin-top: 0;">🎓 تعلم وتطوير الإنجليزية</h2>
-
-      <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(56, 189, 248, 0.4);">
-        <div style="font-size:0.9rem; color:var(--subtext);">عدد أيام الممارسة المستمرة</div>
-        <div style="font-size:3.8rem; font-weight:bold; color:#38bdf8; margin:6px 0;" id="english-days-count">0</div>
-        <div style="font-size:0.85rem; color:var(--text); font-weight:bold; margin-top: 4px;" id="english-motivation">Consistency is the key to mastery! 🚀</div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin: 0 0 8px 0; color:#38bdf8; font-size:1rem;">🏅 أوسمة إنجاز اللغة</h3>
-        <div style="font-size:0.75rem; color:var(--subtext); margin-bottom:10px;">أوسمة الاستمرارية في تعلم وتطوير الإنجليزية:</div>
-        <div class="badges-grid" id="english-badges-container"></div>
-      </div>
-
-      <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
-        <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى سلسلة أيام</div>
-          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="english-best-count">0 يوم</div>
-        </div>
-        <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التعلم</div>
-          <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="english-start-date">2026-10-29</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin: 0 0 10px 0;">⚡ التحكم والإجراءات:</h3>
-        <button onclick="resetEnglishStreak()" style="background:rgba(56, 189, 248, 0.15); border:1px solid #38bdf8; color:#38bdf8; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
-          🔄 إعادة ضبط العداد (البدء من اليوم)
-        </button>
-      </div>
-    </div>
-
     <!-- التابة السادسة: التقارير 📊 -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
-      <div class="card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+      <div class="card" style="display: grid; grid-template-columns: 1fr; gap: 10px; text-align: center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">سجل تعافي العادة</div>
           <div style="font-size:1.5rem; font-weight:bold; color:var(--accent);" id="total-recovery-streak">0</div>
-        </div>
-        <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">أيام الإنجليزية</div>
-          <div style="font-size:1.5rem; font-weight:bold; color:#38bdf8;" id="total-english-streak">0</div>
         </div>
       </div>
 
@@ -714,10 +675,6 @@
     <button class="nav-btn" id="btn-recovery" onclick="switchTab('recovery')">
       <span style="font-size: 1.1rem;">🛡️</span>
       <span>التعافي</span>
-    </button>
-    <button class="nav-btn" id="btn-english" onclick="switchTab('english')">
-      <span style="font-size: 1.1rem;">🎓</span>
-      <span>الإنجليزية</span>
     </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
       <span style="font-size: 1.1rem;">📊</span>
@@ -769,7 +726,8 @@
       localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
     }
 
-    let englishData = JSON.parse(localStorage.getItem('life_app_english_data')) || { startDate: getLocalDateString(0), bestDays: 0, bestStart: getLocalDateString(0) };
+    // تصفير بيانات الإنجليزية مؤقتاً
+    localStorage.removeItem('life_app_english_data');
     
     function getWeekRange(dateObj) {
       const d = new Date(dateObj);
@@ -821,10 +779,6 @@
         document.getElementById('tab-recovery').classList.add('active');
         document.getElementById('btn-recovery').classList.add('active');
         renderRecoveryTab();
-      } else if (tabName === 'english') {
-        document.getElementById('tab-english').classList.add('active');
-        document.getElementById('btn-english').classList.add('active');
-        renderEnglishTab();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         document.getElementById('btn-reports').classList.add('active');
@@ -1164,12 +1118,10 @@
       `;
     }
 
-    // حساب الأيام الصافية فقط بناءً على التواريخ بغض النظر عن الساعات
     function getDailyDaysOnly(startDateStr) {
       if (!startDateStr) return 0;
       const start = new Date(startDateStr + 'T00:00:00');
       const now = new Date();
-      // تصفير ساعات التاريخ الحالي ليكون الحساب صافي باليوم تماماً
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
       const diffTime = today - startDateOnly;
@@ -1186,18 +1138,6 @@
         "أنت تبني حياة جديدة بكل لحظة تحكم فيها نفسك! 🔥",
         "الانتصار على النفس هو أعظم انتصار في الحياة! ⚡",
         "استمر، كل يوم يمضي يزيد من صلابتك وقوتك الداخلية! 🎯"
-      ];
-      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-      return messages[dayOfYear % messages.length];
-    }
-
-    function getEnglishMotivationMessage() {
-      const messages = [
-        "Consistency is the key to mastering English! 🚀",
-        "Every new word you learn is a step closer to fluency! 💡",
-        "Small daily progress adds up to huge results! 🔥",
-        "Speak with confidence, practice every single day! 🌟",
-        "Your English is improving faster than you think! 🎯"
       ];
       const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
       return messages[dayOfYear % messages.length];
@@ -1253,30 +1193,6 @@
       renderBadges(currentDays, 'badges-container');
     }
 
-    function renderEnglishTab() {
-      const currentDays = getDailyDaysOnly(englishData.startDate);
-
-      if (currentDays > (englishData.bestDays || 0)) {
-        englishData.bestDays = currentDays;
-        englishData.bestStart = englishData.startDate;
-        localStorage.setItem('life_app_english_data', JSON.stringify(englishData));
-      }
-
-      const bestDays = englishData.bestDays || currentDays;
-
-      const daysEl = document.getElementById('english-days-count');
-      const motEl = document.getElementById('english-motivation');
-      const bestEl = document.getElementById('english-best-count');
-      const startEl = document.getElementById('english-start-date');
-
-      if (daysEl) daysEl.innerText = currentDays;
-      if (motEl) motEl.innerText = getEnglishMotivationMessage();
-      if (bestEl) bestEl.innerText = `${bestDays} يوم`;
-      if (startEl) startEl.innerText = englishData.bestStart || englishData.startDate;
-
-      renderBadges(currentDays, 'english-badges-container');
-    }
-
     function resetStreak() {
       if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
         const currentDays = getDailyDaysOnly(recoveryData.startDate);
@@ -1291,43 +1207,25 @@
       }
     }
 
-    function resetEnglishStreak() {
-      if (confirm('هل تريد إعادة ضبط عداد الإنجليزية للبدء من اليوم؟')) {
-        const currentDays = getDailyDaysOnly(englishData.startDate);
-        if (currentDays > (englishData.bestDays || 0)) {
-          englishData.bestDays = currentDays;
-          englishData.bestStart = englishData.startDate;
-        }
-
-        englishData.startDate = getLocalDateString(0);
-        localStorage.setItem('life_app_english_data', JSON.stringify(englishData));
-        renderEnglishTab();
-      }
-    }
-
     function renderReports() {
       const recoveryDays = getDailyDaysOnly(recoveryData.startDate);
-      const englishDays = getDailyDaysOnly(englishData.startDate);
 
       const totalRecoveryEl = document.getElementById('total-recovery-streak');
-      const totalEnglishEl = document.getElementById('total-english-streak');
       const monthlyEl = document.getElementById('monthly-analytics-content');
       
       if (totalRecoveryEl) totalRecoveryEl.innerText = recoveryDays;
-      if (totalEnglishEl) totalEnglishEl.innerText = englishDays;
 
       if (monthlyEl) {
         const totalOutfitsCount = Object.keys(allOutfits).length;
         monthlyEl.innerHTML = `
           🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${recoveryDays}</strong>.<br>
-          🎓 <strong>تعلم الإنجليزية:</strong> أنت في اليوم الـ <strong>${englishDays}</strong> من الممارسة المستمرة.<br>
           👔 <strong>سجل الملابس:</strong> قمت بتنسيق إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
         `;
       }
     }
 
     function exportData() {
-      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, english: englishData, weekly: weeklyTracker };
+      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1345,7 +1243,6 @@
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
-          if (imported.english) localStorage.setItem('life_app_english_data', JSON.stringify(imported.english));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
