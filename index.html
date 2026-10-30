@@ -593,15 +593,14 @@
       </div>
     </div>
 
-    <!-- التابة الرابعة: التعافي 🛡️ -->
+    <!-- التابة الرابعة: التعافي 🛡️ (بالأيام الصافية فقط بدون ساعات ودقائق) -->
     <div id="tab-recovery" class="tab-content">
       <h2 style="margin-top: 0;">🛡️ رحلة التعافي والتحكم بالذات</h2>
 
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
-        <div style="font-size:0.9rem; color:var(--subtext);">عداد التعافي المستمر</div>
-        <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:4px 0;" id="streak-days-count">0</div>
-        <div style="font-size:0.85rem; color:var(--primary); font-weight:bold; margin-bottom: 6px;" id="streak-time-detail">⏱️ 0 ساعة و 0 دقيقة</div>
-        <div style="font-size:0.85rem; color:var(--text); font-weight:bold;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
+        <div style="font-size:0.9rem; color:var(--subtext);">عدد أيام التعافي المستمر</div>
+        <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:6px 0;" id="streak-days-count">0</div>
+        <div style="font-size:0.85rem; color:var(--text); font-weight:bold; margin-top: 4px;" id="streak-motivation">كل يوم ممتنع فيه هو انتصار لكرامتك وقوتك! 💪</div>
       </div>
 
       <div class="card">
@@ -612,9 +611,8 @@
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
-          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:2px;" id="best-streak-count">9 أيام</div>
-          <div style="font-size:0.75rem; color:var(--subtext); margin-top:2px;" id="best-streak-time">⏱️ 0 ساعة و 0 دقيقة</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي</div>
+          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="best-streak-count">9 أيام</div>
         </div>
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
@@ -630,7 +628,7 @@
       </div>
     </div>
 
-    <!-- التابة الخامسة: تعلم الإنجليزية 🎓 (بدون ساعات ودقائق) -->
+    <!-- التابة الخامسة: تعلم الإنجليزية 🎓 (بالأيام الصافية فقط) -->
     <div id="tab-english" class="tab-content">
       <h2 style="margin-top: 0;">🎓 تعلم وتطوير الإنجليزية</h2>
 
@@ -763,11 +761,10 @@
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     
-    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestStreak: 9, bestMs: 9 * 24 * 60 * 60 * 1000, bestStart: "2026-10-18" };
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 9, bestStart: "2026-10-18" };
     if (!recoveryData.startDate) {
       recoveryData.startDate = "2026-10-18";
-      recoveryData.bestStreak = 9;
-      recoveryData.bestMs = 9 * 24 * 60 * 60 * 1000;
+      recoveryData.bestDays = 9;
       recoveryData.bestStart = "2026-10-18";
       localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
     }
@@ -1167,26 +1164,17 @@
       `;
     }
 
-    function getDetailedStreak(startDateStr) {
-      if (!startDateStr) return { totalMs: 0, days: 0, hours: 0, minutes: 0 };
-      const start = new Date(startDateStr + 'T00:00:00');
-      const now = new Date();
-      const diffMs = now - start;
-      if (diffMs < 0) return { totalMs: 0, days: 0, hours: 0, minutes: 0 };
-
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      return { totalMs: diffMs, days, hours, minutes };
-    }
-
+    // حساب الأيام الصافية فقط بناءً على التواريخ بغض النظر عن الساعات
     function getDailyDaysOnly(startDateStr) {
       if (!startDateStr) return 0;
       const start = new Date(startDateStr + 'T00:00:00');
       const now = new Date();
-      const diffMs = now - start;
-      if (diffMs < 0) return 0;
-      return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      // تصفير ساعات التاريخ الحالي ليكون الحساب صافي باليوم تماماً
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+      const diffTime = today - startDateOnly;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays >= 0 ? diffDays : 0;
     }
 
     function getDailyMotivationMessage() {
@@ -1197,7 +1185,7 @@
         "الصبر والثبات اليوم هما أساس فخرك غداً! 🏆",
         "أنت تبني حياة جديدة بكل لحظة تحكم فيها نفسك! 🔥",
         "الانتصار على النفس هو أعظم انتصار في الحياة! ⚡",
-        "استمر، كل ساعة تمضي تزيد من صلابتك وقوتك الداخلية! 🎯"
+        "استمر، كل يوم يمضي يزيد من صلابتك وقوتك الداخلية! 🎯"
       ];
       const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
       return messages[dayOfYear % messages.length];
@@ -1242,37 +1230,24 @@
     }
 
     function renderRecoveryTab() {
-      const currentStreakObj = getDetailedStreak(recoveryData.startDate);
-      const currentDays = currentStreakObj.days;
-      let currentTotalMs = currentStreakObj.totalMs;
+      const currentDays = getDailyDaysOnly(recoveryData.startDate);
 
-      let storedBestMs = recoveryData.bestMs || (recoveryData.bestStreak ? recoveryData.bestStreak * 24 * 60 * 60 * 1000 : 0);
-
-      if (currentTotalMs >= storedBestMs) {
-        recoveryData.bestMs = currentTotalMs;
-        recoveryData.bestStreak = currentDays;
+      if (currentDays > (recoveryData.bestDays || 0)) {
+        recoveryData.bestDays = currentDays;
         recoveryData.bestStart = recoveryData.startDate;
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
       }
 
-      const bestMs = recoveryData.bestMs || currentTotalMs;
-      const bestDays = Math.floor(bestMs / (1000 * 60 * 60 * 24));
-      const bestHours = Math.floor((bestMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const bestMinutes = Math.floor((bestMs % (1000 * 60 * 60)) / (1000 * 60));
+      const bestDays = recoveryData.bestDays || currentDays;
 
       const streakEl = document.getElementById('streak-days-count');
-      const timeDetailEl = document.getElementById('streak-time-detail');
       const motivationEl = document.getElementById('streak-motivation');
       const bestEl = document.getElementById('best-streak-count');
-      const bestTimeEl = document.getElementById('best-streak-time');
       const startEl = document.getElementById('streak-start-date');
 
       if (streakEl) streakEl.innerText = currentDays;
-      if (timeDetailEl) timeDetailEl.innerText = `⏱️ ${currentStreakObj.hours} ساعة و ${currentStreakObj.minutes} دقيقة`;
       if (motivationEl) motivationEl.innerText = getDailyMotivationMessage();
-      
       if (bestEl) bestEl.innerText = `${bestDays} يوم`;
-      if (bestTimeEl) bestTimeEl.innerText = `⏱️ ${bestHours} ساعة و ${bestMinutes} دقيقة`;
       if (startEl) startEl.innerText = recoveryData.bestStart || recoveryData.startDate;
 
       renderBadges(currentDays, 'badges-container');
@@ -1304,13 +1279,9 @@
 
     function resetStreak() {
       if (confirm('هل تريد إعادة ضبط التعافي للبدء من اليوم؟')) {
-        const currentStreakObj = getDetailedStreak(recoveryData.startDate);
-        const currentTotalMs = currentStreakObj.totalMs;
-
-        let storedBestMs = recoveryData.bestMs || 0;
-        if (currentTotalMs > storedBestMs) {
-          recoveryData.bestMs = currentTotalMs;
-          recoveryData.bestStreak = currentStreakObj.days;
+        const currentDays = getDailyDaysOnly(recoveryData.startDate);
+        if (currentDays > (recoveryData.bestDays || 0)) {
+          recoveryData.bestDays = currentDays;
           recoveryData.bestStart = recoveryData.startDate;
         }
 
@@ -1335,20 +1306,20 @@
     }
 
     function renderReports() {
-      const recoveryStreak = getDetailedStreak(recoveryData.startDate);
+      const recoveryDays = getDailyDaysOnly(recoveryData.startDate);
       const englishDays = getDailyDaysOnly(englishData.startDate);
 
       const totalRecoveryEl = document.getElementById('total-recovery-streak');
       const totalEnglishEl = document.getElementById('total-english-streak');
       const monthlyEl = document.getElementById('monthly-analytics-content');
       
-      if (totalRecoveryEl) totalRecoveryEl.innerText = recoveryStreak.days;
+      if (totalRecoveryEl) totalRecoveryEl.innerText = recoveryDays;
       if (totalEnglishEl) totalEnglishEl.innerText = englishDays;
 
       if (monthlyEl) {
         const totalOutfitsCount = Object.keys(allOutfits).length;
         monthlyEl.innerHTML = `
-          🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${recoveryStreak.days}</strong>.<br>
+          🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${recoveryDays}</strong>.<br>
           🎓 <strong>تعلم الإنجليزية:</strong> أنت في اليوم الـ <strong>${englishDays}</strong> من الممارسة المستمرة.<br>
           👔 <strong>سجل الملابس:</strong> قمت بتنسيق إطلالتك في <strong>${totalOutfitsCount}</strong> يوم.
         `;
