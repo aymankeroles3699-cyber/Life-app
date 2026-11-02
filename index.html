@@ -612,7 +612,7 @@
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي</div>
-          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="best-streak-count">9 أيام</div>
+          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="best-streak-count">0 يوم</div>
         </div>
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
@@ -718,16 +718,13 @@
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     
-    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 9, bestStart: "2026-10-18" };
+    let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 0, bestStart: "2026-10-18" };
     if (!recoveryData.startDate) {
       recoveryData.startDate = "2026-10-18";
-      recoveryData.bestDays = 9;
+      recoveryData.bestDays = 0;
       recoveryData.bestStart = "2026-10-18";
       localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
     }
-
-    // تصفير بيانات الإنجليزية مؤقتاً
-    localStorage.removeItem('life_app_english_data');
     
     function getWeekRange(dateObj) {
       const d = new Date(dateObj);
@@ -1188,7 +1185,7 @@
       if (streakEl) streakEl.innerText = currentDays;
       if (motivationEl) motivationEl.innerText = getDailyMotivationMessage();
       if (bestEl) bestEl.innerText = `${bestDays} يوم`;
-      if (startEl) startEl.innerText = recoveryData.bestStart || recoveryData.startDate;
+      if (startEl) startEl.innerText = recoveryData.startDate;
 
       renderBadges(currentDays, 'badges-container');
     }
@@ -1201,9 +1198,11 @@
           recoveryData.bestStart = recoveryData.startDate;
         }
 
+        // تحديث تاريخ البداية لتاريخ اليوم الحالي
         recoveryData.startDate = getLocalDateString(0);
         localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
         renderRecoveryTab();
+        alert('تم بدء تحدٍ جديد من اليوم بنجاح! 💪');
       }
     }
 
@@ -1252,6 +1251,7 @@
     }
 
     initDate();
+    renderRecoveryTab();
   </script>
 
   <script>
