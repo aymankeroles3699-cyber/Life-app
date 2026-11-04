@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Novara</title>
   <link rel="manifest" href="manifest.json">
   
@@ -77,12 +77,10 @@
       min-height: 100vh;
       color: var(--text);
       margin: 0;
-      padding: 16px 16px 80px 16px;
+      padding: 16px 16px 90px 16px;
       box-sizing: border-box;
-      transition: background 0.8s ease, color 0.8s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      direction: rtl;
+      text-align: right;
     }
 
     #splash-screen {
@@ -195,12 +193,13 @@
 
     .input-group {
       display: flex;
+      flex-direction: column;
       gap: 8px;
       margin-top: 12px;
     }
 
     input[type="text"], select, textarea {
-      flex: 1;
+      width: 100%;
       padding: 12px;
       border: 1px solid var(--card-border);
       border-radius: 12px;
@@ -209,7 +208,6 @@
       color: var(--text);
       outline: none;
       box-sizing: border-box;
-      width: 100%;
     }
 
     button.add-btn {
@@ -222,6 +220,7 @@
       cursor: pointer;
       transition: background 0.3s;
       font-size: 0.8rem;
+      width: 100%;
     }
 
     .wardrobe-grid {
@@ -497,17 +496,17 @@
         
         <div class="weekly-rule-row">
           <span style="font-size: 0.85rem; font-weight: 500;">🍔 Cheat Meal</span>
-          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn">Not Used (0/1)</button>
+          <button id="btn-takeaway" onclick="toggleWeeklyRule('takeaway')" class="add-btn" style="width: auto;">Not Used (0/1)</button>
         </div>
 
         <div class="weekly-rule-row">
           <span style="font-size: 0.85rem; font-weight: 500;">🥤 Soft Drink</span>
-          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn">Not Used (0/1)</button>
+          <button id="btn-soda" onclick="toggleWeeklyRule('soda')" class="add-btn" style="width: auto;">Not Used (0/1)</button>
         </div>
 
         <div class="weekly-rule-row">
           <span style="font-size: 0.85rem; font-weight: 500;">🥳 Weekly Outing</span>
-          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn">Not Used (0/1)</button>
+          <button id="btn-outing" onclick="toggleWeeklyRule('outing')" class="add-btn" style="width: auto;">Not Used (0/1)</button>
         </div>
         
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--card-border); padding-top:10px;">
@@ -548,12 +547,12 @@
           </select>
         </div>
 
-        <textarea id="outfit-input" rows="3" placeholder="اضغط على أي قطعة من دولابك بالأسفل لتضاف لطقمك..." onkeyup="saveOutfit()" style="width:100%; resize:vertical;"></textarea>
+        <textarea id="outfit-input" rows="3" placeholder="اضغط على أي قطعة من دولابك بالأسفل لتضاف لطقمك..." onkeyup="saveOutfit()"></textarea>
       </div>
 
       <div class="card">
         <h3 style="margin: 0 0 10px 0;">➕ إضافة قطعة جديدة بصورتها</h3>
-        <div class="input-group" style="flex-direction:column; gap:8px;">
+        <div class="input-group">
           <input type="text" id="wardrobe-item-input" placeholder="اسم القطعة (مثال: قميص أبيض، جينز...)">
           
           <div style="display:flex; gap:8px; align-items:center;">
@@ -564,7 +563,7 @@
               <option value="accessory">⌚ أخرى</option>
             </select>
             
-            <label style="background:rgba(99, 102, 241, 0.2); border:1px solid var(--primary); padding:10px 14px; border-radius:12px; cursor:pointer; font-size:0.85rem; font-weight:bold; color:var(--text);">
+            <label style="background:rgba(99, 102, 241, 0.2); border:1px solid var(--primary); padding:10px 14px; border-radius:12px; cursor:pointer; font-size:0.85rem; font-weight:bold; color:var(--text); white-space:nowrap;">
               📷 صورة القطعة
               <input type="file" id="wardrobe-image-file" accept="image/*" style="display:none;" onchange="previewImageName(this)">
             </label>
