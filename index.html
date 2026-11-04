@@ -12,11 +12,16 @@
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
+    * {
+      box-sizing: border-box !important;
+      max-width: 100%;
+    }
+
     :root {
       --bg: #0f172a;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
-      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-bg: rgba(30, 41, 59, 0.95);
       --card-border: rgba(255, 255, 255, 0.08);
       --text: #f8fafc;
       --subtext: #94a3b8;
@@ -30,7 +35,7 @@
       --bg: #2a1b2d;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(251, 146, 60, 0.25) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(244, 63, 94, 0.2) 0px, transparent 50%);
-      --card-bg: rgba(45, 26, 48, 0.85);
+      --card-bg: rgba(45, 26, 48, 0.95);
       --card-border: rgba(251, 146, 60, 0.15);
       --primary: #f97316;
       --primary-hover: #ea580c;
@@ -41,7 +46,7 @@
       --bg: #0f172a;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.2) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.2) 0px, transparent 50%);
-      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-bg: rgba(30, 41, 59, 0.95);
       --card-border: rgba(56, 189, 248, 0.15);
       --primary: #0284c7;
       --primary-hover: #0369a1;
@@ -52,7 +57,7 @@
       --bg: #1e1b4b;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(217, 70, 239, 0.25) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.2) 0px, transparent 50%);
-      --card-bg: rgba(30, 27, 75, 0.85);
+      --card-bg: rgba(30, 27, 75, 0.95);
       --card-border: rgba(217, 70, 239, 0.15);
       --primary: #a855f7;
       --primary-hover: #9333ea;
@@ -63,11 +68,18 @@
       --bg: #090d16;
       --bg-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
-      --card-bg: rgba(15, 23, 42, 0.9);
+      --card-bg: rgba(15, 23, 42, 0.95);
       --card-border: rgba(255, 255, 255, 0.08);
       --primary: #6366f1;
       --primary-hover: #4f46e5;
       --accent: #10b981;
+    }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
     }
 
     body {
@@ -76,9 +88,7 @@
       background-image: var(--bg-gradient);
       min-height: 100vh;
       color: var(--text);
-      margin: 0;
-      padding: 16px 16px 90px 16px;
-      box-sizing: border-box;
+      padding: 16px 12px 90px 12px;
       direction: rtl;
       text-align: right;
     }
@@ -125,7 +135,7 @@
       width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      box-sizing: border-box;
+      padding: 0;
     }
 
     .tab-content {
@@ -144,14 +154,12 @@
 
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      padding: 18px;
+      padding: 16px;
       border-radius: 20px;
       margin-bottom: 16px;
       border: 1px solid var(--card-border);
       box-shadow: var(--shadow);
       transition: all 0.5s ease;
-      box-sizing: border-box;
       width: 100%;
     }
 
@@ -207,7 +215,6 @@
       background: rgba(15, 23, 42, 0.6);
       color: var(--text);
       outline: none;
-      box-sizing: border-box;
     }
 
     button.add-btn {
@@ -226,8 +233,9 @@
     .wardrobe-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 10px;
       margin-top: 12px;
+      width: 100%;
     }
 
     .wardrobe-item-card {
@@ -239,6 +247,7 @@
       position: relative;
       cursor: pointer;
       transition: all 0.2s ease;
+      width: 100%;
     }
     .wardrobe-item-card:hover {
       border-color: var(--primary);
@@ -260,8 +269,7 @@
       left: 0;
       right: 0;
       height: 65px;
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(16px);
+      background: rgba(15, 23, 42, 0.98);
       border-top: 1px solid var(--card-border);
       display: flex;
       justify-content: space-around;
@@ -347,7 +355,7 @@
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
       color: var(--subtext);
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 14px;
       font-size: 0.85rem;
       cursor: pointer;
@@ -367,7 +375,6 @@
       border-radius: 18px;
       margin-bottom: 14px;
       border-right: 4px solid var(--primary);
-      box-sizing: border-box;
       width: 100%;
     }
 
@@ -394,7 +401,7 @@
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--card-border);
       color: var(--subtext);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 12px;
       font-size: 0.8rem;
       cursor: pointer;
