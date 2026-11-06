@@ -440,6 +440,17 @@
       padding: 12px;
       margin-top: 8px;
     }
+
+    .expense-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
@@ -653,7 +664,7 @@
       </div>
     </div>
 
-    <!-- التابة الخامسة: المالية والادخار 💰 (التابة الجديدة) -->
+    <!-- التابة الخامسة: المالية والادخار 💰 -->
     <div id="tab-finance" class="tab-content">
       <h2 style="margin-top: 0;">💰 التحكم بالمصاريف والتوجيه المالي</h2>
 
@@ -674,10 +685,26 @@
 
         <button class="add-btn" onclick="addExpense()" style="padding:10px;">تسجيل المصروف ➕</button>
 
+        <!-- الإجمالي -->
         <div style="margin-top:14px; background:rgba(15, 23, 42, 0.5); padding:12px; border-radius:12px; border:1px solid var(--card-border);">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:0.85rem; color:var(--subtext);">إجمالي مصاريف هذا الشهر:</span>
             <span style="font-weight:bold; color:var(--accent); font-size:1.1rem;" id="month-total-expense">0 ج.م</span>
+          </div>
+        </div>
+
+        <!-- سجل المصاريف المفصل وتجميع الفئات -->
+        <div style="margin-top: 16px;">
+          <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text);">📋 تفاصيل وسجل مصاريف الشهر:</h4>
+          
+          <!-- ملخص تجميعي لكل فئة -->
+          <div id="expense-summary-box" style="margin-bottom: 12px; font-size: 0.8rem; color: var(--subtext); background: rgba(99, 102, 241, 0.08); padding: 10px; border-radius: 10px; border: 1px solid var(--card-border);">
+            جاري حساب التجميعات...
+          </div>
+
+          <!-- قائمة المصاريف المفصلة -->
+          <div id="expenses-list-container" style="max-height: 220px; overflow-y: auto;">
+            <!-- يتم تعبئتها ديناميكياً -->
           </div>
         </div>
       </div>
@@ -1201,23 +1228,78 @@
         alert('برجاء كتابة مبلغ صحيح!');
         return;
       }
-      myExpenses.push({ amount: val, cat: catSelect.value, date: currentDate });
+      myExpenses.push({ id: Date.now(), amount: val, cat: catSelect.value, date: currentDate });
       localStorage.setItem('life_app_expenses', JSON.stringify(myExpenses));
       amtInput.value = '';
       renderFinanceTab();
-      alert('تم تسجيل المصروف بنجاح! 💸');
+    }
+
+    function deleteExpense(id) {
+      if (confirm('هل تريد حذف هذا المصروف؟')) {
+        myExpenses = myExpenses.filter(item => item.id !== id);
+        localStorage.setItem('life_app_expenses', JSON.stringify(myExpenses));
+        renderFinanceTab();
+      }
     }
 
     function renderFinanceTab() {
       const monthPrefix = currentDate.substring(0, 7);
       let total = 0;
+      let categoryTotals = {};
+
       myExpenses.forEach(item => {
         if (item.date && item.date.startsWith(monthPrefix)) {
           total += item.amount;
+          categoryTotals[item.cat] = (categoryTotals[item.cat] || 0) + item.amount;
         }
       });
+
+      // تحديث الإجمالي
       const totalEl = document.getElementById('month-total-expense');
       if (totalEl) totalEl.innerText = `${total.toLocaleString()} ج.م`;
+
+      // تحديث صندوق التجميعات لكل فئة
+      const summaryBox = document.getElementById('expense-summary-box');
+      if (summaryBox) {
+        const catsKeys = Object.keys(categoryTotals);
+        if (catsKeys.length === 0) {
+          summaryBox.innerHTML = 'لا توجد مصاريف مسجلة هذا الشهر حتى الآن.';
+        } else {
+          let summaryHTML = '<strong>📊 تجميع الفئات:</strong><br>';
+          for (let cat in categoryTotals) {
+            summaryHTML += `• ${cat}: <span style="color:var(--text); font-weight:bold;">${categoryTotals[cat].toLocaleString()} ج.م</span><br>`;
+          }
+          summaryBox.innerHTML = summaryHTML;
+        }
+      }
+
+      // تحديث القائمة المفصلة للمصاريف
+      const listContainer = document.getElementById('expenses-list-container');
+      if (listContainer) {
+        listContainer.innerHTML = '';
+        const monthExpenses = myExpenses.filter(item => item.date && item.date.startsWith(monthPrefix)).reverse();
+
+        if (monthExpenses.length === 0) {
+          listContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا يوجد سجل مصاريف للشهر الحالي.</div>';
+          return;
+        }
+
+        monthExpenses.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'expense-item-row';
+          row.innerHTML = `
+            <div>
+              <div style="font-size:0.85rem; font-weight:bold; color:var(--text);">${item.cat}</div>
+              <div style="font-size:0.7rem; color:var(--subtext);">📅 ${item.date}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:0.9rem; font-weight:bold; color:var(--accent);">${item.amount.toLocaleString()} ج.م</span>
+              <button onclick="deleteExpense(${item.id})" style="background:none; border:none; color:#f43f5e; cursor:pointer; font-size:0.8rem;" title="حذف">✕</button>
+            </div>
+          `;
+          listContainer.appendChild(row);
+        });
+      }
     }
 
     function calculateSmartAllocation() {
@@ -1376,14 +1458,16 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
-          const imported = JSON.parse(e.target.result);
-          if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
-          if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
-          if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
-          if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
-          if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
-          alert('تم استرجاع البيانات بنجاح! 🎉');
-          location.reload();
+          (function(){
+            const imported = JSON.parse(e.target.result);
+            if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
+            if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
+            if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
+            if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
+            if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
+            alert('تم استرجاع البيانات بنجاح! 🎉');
+            location.reload();
+          })();
         } catch (err) { alert('الملف غير صالح!'); }
       };
       reader.readAsText(file);
@@ -1391,6 +1475,7 @@
 
     initDate();
     renderRecoveryTab();
+    renderFinanceTab();
   </script>
 
   <script>
