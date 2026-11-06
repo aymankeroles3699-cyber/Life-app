@@ -206,7 +206,7 @@
       margin-top: 12px;
     }
 
-    input[type="text"], select, textarea {
+    input[type="text"], input[type="number"], select, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid var(--card-border);
@@ -432,6 +432,14 @@
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(99, 102, 241, 0.2));
       border-color: var(--accent);
     }
+
+    .alloc-box {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -645,7 +653,50 @@
       </div>
     </div>
 
-    <!-- التابة الخامسة: التقارير 📊 -->
+    <!-- التابة الخامسة: المالية والادخار 💰 (التابة الجديدة) -->
+    <div id="tab-finance" class="tab-content">
+      <h2 style="margin-top: 0;">💰 التحكم بالمصاريف والتوجيه المالي</h2>
+
+      <!-- بطاقة متابعة المصروفات وتقليلها -->
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0; color:var(--primary);">📉 راصد ومقلل المصاريف اليومية</h3>
+        
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <input type="number" id="expense-amount" placeholder="المبلغ (جنيه)" style="flex:1;">
+          <select id="expense-cat" style="flex:1;">
+            <option value="🍔 طعام وخروج">🍔 طعام وخروج</option>
+            <option value="🚗 مواصلات">🚗 مواصلات</option>
+            <option value="🛒 تسوق وأساسيات">🛒 تسوق وأساسيات</option>
+            <option value="💡 فواتير والتزامات">💡 فواتير والتزامات</option>
+            <option value="📍 أخرى">📍 أخرى</option>
+          </select>
+        </div>
+
+        <button class="add-btn" onclick="addExpense()" style="padding:10px;">تسجيل المصروف ➕</button>
+
+        <div style="margin-top:14px; background:rgba(15, 23, 42, 0.5); padding:12px; border-radius:12px; border:1px solid var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.85rem; color:var(--subtext);">إجمالي مصاريف هذا الشهر:</span>
+            <span style="font-weight:bold; color:var(--accent); font-size:1.1rem;" id="month-total-expense">0 ج.م</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- بطاقة الموجه الذكي للسيولة والادخار -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15)); border-color: rgba(16, 185, 129, 0.3);">
+        <h3 style="margin: 0 0 8px 0; color:var(--accent);">🤖 الموجه الذكي للسيولة والادخار</h3>
+        <div style="font-size:0.8rem; color:var(--subtext); margin-bottom:10px;">ادخل السيولة الزائدة لديك لتلقي التوزيع المالي الأمثل حسب معطيات السوق الحالية:</div>
+        
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <input type="number" id="surplus-amount" placeholder="أدخل المبلغ الفائض..." style="flex:1;">
+          <button class="add-btn" onclick="calculateSmartAllocation()" style="width:auto; background:var(--accent); white-space:nowrap;">تحليل وتوزيع 💡</button>
+        </div>
+
+        <div id="allocation-result" style="display:none; margin-top:12px;"></div>
+      </div>
+    </div>
+
+    <!-- التابة السادسة: التقارير 📊 -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -693,6 +744,10 @@
       <span style="font-size: 1.1rem;">🛡️</span>
       <span>التعافي</span>
     </button>
+    <button class="nav-btn" id="btn-finance" onclick="switchTab('finance')">
+      <span style="font-size: 1.1rem;">💰</span>
+      <span>المالية</span>
+    </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
       <span style="font-size: 1.1rem;">📊</span>
       <span>التقارير</span>
@@ -734,6 +789,7 @@
 
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
+    let myExpenses = JSON.parse(localStorage.getItem('life_app_expenses')) || [];
     
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 0, bestStart: "2026-10-18" };
     if (!recoveryData.startDate) {
@@ -793,6 +849,10 @@
         document.getElementById('tab-recovery').classList.add('active');
         document.getElementById('btn-recovery').classList.add('active');
         renderRecoveryTab();
+      } else if (tabName === 'finance') {
+        document.getElementById('tab-finance').classList.add('active');
+        document.getElementById('btn-finance').classList.add('active');
+        renderFinanceTab();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         document.getElementById('btn-reports').classList.add('active');
@@ -1132,6 +1192,68 @@
       `;
     }
 
+    /* الوظائف الخاصة بالمالية والمصاريف */
+    function addExpense() {
+      const amtInput = document.getElementById('expense-amount');
+      const catSelect = document.getElementById('expense-cat');
+      const val = parseFloat(amtInput.value);
+      if (!val || val <= 0) {
+        alert('برجاء كتابة مبلغ صحيح!');
+        return;
+      }
+      myExpenses.push({ amount: val, cat: catSelect.value, date: currentDate });
+      localStorage.setItem('life_app_expenses', JSON.stringify(myExpenses));
+      amtInput.value = '';
+      renderFinanceTab();
+      alert('تم تسجيل المصروف بنجاح! 💸');
+    }
+
+    function renderFinanceTab() {
+      const monthPrefix = currentDate.substring(0, 7);
+      let total = 0;
+      myExpenses.forEach(item => {
+        if (item.date && item.date.startsWith(monthPrefix)) {
+          total += item.amount;
+        }
+      });
+      const totalEl = document.getElementById('month-total-expense');
+      if (totalEl) totalEl.innerText = `${total.toLocaleString()} ج.م`;
+    }
+
+    function calculateSmartAllocation() {
+      const amtInput = document.getElementById('surplus-amount');
+      const val = parseFloat(amtInput.value);
+      const resContainer = document.getElementById('allocation-result');
+      if (!val || val <= 0) {
+        alert('برجاء أدخال مبلغ فائد صحيح!');
+        return;
+      }
+
+      const gold = Math.round(val * 0.40);
+      const invest = Math.round(val * 0.35);
+      const cash = Math.round(val * 0.25);
+
+      resContainer.style.display = 'block';
+      resContainer.innerHTML = `
+        <div style="font-weight:bold; font-size:0.9rem; color:var(--text); margin-bottom:8px;">💡 التوجيه الذكي للمبلغ (${val.toLocaleString()} ج.م):</div>
+        
+        <div class="alloc-box">
+          <div style="color: #f59e0b; font-weight:bold; font-size:0.85rem;">🥇 الذهب وحفظ القيمة (40%): ${gold.toLocaleString()} ج.م</div>
+          <div style="font-size:0.75rem; color:var(--subtext); margin-top:2px;">للحماية من التضخم وتقلبات أسعار الصرف.</div>
+        </div>
+
+        <div class="alloc-box">
+          <div style="color: #38bdf8; font-weight:bold; font-size:0.85rem;">📈 الاستثمار والتداول (35%): ${invest.toLocaleString()} ج.م</div>
+          <div style="font-size:0.75rem; color:var(--subtext); margin-top:2px;">في أسهم البورصة المصرية/صناديق التداول عبر منصة (Thndr).</div>
+        </div>
+
+        <div class="alloc-box">
+          <div style="color: var(--accent); font-weight:bold; font-size:0.85rem;">🏦 سيولة وطوارئ (25%): ${cash.toLocaleString()} ج.م</div>
+          <div style="font-size:0.75rem; color:var(--subtext); margin-top:2px;">في حسابات توفير ذات عائد أو صناديق نقدية يومية بالبنك.</div>
+        </div>
+      `;
+    }
+
     function getDailyDaysOnly(startDateStr) {
       if (!startDateStr) return 0;
       const start = new Date(startDateStr + 'T00:00:00');
@@ -1240,7 +1362,7 @@
     }
 
     function exportData() {
-      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker };
+      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker, expenses: myExpenses };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1259,6 +1381,7 @@
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
+          if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
           alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
         } catch (err) { alert('الملف غير صالح!'); }
