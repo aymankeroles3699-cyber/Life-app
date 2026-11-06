@@ -851,6 +851,30 @@
       localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
     }
 
+    // مصفوفة الحكم والرسائل اليومية المتنوعة
+    const dailyWisdoms = [
+      { word: "التركيز والوضوح", type: "حكمة في تطوير الذات", def: "القدرة على توجيه انتباهك وإرادتك نحو الهدف الأساسي دون التشتت.", example: "حافظ على تركيزك على الأهداف طويلة المدى بدلاً من المشتتات المؤقتة." },
+      { word: "الانضباط الذاتي", type: "سر النجاح والاستمرارية", def: "فعل ما يجب عليك فعله بغض النظر عن رغبتك المؤقتة في عدم فعله.", example: "الانضباط هو الجسر بين أهدافك والإنجاز الحقيقي." },
+      { word: "إدارة الوقت والسيولة", type: "حكمة مالية وعملية", def: "كل دقيقة وكل جنيه تنفقه بوعي هو استثمار في حريتك المستقبلية.", example: "التحكم في المصاريف اليومية يصنع فارقاً هائلاً على المدى الطويل." },
+      { word: "الثبات والصبر", type: "قوة إرادة داخلية", def: "الصعوبات التي تواجهها اليوم هي التي تبني صلابتك وقوتك غداً.", example: "لا تتوقف عندما تبتعب، توقف عندما تنتهي من المهمة بنجاح." },
+      { word: "التطوير المستمر", type: "قاعدة التطور 1%", def: "تحسين نفسك بنسبة بسيطة كل يوم يمنحك نتائج مذهلة مع مرور الوقت.", example: "خطوة صغيرة يومياً تقربك أمیالاً من قمة نجاحك." },
+      { word: "قوة العادة", type: "أسلوب حياة متوازن", def: "الأفعال الصغيرة المتكررة تصنع هويتك ومستقبلك بالكامل.", example: "اختر عادتك اليومية بحكمة، فهي التي ستحدد شكل حياتك." },
+      { word: "السلام الداخلي واليقظة", type: "تطوير الذات والهدوء", def: "الهدوء النفسي يمنحك القدرة على اتخاذ قرارات صحيحة وصائبة.", example: "امنح عقلك قسطاً من الهدوء لتستعيد طاقتك ونشاطك." }
+    ];
+
+    function updateDailyWisdom() {
+      // اختيار حكمة بناءً على تاريخ اليوم (بحيث تتغير كل يوم وتتطابق مع التاريخ المحدد)
+      const dateObj = new Date(currentDate);
+      const dayOfYear = Math.floor((dateObj - new Date(dateObj.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+      const wisdom = dailyWisdoms[dayOfYear % dailyWisdoms.length];
+
+      document.getElementById('vocab-date').innerText = currentDate;
+      document.getElementById('vocab-word').innerText = wisdom.word;
+      document.getElementById('vocab-type').innerText = `• ${wisdom.type}`;
+      document.getElementById('vocab-def').innerText = wisdom.def;
+      document.getElementById('vocab-example').innerText = `"${wisdom.example}"`;
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -858,6 +882,7 @@
       if (tabName === 'home') {
         document.getElementById('tab-home').classList.add('active');
         document.getElementById('btn-home').classList.add('active');
+        updateDailyWisdom();
       } else if (tabName === 'diet') {
         document.getElementById('tab-diet').classList.add('active');
         document.getElementById('btn-diet').classList.add('active');
@@ -891,6 +916,7 @@
       applyTimeBasedTheme();
       document.getElementById('selected-date').value = currentDate;
       document.getElementById('display-date-label').innerText = currentDate;
+      updateDailyWisdom();
     }
 
     function changeDate(newDate) {
@@ -899,6 +925,7 @@
       document.getElementById('display-date-label').innerText = currentDate;
       if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
       renderDietTab();
+      updateDailyWisdom();
     }
 
     function setQuickDate(offset) {
@@ -906,6 +933,7 @@
       document.getElementById('selected-date').value = currentDate;
       document.getElementById('display-date-label').innerText = currentDate;
       renderDietTab();
+      updateDailyWisdom();
     }
 
     function renderDietTab() {
