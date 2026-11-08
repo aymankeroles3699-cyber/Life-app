@@ -685,8 +685,16 @@
 
         <button class="add-btn" onclick="addExpense()" style="padding:10px;">تسجيل المصروف ➕</button>
 
+        <!-- اختيار الشهر لعرض الأرشيف -->
+        <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--card-border);">
+          <span style="font-size: 0.8rem; color: var(--subtext); font-weight: bold;">🗓️ الشهر المعروض:</span>
+          <select id="expense-month-filter" style="width: auto; padding: 6px 12px; font-size: 0.85rem;" onchange="renderFinanceTab()">
+            <!-- يتم عبئته ديناميكياً بأرشيف الشهور -->
+          </select>
+        </div>
+
         <!-- الإجمالي -->
-        <div style="margin-top:14px; background:rgba(15, 23, 42, 0.5); padding:12px; border-radius:12px; border:1px solid var(--card-border);">
+        <div style="margin-top:10px; background:rgba(15, 23, 42, 0.5); padding:12px; border-radius:12px; border:1px solid var(--card-border);">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:0.85rem; color:var(--subtext);">إجمالي مصاريف هذا الشهر:</span>
             <span style="font-weight:bold; color:var(--accent); font-size:1.1rem;" id="month-total-expense">0 ج.م</span>
@@ -695,7 +703,7 @@
 
         <!-- سجل المصاريف المفصل وتجميع الفئات -->
         <div style="margin-top: 16px;">
-          <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text);">📋 تفاصيل وسجل مصاريف الشهر:</h4>
+          <h4 style="margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text);">📋 تفاصيل وسجل المصاريف:</h4>
           
           <!-- ملخص تجميعي لكل فئة -->
           <div id="expense-summary-box" style="margin-bottom: 12px; font-size: 0.8rem; color: var(--subtext); background: rgba(99, 102, 241, 0.08); padding: 10px; border-radius: 10px; border: 1px solid var(--card-border);">
@@ -851,7 +859,6 @@
       localStorage.setItem('life_app_weekly_tracker', JSON.stringify({ weekKey: currentWeekKey, tracker: weeklyTracker }));
     }
 
-    // مصفوفة الحكم والرسائل اليومية المتنوعة
     const dailyWisdoms = [
       { word: "التركيز والوضوح", type: "حكمة في تطوير الذات", def: "القدرة على توجيه انتباهك وإرادتك نحو الهدف الأساسي دون التشتت.", example: "حافظ على تركيزك على الأهداف طويلة المدى بدلاً من المشتتات المؤقتة." },
       { word: "الانضباط الذاتي", type: "سر النجاح والاستمرارية", def: "فعل ما يجب عليك فعله بغض النظر عن رغبتك المؤقتة في عدم فعله.", example: "الانضباط هو الجسر بين أهدافك والإنجاز الحقيقي." },
@@ -863,7 +870,6 @@
     ];
 
     function updateDailyWisdom() {
-      // اختيار حكمة بناءً على تاريخ اليوم (بحيث تتغير كل يوم وتتطابق مع التاريخ المحدد)
       const dateObj = new Date(currentDate);
       const dayOfYear = Math.floor((dateObj - new Date(dateObj.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
       const wisdom = dailyWisdoms[dayOfYear % dailyWisdoms.length];
@@ -904,6 +910,7 @@
       } else if (tabName === 'finance') {
         document.getElementById('tab-finance').classList.add('active');
         document.getElementById('btn-finance').classList.add('active');
+        populateExpenseMonths();
         renderFinanceTab();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
@@ -1247,7 +1254,7 @@
       `;
     }
 
-    /* الوظائف الخاصة بالمالية والمصاريف */
+    /* الوظائف الخاصة بالمالية وأرشيف الشهور */
     function addExpense() {
       const amtInput = document.getElementById('expense-amount');
       const catSelect = document.getElementById('expense-cat');
@@ -1259,6 +1266,7 @@
       myExpenses.push({ id: Date.now(), amount: val, cat: catSelect.value, date: currentDate });
       localStorage.setItem('life_app_expenses', JSON.stringify(myExpenses));
       amtInput.value = '';
+      populateExpenseMonths();
       renderFinanceTab();
     }
 
@@ -1266,34 +1274,68 @@
       if (confirm('هل تريد حذف هذا المصروف؟')) {
         myExpenses = myExpenses.filter(item => item.id !== id);
         localStorage.setItem('life_app_expenses', JSON.stringify(myExpenses));
+        populateExpenseMonths();
         renderFinanceTab();
       }
     }
 
+    function populateExpenseMonths() {
+      const filterSelect = document.getElementById('expense-month-filter');
+      if (!filterSelect) return;
+      
+      const currentSelected = filterSelect.value;
+      let monthsSet = new Set();
+      monthsSet.add(currentDate.substring(0, 7)); // الشهر الحالي
+
+      myExpenses.forEach(item => {
+        if (item.date) {
+          monthsSet.add(item.date.substring(0, 7));
+        }
+      });
+
+      const sortedMonths = Array.from(monthsSet).sort().reverse();
+      filterSelect.innerHTML = '';
+      
+      sortedMonths.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.innerText = m;
+        filterSelect.appendChild(opt);
+      });
+
+      if (currentSelected && sortedMonths.includes(currentSelected)) {
+        filterSelect.value = currentSelected;
+      } else {
+        filterSelect.value = currentDate.substring(0, 7);
+      }
+    }
+
     function renderFinanceTab() {
-      const monthPrefix = currentDate.substring(0, 7);
+      const filterSelect = document.getElementById('expense-month-filter');
+      const selectedMonth = filterSelect ? filterSelect.value : currentDate.substring(0, 7);
+      
       let total = 0;
       let categoryTotals = {};
 
       myExpenses.forEach(item => {
-        if (item.date && item.date.startsWith(monthPrefix)) {
+        if (item.date && item.date.startsWith(selectedMonth)) {
           total += item.amount;
           categoryTotals[item.cat] = (categoryTotals[item.cat] || 0) + item.amount;
         }
       });
 
-      // تحديث الإجمالي
+      // تحديث الإجمالي للشهر المختار
       const totalEl = document.getElementById('month-total-expense');
       if (totalEl) totalEl.innerText = `${total.toLocaleString()} ج.م`;
 
-      // تحديث صندوق التجميعات لكل فئة
+      // تحديث صندوق التجميعات
       const summaryBox = document.getElementById('expense-summary-box');
       if (summaryBox) {
         const catsKeys = Object.keys(categoryTotals);
         if (catsKeys.length === 0) {
-          summaryBox.innerHTML = 'لا توجد مصاريف مسجلة هذا الشهر حتى الآن.';
+          summaryBox.innerHTML = `لا توجد مصاريف مسجلة لشهر (${selectedMonth}).`;
         } else {
-          let summaryHTML = '<strong>📊 تجميع الفئات:</strong><br>';
+          let summaryHTML = `<strong>📊 تجميع فئات شهر (${selectedMonth}):</strong><br>`;
           for (let cat in categoryTotals) {
             summaryHTML += `• ${cat}: <span style="color:var(--text); font-weight:bold;">${categoryTotals[cat].toLocaleString()} ج.م</span><br>`;
           }
@@ -1301,14 +1343,14 @@
         }
       }
 
-      // تحديث القائمة المفصلة للمصاريف
+      // تحديث قائمة مصاريف الشهر المختار
       const listContainer = document.getElementById('expenses-list-container');
       if (listContainer) {
         listContainer.innerHTML = '';
-        const monthExpenses = myExpenses.filter(item => item.date && item.date.startsWith(monthPrefix)).reverse();
+        const monthExpenses = myExpenses.filter(item => item.date && item.date.startsWith(selectedMonth)).reverse();
 
         if (monthExpenses.length === 0) {
-          listContainer.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا يوجد سجل مصاريف للشهر الحالي.</div>';
+          listContainer.innerHTML = `<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا يوجد سجل مصاريف لشهر (${selectedMonth}).</div>`;
           return;
         }
 
@@ -1503,6 +1545,7 @@
 
     initDate();
     renderRecoveryTab();
+    populateExpenseMonths();
     renderFinanceTab();
   </script>
 
