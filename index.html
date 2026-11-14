@@ -281,7 +281,7 @@
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -664,7 +664,34 @@
       </div>
     </div>
 
-    <!-- التابة الخامسة: المالية والادخار 💰 -->
+    <!-- التابة الخامسة: الإنجليش 🇬🇧 (التابة الجديدة) -->
+    <div id="tab-english" class="tab-content">
+      <h2 style="margin-top: 0;">🇬🇧 تتبع تعلم الإنجليزية</h2>
+
+      <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(99, 102, 241, 0.3);">
+        <div style="font-size: 0.9rem; color: var(--subtext);">استمرارية تعلم اللغة</div>
+        <div style="font-size: 3.2rem; font-weight: bold; color: var(--primary); margin: 6px 0;" id="english-streak-count">0</div>
+        <div style="font-size: 0.85rem; color: var(--text); font-weight: bold;">أيام تعلم متتالية! 🎯</div>
+      </div>
+
+      <div class="card" style="text-align: center;">
+        <h3 style="margin: 0 0 8px 0; font-size: 1rem; color: var(--text);">⏱️ هدف اليوم (30 دقيقة)</h3>
+        <div style="font-size: 0.8rem; color: var(--subtext); margin-bottom: 16px;" id="english-today-label">تاريخ اليوم: ...</div>
+        
+        <button id="english-check-btn" onclick="toggleEnglishToday()" class="add-btn" style="padding: 14px; font-size: 1rem; background: var(--primary);">
+          ⏳ لم أتمم 30 دقيقة اليوم
+        </button>
+      </div>
+
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--text);">📅 سجل الأيام السابقة</h3>
+        <div id="english-history-list" style="max-height: 200px; overflow-y: auto;">
+          <!-- يتم ملؤها ديناميكياً -->
+        </div>
+      </div>
+    </div>
+
+    <!-- التابة السادسة: المالية 💰 -->
     <div id="tab-finance" class="tab-content">
       <h2 style="margin-top: 0;">💰 التحكم بالمصاريف والتوجيه المالي</h2>
 
@@ -689,7 +716,7 @@
         <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.5); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--card-border);">
           <span style="font-size: 0.8rem; color: var(--subtext); font-weight: bold;">🗓️ الشهر المعروض:</span>
           <select id="expense-month-filter" style="width: auto; padding: 6px 12px; font-size: 0.85rem;" onchange="renderFinanceTab()">
-            <!-- يتم عبئته ديناميكياً بأرشيف الشهور -->
+            <!-- يتم تعبئته ديناميكياً بأرشيف الشهور -->
           </select>
         </div>
 
@@ -731,7 +758,7 @@
       </div>
     </div>
 
-    <!-- التابة السادسة: التقارير 📊 -->
+    <!-- التابة السابعة: التقارير 📊 -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -779,6 +806,10 @@
       <span style="font-size: 1.1rem;">🛡️</span>
       <span>التعافي</span>
     </button>
+    <button class="nav-btn" id="btn-english" onclick="switchTab('english')">
+      <span style="font-size: 1.1rem;">🇬🇧</span>
+      <span>الإنجليش</span>
+    </button>
     <button class="nav-btn" id="btn-finance" onclick="switchTab('finance')">
       <span style="font-size: 1.1rem;">💰</span>
       <span>المالية</span>
@@ -825,6 +856,7 @@
     let allOutfits = JSON.parse(localStorage.getItem('life_app_outfits_by_date')) || {};
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     let myExpenses = JSON.parse(localStorage.getItem('life_app_expenses')) || [];
+    let englishLogs = JSON.parse(localStorage.getItem('life_app_english_logs')) || {};
     
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 0, bestStart: "2026-10-18" };
     if (!recoveryData.startDate) {
@@ -907,6 +939,10 @@
         document.getElementById('tab-recovery').classList.add('active');
         document.getElementById('btn-recovery').classList.add('active');
         renderRecoveryTab();
+      } else if (tabName === 'english') {
+        document.getElementById('tab-english').classList.add('active');
+        document.getElementById('btn-english').classList.add('active');
+        renderEnglishTab();
       } else if (tabName === 'finance') {
         document.getElementById('tab-finance').classList.add('active');
         document.getElementById('btn-finance').classList.add('active');
@@ -933,6 +969,7 @@
       if (document.getElementById('outfit-date-label')) document.getElementById('outfit-date-label').innerText = currentDate;
       renderDietTab();
       updateDailyWisdom();
+      renderEnglishTab();
     }
 
     function setQuickDate(offset) {
@@ -941,6 +978,7 @@
       document.getElementById('display-date-label').innerText = currentDate;
       renderDietTab();
       updateDailyWisdom();
+      renderEnglishTab();
     }
 
     function renderDietTab() {
@@ -1254,6 +1292,83 @@
       `;
     }
 
+    /* الوظائف الخاصة بتعلم الإنجليزية */
+    function toggleEnglishToday() {
+      const isDone = englishLogs[currentDate];
+      if (isDone) {
+        delete englishLogs[currentDate];
+      } else {
+        englishLogs[currentDate] = true;
+        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+      }
+      localStorage.setItem('life_app_english_logs', JSON.stringify(englishLogs));
+      renderEnglishTab();
+    }
+
+    function renderEnglishTab() {
+      const todayLabel = document.getElementById('english-today-label');
+      const checkBtn = document.getElementById('english-check-btn');
+      const streakCountEl = document.getElementById('english-streak-count');
+      const historyList = document.getElementById('english-history-list');
+
+      if (todayLabel) todayLabel.innerText = `تاريخ اليوم المحدد: ${currentDate}`;
+
+      const isCompleted = englishLogs[currentDate];
+      if (checkBtn) {
+        if (isCompleted) {
+          checkBtn.innerText = "✓ تم إتمام 30 دقيقة اليوم بنجاح! 🎉";
+          checkBtn.style.background = "var(--accent)";
+        } else {
+          checkBtn.innerText = "⏳ لم أتمم 30 دقيقة اليوم (اضغط عند الإتمام ☑️)";
+          checkBtn.style.background = "var(--primary)";
+        }
+      }
+
+      // حساب الـ Streak المتصل
+      let streak = 0;
+      let d = new Date();
+      while (true) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+
+        if (englishLogs[dateStr]) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          // السماح بيوم اليوم لو لسه مسجلوش
+          if (dateStr === getLocalDateString(0)) {
+            d.setDate(d.getDate() - 1);
+            continue;
+          }
+          break;
+        }
+      }
+
+      if (streakCountEl) streakCountEl.innerText = streak;
+
+      // عرض السجل التاريخي
+      if (historyList) {
+        historyList.innerHTML = '';
+        const sortedDates = Object.keys(englishLogs).sort().reverse();
+        if (sortedDates.length === 0) {
+          historyList.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا توجد أيام مسجلة حتى الآن.</div>';
+          return;
+        }
+
+        sortedDates.forEach(dateStr => {
+          const row = document.createElement('div');
+          row.className = 'expense-item-row';
+          row.innerHTML = `
+            <div style="font-size:0.85rem; font-weight:bold; color:var(--text);">📅 ${dateStr}</div>
+            <div style="font-size:0.85rem; color:var(--accent); font-weight:bold;">30 دقيقة ✓</div>
+          `;
+          historyList.appendChild(row);
+        });
+      }
+    }
+
     /* الوظائف الخاصة بالمالية وأرشيف الشهور */
     function addExpense() {
       const amtInput = document.getElementById('expense-amount');
@@ -1285,7 +1400,7 @@
       
       const currentSelected = filterSelect.value;
       let monthsSet = new Set();
-      monthsSet.add(currentDate.substring(0, 7)); // الشهر الحالي
+      monthsSet.add(currentDate.substring(0, 7));
 
       myExpenses.forEach(item => {
         if (item.date) {
@@ -1324,11 +1439,9 @@
         }
       });
 
-      // تحديث الإجمالي للشهر المختار
       const totalEl = document.getElementById('month-total-expense');
       if (totalEl) totalEl.innerText = `${total.toLocaleString()} ج.م`;
 
-      // تحديث صندوق التجميعات
       const summaryBox = document.getElementById('expense-summary-box');
       if (summaryBox) {
         const catsKeys = Object.keys(categoryTotals);
@@ -1343,7 +1456,6 @@
         }
       }
 
-      // تحديث قائمة مصاريف الشهر المختار
       const listContainer = document.getElementById('expenses-list-container');
       if (listContainer) {
         listContainer.innerHTML = '';
@@ -1514,7 +1626,7 @@
     }
 
     function exportData() {
-      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker, expenses: myExpenses };
+      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker, expenses: myExpenses, english: englishLogs };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1535,6 +1647,7 @@
             if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
             if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
             if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
+            if (imported.english) localStorage.setItem('life_app_english_logs', JSON.stringify(imported.english));
             alert('تم استرجاع البيانات بنجاح! 🎉');
             location.reload();
           })();
@@ -1547,6 +1660,7 @@
     renderRecoveryTab();
     populateExpenseMonths();
     renderFinanceTab();
+    renderEnglishTab();
   </script>
 
   <script>
