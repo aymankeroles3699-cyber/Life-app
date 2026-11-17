@@ -88,7 +88,7 @@
       background-image: var(--bg-gradient);
       min-height: 100vh;
       color: var(--text);
-      padding: 16px 12px 105px 12px; /* تم زيادة المسافة السفلية لضمان عدم تداخل المحتوى مع الشريط */
+      padding: 16px 12px 130px 12px; /* مسافة سفلية كبيرة تضمن عدم تغطية المحتوى أبداً */
       direction: rtl;
       text-align: right;
     }
@@ -263,30 +263,32 @@
       background: rgba(255,255,255,0.05);
     }
 
+    /* تعديل شريط التنقل السفلي ليكون مرفوعاً وثابتاً وواضحاً تماماً فوق أزرار الموبايل */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 65px;
-      background: rgba(15, 23, 42, 0.98);
-      border-top: 1px solid var(--card-border);
+      height: 70px;
+      background: #090d16; /* لون خلفية صلب تماماً عشان ميشفش اللي تحتيه */
+      border-top: 2px solid var(--primary);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      z-index: 1000;
-      padding-bottom: env(safe-area-inset-bottom); /* لضمان التوافق مع شاشات الأجهزة الحديثة */
+      z-index: 99999;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.6);
+      padding-bottom: 8px;
     }
 
     .nav-btn {
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.6rem; /* تصغير الخط قليلاً لتناسب الأزرار السبعة تماماً */
+      font-size: 0.6rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1px;
+      gap: 2px;
       cursor: pointer;
       font-weight: bold;
       flex: 1;
