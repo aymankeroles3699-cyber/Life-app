@@ -88,7 +88,7 @@
       background-image: var(--bg-gradient);
       min-height: 100vh;
       color: var(--text);
-      padding: 16px 12px 155px 12px; /* مسافة سفلية أكبر لضمان راحة المحتوى فوق الشريط العائم */
+      padding: 16px 12px 170px 12px; /* مسافة سفلية متوافقة تماماً مع الارتفاع الجديد للشريط العائم */
       direction: rtl;
       text-align: right;
     }
@@ -263,21 +263,21 @@
       background: rgba(255,255,255,0.05);
     }
 
-    /* رفع الشريط السفلي للأعلى بمسافة كافية جداً ليكون بارزاً فوق أزرار النظام تماماً */
+    /* رفع الشريط السفلي للأعلى بمسافة 45 بكسل ليكون بعيداً تماماً عن أزرار النظام */
     .bottom-nav {
       position: fixed;
-      bottom: 30px; /* رفعناه لـ 30 بكسل عشان يطلع فوق أزرار الموبايل بوضوح تام */
+      bottom: 45px; /* رفعناه لـ 45 بكسل عشان يستقر فوق أزرار الموبايل بوضوح كامل */
       left: 12px;
       right: 12px;
       height: 65px;
       background: #0f172a; /* خلفية صلبة داكنة */
       border: 1px solid var(--card-border);
-      border-radius: 18px; /* شريط عائم أنيق ومتناسق */
+      border-radius: 18px; /* شريط عائم أنيق وبارز */
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 99999;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
     }
 
     .nav-btn {
@@ -1646,7 +1646,7 @@
             const imported = JSON.parse(e.target.result);
             if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
             if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
-            if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
+            if, (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
             if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
             if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
             if (imported.english) localStorage.setItem('life_app_english_logs', JSON.stringify(imported.english));
