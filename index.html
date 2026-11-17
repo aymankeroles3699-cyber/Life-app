@@ -88,7 +88,7 @@
       background-image: var(--bg-gradient);
       min-height: 100vh;
       color: var(--text);
-      padding: 16px 12px 90px 12px;
+      padding: 16px 12px 105px 12px; /* تم زيادة المسافة السفلية لضمان عدم تداخل المحتوى مع الشريط */
       direction: rtl;
       text-align: right;
     }
@@ -275,19 +275,22 @@
       justify-content: space-around;
       align-items: center;
       z-index: 1000;
+      padding-bottom: env(safe-area-inset-bottom); /* لضمان التوافق مع شاشات الأجهزة الحديثة */
     }
 
     .nav-btn {
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.65rem;
+      font-size: 0.6rem; /* تصغير الخط قليلاً لتناسب الأزرار السبعة تماماً */
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
+      gap: 1px;
       cursor: pointer;
       font-weight: bold;
+      flex: 1;
+      padding: 4px 0;
     }
 
     .nav-btn.active {
