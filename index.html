@@ -88,7 +88,7 @@
       background-image: var(--bg-gradient);
       min-height: 100vh;
       color: var(--text);
-      padding: 16px 12px 140px 12px; /* مسافة سفلية إضافية لمنع تداخل المحتوى */
+      padding: 16px 12px 155px 12px; /* مسافة سفلية أكبر لضمان راحة المحتوى فوق الشريط العائم */
       direction: rtl;
       text-align: right;
     }
@@ -263,21 +263,21 @@
       background: rgba(255,255,255,0.05);
     }
 
-    /* رفع الشريط السفلي للأعلى بشكل آمن وبارز فوق أزرار الموبايل */
+    /* رفع الشريط السفلي للأعلى بمسافة كافية جداً ليكون بارزاً فوق أزرار النظام تماماً */
     .bottom-nav {
       position: fixed;
-      bottom: 15px; /* رفعناه لفوق بمقدار 15 بكسل عشان يبعد تماماً عن أزرار النظام */
+      bottom: 30px; /* رفعناه لـ 30 بكسل عشان يطلع فوق أزرار الموبايل بوضوح تام */
       left: 12px;
       right: 12px;
       height: 65px;
       background: #0f172a; /* خلفية صلبة داكنة */
       border: 1px solid var(--card-border);
-      border-radius: 18px; /* عملناه بتصميم شريط عائم (Floating Bar) أنيق */
+      border-radius: 18px; /* شريط عائم أنيق ومتناسق */
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 99999;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
     }
 
     .nav-btn {
