@@ -177,6 +177,7 @@
       background: rgba(15, 23, 42, 0.6);
       color: var(--text);
       outline: none;
+      line-height: 1.5;
     }
 
     button.add-btn {
@@ -418,6 +419,12 @@
       border-radius: 12px;
       margin-bottom: 8px;
     }
+
+    .save-status-badge {
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -604,6 +611,29 @@
         <div class="badges-grid" id="badges-container"></div>
       </div>
 
+      <!-- كارت مسببات السقوط وخطط المساعدة -->
+      <div class="card" style="border-color: rgba(99, 102, 241, 0.35);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin: 0; color:var(--primary); font-size:1rem;">🧠 مسببات السقوط وخطط المواجهة</h3>
+          <span class="save-status-badge" id="recovery-notes-status">محفوظ ✓</span>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display:block; font-size:0.85rem; font-weight:bold; color:var(--text); margin-bottom:6px;">⚠️ مسببات السقوط (إمتى وبسبب إيه بحس بالضعف؟)</label>
+          <textarea id="recovery-triggers-input" rows="3" placeholder="مثال: السهر متأخر، الملل أو الوحدة، التوتر والضغط، مسك الموبايل بدون هدف..." oninput="saveRecoveryNotes()"></textarea>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display:block; font-size:0.85rem; font-weight:bold; color:var(--accent); margin-bottom:6px;">🛡️ حاجات تساعدني معملش العادة (خطة الطوارئ)</label>
+          <textarea id="recovery-coping-input" rows="3" placeholder="مثال: أقوم أغير مكاني فوراً، أغسل وشي أو أخد شاور، أخرج أتمشى، أفتكر هدفي ومستقبلي..." oninput="saveRecoveryNotes()"></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <button class="add-btn" onclick="saveRecoveryNotes(true)" style="background:var(--accent); padding:10px; font-size:0.85rem;">حفظ الملاحظات 💾</button>
+          <button onclick="clearRecoveryNotes()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline; white-space:nowrap;">مسح الكل</button>
+        </div>
+      </div>
+
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
           <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
@@ -748,7 +778,7 @@
 
   </div>
 
-  <!-- الشريط السفلي (ثابت وبارز في مكان مثالي فوق أزرار النظام) -->
+  <!-- الشريط السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
       <span style="font-size: 1.1rem;">🏠</span>
@@ -807,6 +837,7 @@
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     let myExpenses = JSON.parse(localStorage.getItem('life_app_expenses')) || [];
     let englishLogs = JSON.parse(localStorage.getItem('life_app_english_logs')) || {};
+    let recoveryNotes = JSON.parse(localStorage.getItem('life_app_recovery_notes')) || { triggers: '', coping: '' };
     
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 0, bestStart: "2026-10-18" };
     if (!recoveryData.startDate) {
@@ -1516,6 +1547,42 @@
       });
     }
 
+    /* وظائف حفظ وعرض مسببات السقوط وخطط المواجهة */
+    function saveRecoveryNotes(showToast = false) {
+      const triggersEl = document.getElementById('recovery-triggers-input');
+      const copingEl = document.getElementById('recovery-coping-input');
+      const statusEl = document.getElementById('recovery-notes-status');
+
+      recoveryNotes = {
+        triggers: triggersEl ? triggersEl.value : '',
+        coping: copingEl ? copingEl.value : ''
+      };
+
+      localStorage.setItem('life_app_recovery_notes', JSON.stringify(recoveryNotes));
+
+      if (statusEl) {
+        statusEl.innerText = showToast ? 'تم الحفظ ✓' : 'محفوظ ✓';
+        setTimeout(() => {
+          if (statusEl) statusEl.innerText = 'محفوظ ✓';
+        }, 1500);
+      }
+    }
+
+    function clearRecoveryNotes() {
+      if (confirm('هل تريد مسح مسببات السقوط وخطط المواجهة؟')) {
+        recoveryNotes = { triggers: '', coping: '' };
+        localStorage.setItem('life_app_recovery_notes', JSON.stringify(recoveryNotes));
+        renderRecoveryNotes();
+      }
+    }
+
+    function renderRecoveryNotes() {
+      const triggersEl = document.getElementById('recovery-triggers-input');
+      const copingEl = document.getElementById('recovery-coping-input');
+      if (triggersEl) triggersEl.value = recoveryNotes.triggers || '';
+      if (copingEl) copingEl.value = recoveryNotes.coping || '';
+    }
+
     function renderRecoveryTab() {
       const currentDays = getDailyDaysOnly(recoveryData.startDate);
 
@@ -1538,6 +1605,7 @@
       if (startEl) startEl.innerText = recoveryData.startDate;
 
       renderBadges(currentDays, 'badges-container');
+      renderRecoveryNotes();
     }
 
     function resetStreak() {
@@ -1573,7 +1641,15 @@
     }
 
     function exportData() {
-      const fullData = { outfits: allOutfits, wardrobe: myWardrobe, recovery: recoveryData, weekly: weeklyTracker, expenses: myExpenses, english: englishLogs };
+      const fullData = {
+        outfits: allOutfits,
+        wardrobe: myWardrobe,
+        recovery: recoveryData,
+        recoveryNotes: recoveryNotes,
+        weekly: weeklyTracker,
+        expenses: myExpenses,
+        english: englishLogs
+      };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1591,6 +1667,7 @@
           if (imported.outfits) localStorage.setItem('life_app_outfits_by_date', JSON.stringify(imported.outfits));
           if (imported.wardrobe) localStorage.setItem('life_app_my_wardrobe_with_images', JSON.stringify(imported.wardrobe));
           if (imported.recovery) localStorage.setItem('life_app_recovery_data', JSON.stringify(imported.recovery));
+          if (imported.recoveryNotes) localStorage.setItem('life_app_recovery_notes', JSON.stringify(imported.recoveryNotes));
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
           if (imported.english) localStorage.setItem('life_app_english_logs', JSON.stringify(imported.english));
