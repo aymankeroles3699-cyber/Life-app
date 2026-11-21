@@ -733,21 +733,18 @@
 
     <!-- التابة السادسة: يسوع ✝️ -->
     <div id="tab-jesus" class="tab-content">
-      <h2 style="margin-top: 0;">✝️ تتبع الشركة مع يسوع</h2>
+      <h2 style="margin-top: 0;">✝️ رحلة الشركة مع يسوع</h2>
 
-      <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(99, 102, 241, 0.2)); border-color: rgba(16, 185, 129, 0.35);">
-        <div style="font-size: 0.9rem; color: var(--subtext);">استمرارية الشركة اليومية</div>
-        <div style="font-size: 3.2rem; font-weight: bold; color: var(--accent); margin: 6px 0;" id="jesus-streak-count">0</div>
-        <div style="font-size: 0.85rem; color: var(--text); font-weight: bold;">أيام متتالية! 🙏</div>
+      <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
+        <div style="font-size:0.9rem; color:var(--subtext);">عدد أيام الثبات المستمر</div>
+        <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:6px 0;" id="jesus-days-count">0</div>
+        <div style="font-size:0.85rem; color:var(--text); font-weight:bold; margin-top: 4px;" id="jesus-motivation">كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏</div>
       </div>
 
-      <div class="card" style="text-align: center;">
-        <h3 style="margin: 0 0 8px 0; font-size: 1rem; color: var(--text);">🕊️ تأكيد يوم الشركة</h3>
-        <div style="font-size: 0.8rem; color: var(--subtext); margin-bottom: 16px;" id="jesus-today-label">تاريخ اليوم: ...</div>
-        
-        <button id="jesus-check-btn" onclick="toggleJesusToday()" class="add-btn" style="padding: 14px; font-size: 1rem; background: var(--primary);">
-          ⏳ لم أؤكد يوم اليوم بعد
-        </button>
+      <div class="card">
+        <h3 style="margin: 0 0 8px 0; color:var(--accent); font-size:1rem;">🏅 أوسمة الثبات والاستمرارية</h3>
+        <div style="font-size:0.75rem; color:var(--subtext); margin-bottom:10px;">تنفتح الأوسمة تلقائياً كلما تقدمت في رحلتك:</div>
+        <div class="badges-grid" id="jesus-badges-container"></div>
       </div>
 
       <div class="card" style="border-color: rgba(99, 102, 241, 0.35);">
@@ -764,9 +761,22 @@
         </div>
       </div>
 
+      <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي</div>
+          <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="jesus-best-count">0 يوم</div>
+        </div>
+        <div>
+          <div style="font-size:0.8rem; color:var(--subtext);">📅 تاريخ بداية التحدي</div>
+          <div style="font-size:0.95rem; font-weight:bold; color:var(--text); margin-top:4px;" id="jesus-start-date">2026-11-21</div>
+        </div>
+      </div>
+
       <div class="card">
-        <h3 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--text);">📅 سجل الأيام السابقة</h3>
-        <div id="jesus-history-list" style="max-height: 200px; overflow-y: auto;"></div>
+        <h3 style="margin: 0 0 10px 0;">⚡ التحكم والإجراءات:</h3>
+        <button onclick="resetJesusStreak()" style="background:rgba(244, 63, 94, 0.15); border:1px solid #f43f5e; color:#f43f5e; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">
+          🔄 حدث سقوط (بدء التحدي مجدداً من اليوم)
+        </button>
       </div>
     </div>
 
@@ -946,7 +956,6 @@
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     let myExpenses = JSON.parse(localStorage.getItem('life_app_expenses')) || [];
     let englishLogs = JSON.parse(localStorage.getItem('life_app_english_logs')) || {};
-    let jesusLogs = JSON.parse(localStorage.getItem('life_app_jesus_logs')) || {};
     let jesusNotes = localStorage.getItem('life_app_jesus_notes') || '';
     let recoveryNotes = JSON.parse(localStorage.getItem('life_app_recovery_notes')) || { triggers: '', coping: '' };
     
@@ -956,6 +965,14 @@
       recoveryData.bestDays = 0;
       recoveryData.bestStart = "2026-10-18";
       localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
+    }
+
+    let jesusData = JSON.parse(localStorage.getItem('life_app_jesus_data')) || { startDate: getLocalDateString(0), bestDays: 0, bestStart: getLocalDateString(0) };
+    if (!jesusData.startDate) {
+      jesusData.startDate = getLocalDateString(0);
+      jesusData.bestDays = 0;
+      jesusData.bestStart = getLocalDateString(0);
+      localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
     }
     
     function getWeekRange(dateObj) {
@@ -1073,7 +1090,6 @@
       renderDietTab();
       updateDailyWisdom();
       renderEnglishTab();
-      renderJesusTab();
     }
 
     function setQuickDate(offset) {
@@ -1088,7 +1104,6 @@
       renderDietTab();
       updateDailyWisdom();
       renderEnglishTab();
-      renderJesusTab();
     }
 
     function renderDietTab() {
@@ -1564,30 +1579,6 @@
       `;
     }
 
-    /* دالة مشتركة لحساب الستريك اليومي (للإنجليش ويسوع) */
-    function calculateStreakFromLogs(logsObj) {
-      let streak = 0;
-      let d = new Date();
-      while (true) {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const dateStr = `${year}-${month}-${day}`;
-
-        if (logsObj[dateStr]) {
-          streak++;
-          d.setDate(d.getDate() - 1);
-        } else {
-          if (dateStr === getLocalDateString(0)) {
-            d.setDate(d.getDate() - 1);
-            continue;
-          }
-          break;
-        }
-      }
-      return streak;
-    }
-
     /* الوظائف الخاصة بتعلم الإنجليزية */
     function toggleEnglishToday() {
       const isDone = englishLogs[currentDate];
@@ -1620,11 +1611,31 @@
         }
       }
 
-      if (streakCountEl) streakCountEl.innerText = calculateStreakFromLogs(englishLogs);
+      let streak = 0;
+      let d = new Date();
+      while (true) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+
+        if (englishLogs[dateStr]) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          if (dateStr === getLocalDateString(0)) {
+            d.setDate(d.getDate() - 1);
+            continue;
+          }
+          break;
+        }
+      }
+
+      if (streakCountEl) streakCountEl.innerText = streak;
 
       if (historyList) {
         historyList.innerHTML = '';
-        const sortedDates = Object.keys(englishLogs).filter(k => englishLogs[k]).sort().reverse();
+        const sortedDates = Object.keys(englishLogs).sort().reverse();
         if (sortedDates.length === 0) {
           historyList.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا توجد أيام مسجلة حتى الآن.</div>';
           return;
@@ -1642,17 +1653,17 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة يسوع */
-    function toggleJesusToday() {
-      const isDone = jesusLogs[currentDate];
-      if (isDone) {
-        delete jesusLogs[currentDate];
-      } else {
-        jesusLogs[currentDate] = true;
-        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
-      }
-      localStorage.setItem('life_app_jesus_logs', JSON.stringify(jesusLogs));
-      renderJesusTab();
+    /* الوظائف الخاصة بتابة يسوع (نفس نظام التعافي والأرقام القياسية) */
+    function getJesusMotivationMessage() {
+      const messages = [
+        "كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏",
+        "الثبات في الشركة اليومية يبني سلاماً داخلياً يدوم! 🕊️",
+        "خطوة كل يوم تقربك أكتر وتقوّي قلبك وخطواتك! ✨",
+        "الاستمرارية مع ربنا بتدي لقلبك هدوء وثبات في كل وقت! 🌟",
+        "كل يوم جديد فرصة جديدة للنمو والشكر والرجاء! ✝️"
+      ];
+      const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+      return messages[dayOfYear % messages.length];
     }
 
     function saveJesusNotes(showToast = false) {
@@ -1679,45 +1690,43 @@
     }
 
     function renderJesusTab() {
-      const todayLabel = document.getElementById('jesus-today-label');
-      const checkBtn = document.getElementById('jesus-check-btn');
-      const streakCountEl = document.getElementById('jesus-streak-count');
-      const notesEl = document.getElementById('jesus-notes-input');
-      const historyList = document.getElementById('jesus-history-list');
+      const currentDays = getDailyDaysOnly(jesusData.startDate);
 
-      if (todayLabel) todayLabel.innerText = `تاريخ اليوم المحدد: ${currentDate}`;
-      if (notesEl && document.activeElement !== notesEl) notesEl.value = jesusNotes || '';
-
-      const isCompleted = jesusLogs[currentDate];
-      if (checkBtn) {
-        if (isCompleted) {
-          checkBtn.innerText = "✓ تم تأكيد يوم الشركة بنجاح! 🙏";
-          checkBtn.style.background = "var(--accent)";
-        } else {
-          checkBtn.innerText = "⏳ لم أؤكد يوم اليوم بعد (اضغط عند الإتمام ☑️)";
-          checkBtn.style.background = "var(--primary)";
-        }
+      if (currentDays > (jesusData.bestDays || 0)) {
+        jesusData.bestDays = currentDays;
+        jesusData.bestStart = jesusData.startDate;
+        localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
       }
 
-      if (streakCountEl) streakCountEl.innerText = calculateStreakFromLogs(jesusLogs);
+      const bestDays = jesusData.bestDays || currentDays;
 
-      if (historyList) {
-        historyList.innerHTML = '';
-        const sortedDates = Object.keys(jesusLogs).filter(k => jesusLogs[k]).sort().reverse();
-        if (sortedDates.length === 0) {
-          historyList.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا توجد أيام مسجلة حتى الآن.</div>';
-          return;
+      const countEl = document.getElementById('jesus-days-count');
+      const motEl = document.getElementById('jesus-motivation');
+      const bestEl = document.getElementById('jesus-best-count');
+      const startEl = document.getElementById('jesus-start-date');
+      const notesEl = document.getElementById('jesus-notes-input');
+
+      if (countEl) countEl.innerText = currentDays;
+      if (motEl) motEl.innerText = getJesusMotivationMessage();
+      if (bestEl) bestEl.innerText = `${bestDays} يوم`;
+      if (startEl) startEl.innerText = jesusData.startDate;
+      if (notesEl && document.activeElement !== notesEl) notesEl.value = jesusNotes || '';
+
+      renderBadges(currentDays, 'jesus-badges-container');
+    }
+
+    function resetJesusStreak() {
+      if (confirm('هل تريد إعادة ضبط التحدي والبدء من اليوم؟')) {
+        const currentDays = getDailyDaysOnly(jesusData.startDate);
+        if (currentDays > (jesusData.bestDays || 0)) {
+          jesusData.bestDays = currentDays;
+          jesusData.bestStart = jesusData.startDate;
         }
 
-        sortedDates.forEach(dateStr => {
-          const row = document.createElement('div');
-          row.className = 'expense-item-row';
-          row.innerHTML = `
-            <div style="font-size:0.85rem; font-weight:bold; color:var(--text);">📅 ${dateStr}</div>
-            <div style="font-size:0.85rem; color:var(--accent); font-weight:bold;">مكتمل ✓</div>
-          `;
-          historyList.appendChild(row);
-        });
+        jesusData.startDate = getLocalDateString(0);
+        localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
+        renderJesusTab();
+        alert('تم بدء تحدٍ جديد من اليوم بنجاح! 🙏');
       }
     }
 
@@ -1998,7 +2007,7 @@
 
     function renderReports() {
       const recoveryDays = getDailyDaysOnly(recoveryData.startDate);
-      const jesusStreak = calculateStreakFromLogs(jesusLogs);
+      const jesusDays = getDailyDaysOnly(jesusData.startDate);
 
       const totalRecoveryEl = document.getElementById('total-recovery-streak');
       const monthlyEl = document.getElementById('monthly-analytics-content');
@@ -2009,7 +2018,7 @@
         const totalOutfitsCount = Object.values(allOutfits).reduce((acc, s) => acc + (Array.isArray(s) ? s.length : 0), 0);
         monthlyEl.innerHTML = `
           🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${recoveryDays}</strong>.<br>
-          ✝️ <strong>الشركة مع يسوع:</strong> استمرارية <strong>${jesusStreak}</strong> يوم متتالي.<br>
+          ✝️ <strong>الشركة مع يسوع:</strong> أنت في اليوم الـ <strong>${jesusDays}</strong>.<br>
           👔 <strong>سجل الملابس:</strong> قمت بتسجيل <strong>${totalOutfitsCount}</strong> إطلالة.
         `;
       }
@@ -2024,7 +2033,7 @@
         weekly: weeklyTracker,
         expenses: myExpenses,
         english: englishLogs,
-        jesus: jesusLogs,
+        jesus: jesusData,
         jesusNotes: jesusNotes
       };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
@@ -2048,7 +2057,7 @@
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
           if (imported.english) localStorage.setItem('life_app_english_logs', JSON.stringify(imported.english));
-          if (imported.jesus) localStorage.setItem('life_app_jesus_logs', JSON.stringify(imported.jesus));
+          if (imported.jesus) localStorage.setItem('life_app_jesus_data', JSON.stringify(imported.jesus));
           if (typeof imported.jesusNotes === 'string') localStorage.setItem('life_app_jesus_notes', imported.jesusNotes);
           alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
@@ -2059,10 +2068,10 @@
 
     initDate();
     renderRecoveryTab();
+    renderJesusTab();
     populateExpenseMonths();
     renderFinanceTab();
     renderEnglishTab();
-    renderJesusTab();
   </script>
 
   <script>
