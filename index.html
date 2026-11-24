@@ -265,8 +265,8 @@
     .bottom-nav {
       position: fixed;
       bottom: 45px;
-      left: 8px;
-      right: 8px;
+      left: 6px;
+      right: 6px;
       height: 65px;
       background: #0f172a;
       border: 1px solid var(--card-border);
@@ -276,14 +276,14 @@
       align-items: center;
       z-index: 9999;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-      padding: 0 4px;
+      padding: 0 2px;
     }
 
     .nav-btn {
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.52rem;
+      font-size: 0.48rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -461,6 +461,26 @@
       font-size: 0.75rem;
       color: var(--accent);
       font-weight: bold;
+    }
+
+    .stage-pill {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      background: rgba(99, 102, 241, 0.18);
+      border: 1px solid var(--primary);
+      color: #c7d2fe;
+      margin-bottom: 8px;
+    }
+
+    .timer-display {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin: 8px 0;
     }
   </style>
 </head>
@@ -780,7 +800,57 @@
       </div>
     </div>
 
-    <!-- التابة السابعة: المالية 💰 -->
+    <!-- التابة السابعة: بنك مصر 🏦 -->
+    <div id="tab-bank" class="tab-content">
+      <h2 style="margin-top: 0;">🏦 بنك مصر — التحضير اليومي</h2>
+
+      <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(16, 185, 129, 0.16)); border-color: rgba(99, 102, 241, 0.35);">
+        <span class="stage-pill">المرحلة الحالية: إنجليزي الإنترفيو (ساعة / يوم)</span>
+        <div style="font-size: 0.9rem; color: var(--subtext);">التزام المذاكرة اليومية المتتالية</div>
+        <div style="font-size: 3.2rem; font-weight: bold; color: var(--primary); margin: 6px 0;" id="bank-streak-count">0</div>
+        <div style="font-size: 0.85rem; color: var(--text); font-weight: bold;">أيام التزام متتالية! 🎯</div>
+      </div>
+
+      <div class="card" style="text-align: center;">
+        <h3 style="margin: 0 0 8px 0; font-size: 1rem; color: var(--text);">⏱️ مذاكرة الإنجليزي (60 دقيقة)</h3>
+        <div style="font-size: 0.8rem; color: var(--subtext); margin-bottom: 12px;" id="bank-today-label">تاريخ اليوم: ...</div>
+
+        <div class="timer-display" id="bank-timer-display">60:00</div>
+        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:14px;">
+          <button id="bank-timer-toggle-btn" onclick="toggleBankTimer()" class="add-btn" style="width:auto; padding:8px 16px; background:rgba(16, 185, 129, 0.2); border:1px solid var(--accent); color:var(--text);">
+            ▶️ بدء الساعة
+          </button>
+          <button onclick="resetBankTimer()" style="background:rgba(15, 23, 42, 0.7); border:1px solid var(--card-border); color:var(--subtext); padding:8px 14px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:0.8rem;">
+            ↺ إعادة
+          </button>
+        </div>
+        
+        <button id="bank-check-btn" onclick="toggleBankToday()" class="add-btn" style="padding: 14px; font-size: 1rem; background: var(--primary);">
+          ⏳ لم أتمم ساعة الإنجليزي اليوم
+        </button>
+      </div>
+
+      <div class="card" style="border-color: rgba(99, 102, 241, 0.35);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="margin: 0; color:var(--primary); font-size:1rem;">📝 ملاحظات المذاكرة</h3>
+          <span class="save-status-badge" id="bank-notes-status">محفوظ ✓</span>
+        </div>
+
+        <textarea id="bank-notes-input" rows="3" placeholder="اكتب مصطلحات، قواعد، أو أسئلة إنترفيو بنك مصر اللي راجعتها..." oninput="saveBankNotes()"></textarea>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px;">
+          <button class="add-btn" onclick="saveBankNotes(true)" style="background:var(--accent); padding:10px; font-size:0.85rem;">حفظ الملاحظات 💾</button>
+          <button onclick="clearBankNotes()" style="background:none; border:none; color:var(--subtext); font-size:0.75rem; cursor:pointer; text-decoration:underline; white-space:nowrap;">مسح الملاحظات</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin: 0 0 10px 0; font-size: 0.95rem; color: var(--text);">📅 سجل الأيام السابقة</h3>
+        <div id="bank-history-list" style="max-height: 200px; overflow-y: auto;"></div>
+      </div>
+    </div>
+
+    <!-- التابة الثامنة: المالية 💰 -->
     <div id="tab-finance" class="tab-content">
       <h2 style="margin-top: 0;">💰 التحكم بالمصاريف والتوجيه المالي</h2>
 
@@ -834,7 +904,7 @@
       </div>
     </div>
 
-    <!-- التابة الثامنة: التقارير 📊 -->
+    <!-- التابة التاسعة: التقارير 📊 -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -868,35 +938,39 @@
   <!-- الشريط السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
-      <span style="font-size: 1.05rem;">🏠</span>
+      <span style="font-size: 1rem;">🏠</span>
       <span>الرئيسية</span>
     </button>
     <button class="nav-btn" id="btn-diet" onclick="switchTab('diet')">
-      <span style="font-size: 1.05rem;">🥗</span>
+      <span style="font-size: 1rem;">🥗</span>
       <span>التغذية</span>
     </button>
     <button class="nav-btn" id="btn-outfit" onclick="switchTab('outfit')">
-      <span style="font-size: 1.05rem;">👔</span>
+      <span style="font-size: 1rem;">👔</span>
       <span>الدولاب</span>
     </button>
     <button class="nav-btn" id="btn-recovery" onclick="switchTab('recovery')">
-      <span style="font-size: 1.05rem;">🛡️</span>
+      <span style="font-size: 1rem;">🛡️</span>
       <span>التعافي</span>
     </button>
     <button class="nav-btn" id="btn-english" onclick="switchTab('english')">
-      <span style="font-size: 1.05rem;">🇬🇧</span>
+      <span style="font-size: 1rem;">🇬🇧</span>
       <span>الإنجليش</span>
     </button>
     <button class="nav-btn" id="btn-jesus" onclick="switchTab('jesus')">
-      <span style="font-size: 1.05rem;">✝️</span>
+      <span style="font-size: 1rem;">✝️</span>
       <span>يسوع</span>
     </button>
+    <button class="nav-btn" id="btn-bank" onclick="switchTab('bank')">
+      <span style="font-size: 1rem;">🏦</span>
+      <span>بنك مصر</span>
+    </button>
     <button class="nav-btn" id="btn-finance" onclick="switchTab('finance')">
-      <span style="font-size: 1.05rem;">💰</span>
+      <span style="font-size: 1rem;">💰</span>
       <span>المالية</span>
     </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
-      <span style="font-size: 1.05rem;">📊</span>
+      <span style="font-size: 1rem;">📊</span>
       <span>التقارير</span>
     </button>
   </div>
@@ -956,6 +1030,8 @@
     let myWardrobe = JSON.parse(localStorage.getItem('life_app_my_wardrobe_with_images')) || [];
     let myExpenses = JSON.parse(localStorage.getItem('life_app_expenses')) || [];
     let englishLogs = JSON.parse(localStorage.getItem('life_app_english_logs')) || {};
+    let bankLogs = JSON.parse(localStorage.getItem('life_app_bank_logs')) || {};
+    let bankNotes = localStorage.getItem('life_app_bank_notes') || '';
     let jesusNotes = localStorage.getItem('life_app_jesus_notes') || '';
     let recoveryNotes = JSON.parse(localStorage.getItem('life_app_recovery_notes')) || { triggers: '', coping: '' };
     
@@ -1059,6 +1135,10 @@
         document.getElementById('tab-jesus').classList.add('active');
         document.getElementById('btn-jesus').classList.add('active');
         renderJesusTab();
+      } else if (tabName === 'bank') {
+        document.getElementById('tab-bank').classList.add('active');
+        document.getElementById('btn-bank').classList.add('active');
+        renderBankTab();
       } else if (tabName === 'finance') {
         document.getElementById('tab-finance').classList.add('active');
         document.getElementById('btn-finance').classList.add('active');
@@ -1090,6 +1170,7 @@
       renderDietTab();
       updateDailyWisdom();
       renderEnglishTab();
+      renderBankTab();
     }
 
     function setQuickDate(offset) {
@@ -1104,6 +1185,7 @@
       renderDietTab();
       updateDailyWisdom();
       renderEnglishTab();
+      renderBankTab();
     }
 
     function renderDietTab() {
@@ -1579,6 +1661,29 @@
       `;
     }
 
+    function calculateStreakFromLogs(logsObj) {
+      let streak = 0;
+      let d = new Date();
+      while (true) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+
+        if (logsObj[dateStr]) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          if (dateStr === getLocalDateString(0)) {
+            d.setDate(d.getDate() - 1);
+            continue;
+          }
+          break;
+        }
+      }
+      return streak;
+    }
+
     /* الوظائف الخاصة بتعلم الإنجليزية */
     function toggleEnglishToday() {
       const isDone = englishLogs[currentDate];
@@ -1611,31 +1716,11 @@
         }
       }
 
-      let streak = 0;
-      let d = new Date();
-      while (true) {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const dateStr = `${year}-${month}-${day}`;
-
-        if (englishLogs[dateStr]) {
-          streak++;
-          d.setDate(d.getDate() - 1);
-        } else {
-          if (dateStr === getLocalDateString(0)) {
-            d.setDate(d.getDate() - 1);
-            continue;
-          }
-          break;
-        }
-      }
-
-      if (streakCountEl) streakCountEl.innerText = streak;
+      if (streakCountEl) streakCountEl.innerText = calculateStreakFromLogs(englishLogs);
 
       if (historyList) {
         historyList.innerHTML = '';
-        const sortedDates = Object.keys(englishLogs).sort().reverse();
+        const sortedDates = Object.keys(englishLogs).filter(k => englishLogs[k]).sort().reverse();
         if (sortedDates.length === 0) {
           historyList.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا توجد أيام مسجلة حتى الآن.</div>';
           return;
@@ -1647,6 +1732,142 @@
           row.innerHTML = `
             <div style="font-size:0.85rem; font-weight:bold; color:var(--text);">📅 ${dateStr}</div>
             <div style="font-size:0.85rem; color:var(--accent); font-weight:bold;">30 دقيقة ✓</div>
+          `;
+          historyList.appendChild(row);
+        });
+      }
+    }
+
+    /* الوظائف الخاصة بتابة بنك مصر (إنجليزي ساعة يومياً) */
+    let bankRemainingSeconds = 60 * 60;
+    let bankTimerInterval = null;
+
+    function formatBankTimer(secs) {
+      const safeSecs = Math.max(0, secs);
+      const mins = String(Math.floor(safeSecs / 60)).padStart(2, '0');
+      const rem = String(safeSecs % 60).padStart(2, '0');
+      return `${mins}:${rem}`;
+    }
+
+    function updateBankTimerUI() {
+      const displayEl = document.getElementById('bank-timer-display');
+      const toggleBtn = document.getElementById('bank-timer-toggle-btn');
+      if (displayEl) displayEl.innerText = formatBankTimer(bankRemainingSeconds);
+      if (toggleBtn) {
+        toggleBtn.innerText = bankTimerInterval ? '⏸️ إيقاف مؤقت' : '▶️ بدء الساعة';
+      }
+    }
+
+    function toggleBankTimer() {
+      if (bankTimerInterval) {
+        clearInterval(bankTimerInterval);
+        bankTimerInterval = null;
+        updateBankTimerUI();
+        return;
+      }
+      if (bankRemainingSeconds <= 0) {
+        bankRemainingSeconds = 60 * 60;
+      }
+      bankTimerInterval = setInterval(() => {
+        bankRemainingSeconds--;
+        updateBankTimerUI();
+        if (bankRemainingSeconds <= 0) {
+          clearInterval(bankTimerInterval);
+          bankTimerInterval = null;
+          updateBankTimerUI();
+          if (!bankLogs[currentDate]) {
+            bankLogs[currentDate] = true;
+            localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
+            confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
+            renderBankTab();
+          }
+        }
+      }, 1000);
+      updateBankTimerUI();
+    }
+
+    function resetBankTimer() {
+      if (bankTimerInterval) {
+        clearInterval(bankTimerInterval);
+        bankTimerInterval = null;
+      }
+      bankRemainingSeconds = 60 * 60;
+      updateBankTimerUI();
+    }
+
+    function toggleBankToday() {
+      const isDone = bankLogs[currentDate];
+      if (isDone) {
+        delete bankLogs[currentDate];
+      } else {
+        bankLogs[currentDate] = true;
+        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+      }
+      localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
+      renderBankTab();
+    }
+
+    function saveBankNotes(showToast = false) {
+      const notesEl = document.getElementById('bank-notes-input');
+      const statusEl = document.getElementById('bank-notes-status');
+      bankNotes = notesEl ? notesEl.value : '';
+      localStorage.setItem('life_app_bank_notes', bankNotes);
+
+      if (statusEl) {
+        statusEl.innerText = showToast ? 'تم الحفظ ✓' : 'محفوظ ✓';
+        setTimeout(() => {
+          if (statusEl) statusEl.innerText = 'محفوظ ✓';
+        }, 1500);
+      }
+    }
+
+    function clearBankNotes() {
+      if (confirm('هل تريد مسح ملاحظات بنك مصر؟')) {
+        bankNotes = '';
+        localStorage.setItem('life_app_bank_notes', '');
+        const notesEl = document.getElementById('bank-notes-input');
+        if (notesEl) notesEl.value = '';
+      }
+    }
+
+    function renderBankTab() {
+      const todayLabel = document.getElementById('bank-today-label');
+      const checkBtn = document.getElementById('bank-check-btn');
+      const streakCountEl = document.getElementById('bank-streak-count');
+      const notesEl = document.getElementById('bank-notes-input');
+      const historyList = document.getElementById('bank-history-list');
+
+      if (todayLabel) todayLabel.innerText = `تاريخ اليوم المحدد: ${currentDate}`;
+      if (notesEl && document.activeElement !== notesEl) notesEl.value = bankNotes || '';
+      updateBankTimerUI();
+
+      const isCompleted = bankLogs[currentDate];
+      if (checkBtn) {
+        if (isCompleted) {
+          checkBtn.innerText = "✓ تم إتمام ساعة الإنجليزي اليوم بنجاح! 🎉";
+          checkBtn.style.background = "var(--accent)";
+        } else {
+          checkBtn.innerText = "⏳ لم أتمم ساعة الإنجليزي اليوم (اضغط عند الإتمام ☑️)";
+          checkBtn.style.background = "var(--primary)";
+        }
+      }
+
+      if (streakCountEl) streakCountEl.innerText = calculateStreakFromLogs(bankLogs);
+
+      if (historyList) {
+        historyList.innerHTML = '';
+        const sortedDates = Object.keys(bankLogs).filter(k => bankLogs[k]).sort().reverse();
+        if (sortedDates.length === 0) {
+          historyList.innerHTML = '<div style="color:var(--subtext); font-size:0.8rem; text-align:center; padding: 8px;">لا توجد أيام مسجلة حتى الآن.</div>';
+          return;
+        }
+
+        sortedDates.forEach(dateStr => {
+          const row = document.createElement('div');
+          row.className = 'expense-item-row';
+          row.innerHTML = `
+            <div style="font-size:0.85rem; font-weight:bold; color:var(--text);">📅 ${dateStr}</div>
+            <div style="font-size:0.85rem; color:var(--accent); font-weight:bold;">ساعة إنجليزي ✓</div>
           `;
           historyList.appendChild(row);
         });
@@ -2008,6 +2229,7 @@
     function renderReports() {
       const recoveryDays = getDailyDaysOnly(recoveryData.startDate);
       const jesusDays = getDailyDaysOnly(jesusData.startDate);
+      const bankStreak = calculateStreakFromLogs(bankLogs);
 
       const totalRecoveryEl = document.getElementById('total-recovery-streak');
       const monthlyEl = document.getElementById('monthly-analytics-content');
@@ -2019,6 +2241,7 @@
         monthlyEl.innerHTML = `
           🛡️ <strong>سجل التعافي:</strong> أنت في اليوم الـ <strong>${recoveryDays}</strong>.<br>
           ✝️ <strong>الشركة مع يسوع:</strong> أنت في اليوم الـ <strong>${jesusDays}</strong>.<br>
+          🏦 <strong>بنك مصر:</strong> استمرارية <strong>${bankStreak}</strong> يوم متتالي.<br>
           👔 <strong>سجل الملابس:</strong> قمت بتسجيل <strong>${totalOutfitsCount}</strong> إطلالة.
         `;
       }
@@ -2033,6 +2256,8 @@
         weekly: weeklyTracker,
         expenses: myExpenses,
         english: englishLogs,
+        bank: bankLogs,
+        bankNotes: bankNotes,
         jesus: jesusData,
         jesusNotes: jesusNotes
       };
@@ -2057,6 +2282,8 @@
           if (imported.weekly) localStorage.setItem('life_app_weekly_tracker', JSON.stringify(imported.weekly));
           if (imported.expenses) localStorage.setItem('life_app_expenses', JSON.stringify(imported.expenses));
           if (imported.english) localStorage.setItem('life_app_english_logs', JSON.stringify(imported.english));
+          if (imported.bank) localStorage.setItem('life_app_bank_logs', JSON.stringify(imported.bank));
+          if (typeof imported.bankNotes === 'string') localStorage.setItem('life_app_bank_notes', imported.bankNotes);
           if (imported.jesus) localStorage.setItem('life_app_jesus_data', JSON.stringify(imported.jesus));
           if (typeof imported.jesusNotes === 'string') localStorage.setItem('life_app_jesus_notes', imported.jesusNotes);
           alert('تم استرجاع البيانات بنجاح! 🎉');
@@ -2072,6 +2299,7 @@
     populateExpenseMonths();
     renderFinanceTab();
     renderEnglishTab();
+    renderBankTab();
   </script>
 
   <script>
