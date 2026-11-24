@@ -1244,7 +1244,7 @@
       { word: "التركيز والوضوح", type: "حكمة في تطوير الذات", def: "القدرة على توجيه انتباهك وإرادتك نحو الهدف الأساسي دون التشتت.", example: "حافظ على تركيزك على الأهداف طويلة المدى بدلاً من المشتتات المؤقتة." },
       { word: "الانضباط الذاتي", type: "سر النجاح والاستمرارية", def: "فعل ما يجب عليك فعله بغض النظر عن رغبتك المؤقتة في عدم فعله.", example: "الانضباط هو الجسر بين أهدافك والإنجاز الحقيقي." },
       { word: "إدارة الوقت والسيولة", type: "حكمة مالية وعملية", def: "كل دقيقة وكل جنيه تنفقه بوعي هو استثمار في حريتك المستقبلية.", example: "التحكم في المصاريف اليومية يصنع فارقاً هائلاً على المدى الطويل." },
-      { word: "الثبات والصبر", type: "قوة إرادة داخلية", def: "الصعوبات التي تواجهها اليوم هي التي تبني صلابتك وقوتك غداً.", example: "لا تتوقف عندما تبتعب، توقف عندما تنتهي من المهمة بنجاح." },
+      { word: "الثبات والصبر", type: "قوة إرادة داخلية", def: "الصعوبات التي تواجهها اليوم هي التي تبني صلابتك وقوتك غداً.", example: "لا تتوقف عندما تتعب، توقف عندما تنتهي من المهمة بنجاح." },
       { word: "التطوير المستمر", type: "قاعدة التطور 1%", def: "تحسين نفسك بنسبة بسيطة كل يوم يمنحك نتائج مذهلة مع مرور الوقت.", example: "خطوة صغيرة يومياً تقربك أمیالاً من قمة نجاحك." },
       { word: "قوة العادة", type: "أسلوب حياة متوازن", def: "الأفعال الصغيرة المتكررة تصنع هويتك ومستقبلك بالكامل.", example: "اختر عادتك اليومية بحكمة، فهي التي ستحدد شكل حياتك." },
       { word: "السلام الداخلي واليقظة", type: "تطوير الذات والهدوء", def: "الهدوء النفسي يمنحك القدرة على اتخاذ قرارات صحيحة وصائبة.", example: "امنح عقلك قسطاً من الهدوء لتستعيد طاقتك ونشاطك." }
@@ -1910,9 +1910,34 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة بنك مصر (إنجليزي ساعة يومياً) */
-    let bankRemainingSeconds = 60 * 60;
+    /* الوظائف الخاصة بتابة بنك مصر (إنجليزي ساعة يومياً) مع حفظ الحالة والإشعارات */
+    const BANK_DURATION_SECONDS = 60 * 60;
+    let bankTimerState = JSON.parse(localStorage.getItem('life_app_bank_timer_state')) || {
+      remainingSeconds: BANK_DURATION_SECONDS,
+      endTime: null,
+      isRunning: false,
+      notifiedDone: false
+    };
     let bankTimerInterval = null;
+
+    function saveBankTimerState() {
+      localStorage.setItem('life_app_bank_timer_state', JSON.stringify(bankTimerState));
+    }
+
+    function syncBankTimerRemaining() {
+      if (bankTimerState.isRunning && bankTimerState.endTime) {
+        const diffSeconds = Math.ceil((bankTimerState.endTime - Date.now()) / 1000);
+        if (diffSeconds > 0) {
+          bankTimerState.remainingSeconds = diffSeconds;
+        } else {
+          bankTimerState.remainingSeconds = 0;
+          bankTimerState.isRunning = false;
+          bankTimerState.endTime = null;
+          saveBankTimerState();
+          onBankTimerCompleted();
+        }
+      }
+    }
 
     function formatBankTimer(secs) {
       const safeSecs = Math.max(0, secs);
@@ -1922,39 +1947,129 @@
     }
 
     function updateBankTimerUI() {
+      syncBankTimerRemaining();
       const displayEl = document.getElementById('bank-timer-display');
       const toggleBtn = document.getElementById('bank-timer-toggle-btn');
-      if (displayEl) displayEl.innerText = formatBankTimer(bankRemainingSeconds);
+      if (displayEl) displayEl.innerText = formatBankTimer(bankTimerState.remainingSeconds);
       if (toggleBtn) {
-        toggleBtn.innerText = bankTimerInterval ? '⏸️ إيقاف مؤقت' : '▶️ بدء الساعة';
+        toggleBtn.innerText = bankTimerState.isRunning ? '⏸️ إيقاف مؤقت' : '▶️ بدء الساعة';
       }
     }
 
-    function toggleBankTimer() {
+    function playCompletionSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+      } catch (e) {}
+    }
+
+    async function sendBankCompletionNotification() {
+      playCompletionSound();
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]);
+      }
+
+      if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+          try { await Notification.requestPermission(); } catch (e) {}
+        }
+
+        if (Notification.permission === 'granted') {
+          const title = 'بنك مصر — انتهت ساعة المذاكرة 🎉';
+          const options = {
+            body: 'أتممت 60 دقيقة من مذاكرة الإنجليزي بنجاح وتم تسجيل يومك!',
+            icon: 'icon.png',
+            badge: 'icon.png',
+            tag: 'bank-english-timer'
+          };
+
+          if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+            navigator.serviceWorker.ready.then(reg => {
+              if (reg && typeof reg.showNotification === 'function') {
+                reg.showNotification(title, options);
+              } else {
+                new Notification(title, options);
+              }
+            }).catch(() => {
+              new Notification(title, options);
+            });
+          } else {
+            new Notification(title, options);
+          }
+        }
+      }
+    }
+
+    function onBankTimerCompleted() {
       if (bankTimerInterval) {
         clearInterval(bankTimerInterval);
         bankTimerInterval = null;
+      }
+
+      const targetDate = currentDate || getLocalDateString(0);
+      if (!bankLogs[targetDate]) {
+        bankLogs[targetDate] = true;
+        localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
+      }
+
+      if (!bankTimerState.notifiedDone) {
+        bankTimerState.notifiedDone = true;
+        saveBankTimerState();
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 70, spread: 65, origin: { y: 0.7 } });
+        }
+        sendBankCompletionNotification();
+        alert('انتهت ساعة مذاكرة الإنجليزي (60 دقيقة) وتم تسجيل إنجاز اليوم بنجاح! 🎉');
+      }
+
+      renderBankTab();
+    }
+
+    function startBankTimerLoop() {
+      if (bankTimerInterval) clearInterval(bankTimerInterval);
+      bankTimerInterval = setInterval(() => {
+        updateBankTimerUI();
+      }, 1000);
+    }
+
+    async function toggleBankTimer() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        try { await Notification.requestPermission(); } catch (e) {}
+      }
+
+      syncBankTimerRemaining();
+
+      if (bankTimerState.isRunning) {
+        bankTimerState.isRunning = false;
+        bankTimerState.endTime = null;
+        if (bankTimerInterval) {
+          clearInterval(bankTimerInterval);
+          bankTimerInterval = null;
+        }
+        saveBankTimerState();
         updateBankTimerUI();
         return;
       }
-      if (bankRemainingSeconds <= 0) {
-        bankRemainingSeconds = 60 * 60;
+
+      if (bankTimerState.remainingSeconds <= 0) {
+        bankTimerState.remainingSeconds = BANK_DURATION_SECONDS;
+        bankTimerState.notifiedDone = false;
       }
-      bankTimerInterval = setInterval(() => {
-        bankRemainingSeconds--;
-        updateBankTimerUI();
-        if (bankRemainingSeconds <= 0) {
-          clearInterval(bankTimerInterval);
-          bankTimerInterval = null;
-          updateBankTimerUI();
-          if (!bankLogs[currentDate]) {
-            bankLogs[currentDate] = true;
-            localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
-            confetti({ particleCount: 60, spread: 60, origin: { y: 0.7 } });
-            renderBankTab();
-          }
-        }
-      }, 1000);
+
+      bankTimerState.isRunning = true;
+      bankTimerState.endTime = Date.now() + (bankTimerState.remainingSeconds * 1000);
+      saveBankTimerState();
+      startBankTimerLoop();
       updateBankTimerUI();
     }
 
@@ -1963,7 +2078,13 @@
         clearInterval(bankTimerInterval);
         bankTimerInterval = null;
       }
-      bankRemainingSeconds = 60 * 60;
+      bankTimerState = {
+        remainingSeconds: BANK_DURATION_SECONDS,
+        endTime: null,
+        isRunning: false,
+        notifiedDone: false
+      };
+      saveBankTimerState();
       updateBankTimerUI();
     }
 
@@ -2700,6 +2821,11 @@
         } catch (err) { alert('الملف غير صالح!'); }
       };
       reader.readAsText(file);
+    }
+
+    syncBankTimerRemaining();
+    if (bankTimerState.isRunning) {
+      startBankTimerLoop();
     }
 
     initDate();
