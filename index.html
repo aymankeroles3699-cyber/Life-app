@@ -498,6 +498,86 @@
       font-variant-numeric: tabular-nums;
       margin: 8px 0;
     }
+
+    /* تنسيقات تابة التخطيط الهادئة */
+    .calm-subnav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .calm-subbtn {
+      flex: 1;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--card-border);
+      color: var(--subtext);
+      padding: 10px 8px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .calm-subbtn.active {
+      background: rgba(99, 102, 241, 0.22);
+      border-color: var(--primary);
+      color: var(--text);
+    }
+
+    .calm-section {
+      display: none;
+    }
+
+    .calm-section.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .calm-item-card {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .calm-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .calm-badge.pending {
+      background: rgba(99, 102, 241, 0.16);
+      color: #c7d2fe;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+    }
+
+    .calm-badge.done {
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .calm-action-link {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--subtext);
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .calm-action-link:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -920,7 +1000,62 @@
       </div>
     </div>
 
-    <!-- التابة التاسعة: التقارير 📊 -->
+    <!-- التابة التاسعة: تخطيط 🧭 -->
+    <div id="tab-planning" class="tab-content">
+      <h2 style="margin-top: 0;">🧭 تخطيط</h2>
+
+      <div class="calm-subnav">
+        <button class="calm-subbtn active" id="subbtn-decisions" onclick="switchPlanningSubtab('decisions')">📝 قرارات</button>
+        <button class="calm-subbtn" id="subbtn-plans" onclick="switchPlanningSubtab('plans')">🗺️ خطط</button>
+        <button class="calm-subbtn" id="subbtn-ideas" onclick="switchPlanningSubtab('ideas')">💡 أفكار</button>
+      </div>
+
+      <!-- قسم القرارات -->
+      <div id="subtab-decisions" class="calm-section active">
+        <div class="card">
+          <div class="input-group" style="margin-top:0;">
+            <input type="text" id="decision-title-input" placeholder="اكتب القرار اللي بتفكر فيه بهدوء...">
+            <textarea id="decision-reason-input" rows="2" placeholder="ليه / ملاحظة تساعدك تحسم (اختياري)..."></textarea>
+            <button class="add-btn" onclick="addDecisionItem()" style="padding:11px; font-size:0.9rem;">حفظ القرار</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="decisions-list-container"></div>
+        </div>
+      </div>
+
+      <!-- قسم الخطط -->
+      <div id="subtab-plans" class="calm-section">
+        <div class="card">
+          <div class="input-group" style="margin-top:0;">
+            <input type="text" id="plan-title-input" placeholder="اكتب خطة أو هدف عايز تمشي فيه...">
+            <input type="text" id="plan-next-input" placeholder="الخطوة الجاية البسيطة (اختياري)...">
+            <button class="add-btn" onclick="addPlanItem()" style="padding:11px; font-size:0.9rem; background:var(--accent);">حفظ الخطة</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="plans-list-container"></div>
+        </div>
+      </div>
+
+      <!-- قسم الأفكار -->
+      <div id="subtab-ideas" class="calm-section">
+        <div class="card">
+          <div class="input-group" style="margin-top:0;">
+            <textarea id="idea-text-input" rows="2" placeholder="فرّغ أي فكرة جت في بالك قبل ما تتنسي..."></textarea>
+            <button class="add-btn" onclick="addIdeaItem()" style="padding:11px; font-size:0.9rem;">حفظ الفكرة</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="ideas-list-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- التابة العاشرة: التقارير 📊 -->
     <div id="tab-reports" class="tab-content">
       <h2 style="margin-top: 0;">📊 تقارير الأهداف والتحليل الشهري</h2>
 
@@ -984,6 +1119,10 @@
     <button class="nav-btn" id="btn-finance" onclick="switchTab('finance')">
       <span style="font-size: 1.15rem;">💰</span>
       <span>المالية</span>
+    </button>
+    <button class="nav-btn" id="btn-planning" onclick="switchTab('planning')">
+      <span style="font-size: 1.15rem;">🧭</span>
+      <span>تخطيط</span>
     </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
       <span style="font-size: 1.15rem;">📊</span>
@@ -1050,6 +1189,15 @@
     let bankNotes = localStorage.getItem('life_app_bank_notes') || '';
     let jesusNotes = localStorage.getItem('life_app_jesus_notes') || '';
     let recoveryNotes = JSON.parse(localStorage.getItem('life_app_recovery_notes')) || { triggers: '', coping: '' };
+
+    let planningData = JSON.parse(localStorage.getItem('life_app_planning_data')) || {
+      decisions: [],
+      plans: [],
+      ideas: []
+    };
+    if (!Array.isArray(planningData.decisions)) planningData.decisions = [];
+    if (!Array.isArray(planningData.plans)) planningData.plans = [];
+    if (!Array.isArray(planningData.ideas)) planningData.ideas = [];
     
     let recoveryData = JSON.parse(localStorage.getItem('life_app_recovery_data')) || { startDate: "2026-10-18", bestDays: 0, bestStart: "2026-10-18" };
     if (!recoveryData.startDate) {
@@ -1166,6 +1314,9 @@
         document.getElementById('tab-finance').classList.add('active');
         populateExpenseMonths();
         renderFinanceTab();
+      } else if (tabName === 'planning') {
+        document.getElementById('tab-planning').classList.add('active');
+        renderPlanningTab();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
         renderReports();
@@ -1972,6 +2123,241 @@
       }
     }
 
+    /* الوظائف الخاصة بتابة تخطيط الهادئة */
+    function persistPlanningData() {
+      localStorage.setItem('life_app_planning_data', JSON.stringify(planningData));
+    }
+
+    function escapeHtml(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function switchPlanningSubtab(subName) {
+      document.querySelectorAll('.calm-subbtn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.calm-section').forEach(s => s.classList.remove('active'));
+
+      const btn = document.getElementById(`subbtn-${subName}`);
+      const sec = document.getElementById(`subtab-${subName}`);
+      if (btn) btn.classList.add('active');
+      if (sec) sec.classList.add('active');
+    }
+
+    function addDecisionItem() {
+      const titleEl = document.getElementById('decision-title-input');
+      const reasonEl = document.getElementById('decision-reason-input');
+      const title = titleEl ? titleEl.value.trim() : '';
+      const reason = reasonEl ? reasonEl.value.trim() : '';
+
+      if (!title) {
+        alert('اكتب القرار الأول.');
+        return;
+      }
+
+      planningData.decisions.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        title,
+        reason,
+        decided: false
+      });
+
+      persistPlanningData();
+      titleEl.value = '';
+      reasonEl.value = '';
+      renderDecisionsList();
+    }
+
+    function toggleDecisionStatus(id) {
+      planningData.decisions = planningData.decisions.map(item =>
+        item.id === id ? { ...item, decided: !item.decided } : item
+      );
+      persistPlanningData();
+      renderDecisionsList();
+    }
+
+    function deleteDecisionItem(id) {
+      planningData.decisions = planningData.decisions.filter(item => item.id !== id);
+      persistPlanningData();
+      renderDecisionsList();
+    }
+
+    function renderDecisionsList() {
+      const container = document.getElementById('decisions-list-container');
+      if (!container) return;
+
+      if (planningData.decisions.length === 0) {
+        container.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center; padding:12px;">مفيش قرارات متسجلة لحد دلوقتي.</div>';
+        return;
+      }
+
+      container.innerHTML = planningData.decisions.map(item => `
+        <div class="calm-item-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div style="font-size:0.95rem; font-weight:bold; color:var(--text); line-height:1.5;">${escapeHtml(item.title)}</div>
+            <span class="calm-badge ${item.decided ? 'done' : 'pending'}" onclick="toggleDecisionStatus('${item.id}')">
+              ${item.decided ? 'تم الحسم ✓' : 'قيد التفكير'}
+            </span>
+          </div>
+          ${item.reason ? `<div style="font-size:0.82rem; color:var(--subtext); margin-top:6px; line-height:1.5;">${escapeHtml(item.reason)}</div>` : ''}
+          <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px;">
+            <button class="calm-action-link" onclick="deleteDecisionItem('${item.id}')">حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addPlanItem() {
+      const titleEl = document.getElementById('plan-title-input');
+      const nextEl = document.getElementById('plan-next-input');
+      const title = titleEl ? titleEl.value.trim() : '';
+      const nextStep = nextEl ? nextEl.value.trim() : '';
+
+      if (!title) {
+        alert('اكتب الخطة الأول.');
+        return;
+      }
+
+      planningData.plans.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        title,
+        nextStep,
+        done: false
+      });
+
+      persistPlanningData();
+      titleEl.value = '';
+      nextEl.value = '';
+      renderPlansList();
+    }
+
+    function togglePlanDone(id) {
+      planningData.plans = planningData.plans.map(item =>
+        item.id === id ? { ...item, done: !item.done } : item
+      );
+      persistPlanningData();
+      renderPlansList();
+    }
+
+    function deletePlanItem(id) {
+      planningData.plans = planningData.plans.filter(item => item.id !== id);
+      persistPlanningData();
+      renderPlansList();
+    }
+
+    function renderPlansList() {
+      const container = document.getElementById('plans-list-container');
+      if (!container) return;
+
+      if (planningData.plans.length === 0) {
+        container.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center; padding:12px;">مفيش خطط متسجلة لحد دلوقتي.</div>';
+        return;
+      }
+
+      container.innerHTML = planningData.plans.map(item => `
+        <div class="calm-item-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+            <div style="font-size:0.95rem; font-weight:bold; color:var(--text); line-height:1.5; ${item.done ? 'text-decoration:line-through; opacity:0.65;' : ''}">
+              ${escapeHtml(item.title)}
+            </div>
+            <span class="calm-badge ${item.done ? 'done' : 'pending'}" onclick="togglePlanDone('${item.id}')">
+              ${item.done ? 'مكتملة ✓' : 'جارية'}
+            </span>
+          </div>
+          ${item.nextStep ? `<div style="font-size:0.82rem; color:var(--accent); margin-top:6px;">الخطوة الجاية: ${escapeHtml(item.nextStep)}</div>` : ''}
+          <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px;">
+            <button class="calm-action-link" onclick="deletePlanItem('${item.id}')">حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addIdeaItem() {
+      const textEl = document.getElementById('idea-text-input');
+      const text = textEl ? textEl.value.trim() : '';
+
+      if (!text) {
+        alert('اكتب الفكرة الأول.');
+        return;
+      }
+
+      planningData.ideas.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        text
+      });
+
+      persistPlanningData();
+      textEl.value = '';
+      renderIdeasList();
+    }
+
+    function moveIdeaToDecision(id) {
+      const idea = planningData.ideas.find(i => i.id === id);
+      if (!idea) return;
+      planningData.decisions.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        title: idea.text,
+        reason: '',
+        decided: false
+      });
+      planningData.ideas = planningData.ideas.filter(i => i.id !== id);
+      persistPlanningData();
+      renderIdeasList();
+      renderDecisionsList();
+      switchPlanningSubtab('decisions');
+    }
+
+    function moveIdeaToPlan(id) {
+      const idea = planningData.ideas.find(i => i.id === id);
+      if (!idea) return;
+      planningData.plans.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        title: idea.text,
+        nextStep: '',
+        done: false
+      });
+      planningData.ideas = planningData.ideas.filter(i => i.id !== id);
+      persistPlanningData();
+      renderIdeasList();
+      renderPlansList();
+      switchPlanningSubtab('plans');
+    }
+
+    function deleteIdeaItem(id) {
+      planningData.ideas = planningData.ideas.filter(item => item.id !== id);
+      persistPlanningData();
+      renderIdeasList();
+    }
+
+    function renderIdeasList() {
+      const container = document.getElementById('ideas-list-container');
+      if (!container) return;
+
+      if (planningData.ideas.length === 0) {
+        container.innerHTML = '<div style="color:var(--subtext); font-size:0.85rem; text-align:center; padding:12px;">مفيش أفكار متسجلة لحد دلوقتي.</div>';
+        return;
+      }
+
+      container.innerHTML = planningData.ideas.map(item => `
+        <div class="calm-item-card">
+          <div style="font-size:0.92rem; color:var(--text); line-height:1.6;">${escapeHtml(item.text)}</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;">
+            <button class="calm-action-link" onclick="moveIdeaToDecision('${item.id}')">تحويل لقرار</button>
+            <button class="calm-action-link" onclick="moveIdeaToPlan('${item.id}')">تحويل لخطة</button>
+            <button class="calm-action-link" onclick="deleteIdeaItem('${item.id}')">حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPlanningTab() {
+      renderDecisionsList();
+      renderPlansList();
+      renderIdeasList();
+    }
+
     /* الوظائف الخاصة بالمالية وأرشيف الشهور */
     function addExpense() {
       const amtInput = document.getElementById('expense-amount');
@@ -2280,7 +2666,8 @@
         bank: bankLogs,
         bankNotes: bankNotes,
         jesus: jesusData,
-        jesusNotes: jesusNotes
+        jesusNotes: jesusNotes,
+        planning: planningData
       };
       const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json'});
       const a = document.createElement('a');
@@ -2307,6 +2694,7 @@
           if (typeof imported.bankNotes === 'string') localStorage.setItem('life_app_bank_notes', imported.bankNotes);
           if (imported.jesus) localStorage.setItem('life_app_jesus_data', JSON.stringify(imported.jesus));
           if (typeof imported.jesusNotes === 'string') localStorage.setItem('life_app_jesus_notes', imported.jesusNotes);
+          if (imported.planning) localStorage.setItem('life_app_planning_data', JSON.stringify(imported.planning));
           alert('تم استرجاع البيانات بنجاح! 🎉');
           location.reload();
         } catch (err) { alert('الملف غير صالح!'); }
@@ -2321,6 +2709,7 @@
     renderFinanceTab();
     renderEnglishTab();
     renderBankTab();
+    renderPlanningTab();
   </script>
 
   <script>
