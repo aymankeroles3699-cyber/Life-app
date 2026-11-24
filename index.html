@@ -261,42 +261,58 @@
       gap: 8px;
     }
 
-    /* الشريط السفلي العائم */
+    /* الشريط السفلي العائم القابل للسحب الأفقي */
     .bottom-nav {
       position: fixed;
       bottom: 45px;
-      left: 6px;
-      right: 6px;
-      height: 65px;
+      left: 8px;
+      right: 8px;
+      height: 68px;
       background: #0f172a;
       border: 1px solid var(--card-border);
       border-radius: 18px;
       display: flex;
-      justify-content: space-around;
+      justify-content: flex-start;
       align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
       z-index: 9999;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-      padding: 0 2px;
+      padding: 0 8px;
+    }
+
+    .bottom-nav::-webkit-scrollbar {
+      display: none;
     }
 
     .nav-btn {
       background: none;
       border: none;
       color: var(--subtext);
-      font-size: 0.48rem;
+      font-size: 0.66rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1px;
+      justify-content: center;
+      gap: 3px;
       cursor: pointer;
       font-weight: bold;
-      flex: 1;
-      padding: 2px 0;
+      flex: 0 0 auto;
+      min-width: 64px;
+      height: 54px;
+      padding: 4px 8px;
+      border-radius: 12px;
       white-space: nowrap;
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
     .nav-btn.active {
       color: var(--primary);
+      background: rgba(99, 102, 241, 0.14);
     }
 
     .diet-hero-card {
@@ -935,42 +951,42 @@
 
   </div>
 
-  <!-- الشريط السفلي -->
-  <div class="bottom-nav">
+  <!-- الشريط السفلي القابل للسحب -->
+  <div class="bottom-nav" id="bottom-nav">
     <button class="nav-btn active" id="btn-home" onclick="switchTab('home')">
-      <span style="font-size: 1rem;">🏠</span>
+      <span style="font-size: 1.15rem;">🏠</span>
       <span>الرئيسية</span>
     </button>
     <button class="nav-btn" id="btn-diet" onclick="switchTab('diet')">
-      <span style="font-size: 1rem;">🥗</span>
+      <span style="font-size: 1.15rem;">🥗</span>
       <span>التغذية</span>
     </button>
     <button class="nav-btn" id="btn-outfit" onclick="switchTab('outfit')">
-      <span style="font-size: 1rem;">👔</span>
+      <span style="font-size: 1.15rem;">👔</span>
       <span>الدولاب</span>
     </button>
     <button class="nav-btn" id="btn-recovery" onclick="switchTab('recovery')">
-      <span style="font-size: 1rem;">🛡️</span>
+      <span style="font-size: 1.15rem;">🛡️</span>
       <span>التعافي</span>
     </button>
     <button class="nav-btn" id="btn-english" onclick="switchTab('english')">
-      <span style="font-size: 1rem;">🇬🇧</span>
+      <span style="font-size: 1.15rem;">🇬🇧</span>
       <span>الإنجليش</span>
     </button>
     <button class="nav-btn" id="btn-jesus" onclick="switchTab('jesus')">
-      <span style="font-size: 1rem;">✝️</span>
+      <span style="font-size: 1.15rem;">✝️</span>
       <span>يسوع</span>
     </button>
     <button class="nav-btn" id="btn-bank" onclick="switchTab('bank')">
-      <span style="font-size: 1rem;">🏦</span>
+      <span style="font-size: 1.15rem;">🏦</span>
       <span>بنك مصر</span>
     </button>
     <button class="nav-btn" id="btn-finance" onclick="switchTab('finance')">
-      <span style="font-size: 1rem;">💰</span>
+      <span style="font-size: 1.15rem;">💰</span>
       <span>المالية</span>
     </button>
     <button class="nav-btn" id="btn-reports" onclick="switchTab('reports')">
-      <span style="font-size: 1rem;">📊</span>
+      <span style="font-size: 1.15rem;">📊</span>
       <span>التقارير</span>
     </button>
   </div>
@@ -1107,46 +1123,51 @@
       renderOutfitInsights();
     }
 
+    function scrollNavButtonIntoView(btnId) {
+      const btn = document.getElementById(btnId);
+      if (btn && typeof btn.scrollIntoView === 'function') {
+        btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
+      const activeBtnId = `btn-${tabName}`;
+      const activeBtn = document.getElementById(activeBtnId);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        scrollNavButtonIntoView(activeBtnId);
+      }
+
       if (tabName === 'home') {
         document.getElementById('tab-home').classList.add('active');
-        document.getElementById('btn-home').classList.add('active');
         updateDailyWisdom();
       } else if (tabName === 'diet') {
         document.getElementById('tab-diet').classList.add('active');
-        document.getElementById('btn-diet').classList.add('active');
         renderDietTab();
       } else if (tabName === 'outfit') {
         document.getElementById('tab-outfit').classList.add('active');
-        document.getElementById('btn-outfit').classList.add('active');
         refreshOutfitTabUI();
       } else if (tabName === 'recovery') {
         document.getElementById('tab-recovery').classList.add('active');
-        document.getElementById('btn-recovery').classList.add('active');
         renderRecoveryTab();
       } else if (tabName === 'english') {
         document.getElementById('tab-english').classList.add('active');
-        document.getElementById('btn-english').classList.add('active');
         renderEnglishTab();
       } else if (tabName === 'jesus') {
         document.getElementById('tab-jesus').classList.add('active');
-        document.getElementById('btn-jesus').classList.add('active');
         renderJesusTab();
       } else if (tabName === 'bank') {
         document.getElementById('tab-bank').classList.add('active');
-        document.getElementById('btn-bank').classList.add('active');
         renderBankTab();
       } else if (tabName === 'finance') {
         document.getElementById('tab-finance').classList.add('active');
-        document.getElementById('btn-finance').classList.add('active');
         populateExpenseMonths();
         renderFinanceTab();
       } else if (tabName === 'reports') {
         document.getElementById('tab-reports').classList.add('active');
-        document.getElementById('btn-reports').classList.add('active');
         renderReports();
       }
     }
