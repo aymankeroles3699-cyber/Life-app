@@ -168,7 +168,7 @@
       margin-top: 12px;
     }
 
-    input[type="text"], input[type="number"], select, textarea {
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
       width: 100%;
       padding: 12px;
       border: 1px solid var(--card-border);
@@ -805,7 +805,7 @@
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي</div>
           <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="best-streak-count">0 يوم</div>
         </div>
         <div>
@@ -854,7 +854,10 @@
       <div class="card" style="text-align:center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(30, 41, 59, 0.9)); border-color: rgba(16, 185, 129, 0.4);">
         <div style="font-size:0.9rem; color:var(--subtext);">عدد أيام الثبات المستمر</div>
         <div style="font-size:3.8rem; font-weight:bold; color:var(--accent); margin:6px 0;" id="jesus-days-count">0</div>
-        <div style="font-size:0.85rem; color:var(--text); font-weight:bold; margin-top: 4px;" id="jesus-motivation">كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏</div>
+        <div style="font-size:0.85rem; color:var(--text); font-weight:bold; margin-bottom: 14px;" id="jesus-motivation">كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏</div>
+        <button id="jesus-check-btn" onclick="toggleJesusToday()" class="add-btn" style="padding: 12px; font-size: 0.95rem; background: var(--accent);">
+          ✅ تسجيل إنجاز اليوم
+        </button>
       </div>
 
       <div class="card">
@@ -879,7 +882,7 @@
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
           <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="jesus-best-count">0 يوم</div>
         </div>
         <div>
@@ -1207,13 +1210,26 @@
       localStorage.setItem('life_app_recovery_data', JSON.stringify(recoveryData));
     }
 
-    let jesusData = JSON.parse(localStorage.getItem('life_app_jesus_data')) || { startDate: getLocalDateString(0), bestDays: 0, bestStart: getLocalDateString(0) };
+    let jesusData = JSON.parse(localStorage.getItem('life_app_jesus_data')) || {
+      startDate: getLocalDateString(0),
+      bestDays: 0,
+      bestStart: getLocalDateString(0),
+      completedCount: 0,
+      completedToday: false,
+      lastCompletedDate: null
+    };
     if (!jesusData.startDate) {
       jesusData.startDate = getLocalDateString(0);
       jesusData.bestDays = 0;
       jesusData.bestStart = getLocalDateString(0);
-      localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
     }
+    if (typeof jesusData.completedCount !== 'number') {
+      jesusData.completedCount = 0;
+    }
+    if (jesusData.lastCompletedDate && jesusData.lastCompletedDate !== getLocalDateString(0)) {
+      jesusData.completedToday = false;
+    }
+    localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
     
     function getWeekRange(dateObj) {
       const d = new Date(dateObj);
@@ -2167,7 +2183,7 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة يسوع (نفس نظام التعافي والأرقام القياسية) */
+    /* الوظائف الخاصة بتابة يسوع */
     function getJesusMotivationMessage() {
       const messages = [
         "كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏",
@@ -2178,6 +2194,39 @@
       ];
       const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
       return messages[dayOfYear % messages.length];
+    }
+
+    function getJesusTotalDays() {
+      const elapsedDays = getDailyDaysOnly(jesusData.startDate);
+      const manualCount = jesusData.completedCount || 0;
+      return Math.max(elapsedDays, manualCount);
+    }
+
+    function toggleJesusToday() {
+      const todayStr = getLocalDateString(0);
+      const isDoneToday = jesusData.completedToday && jesusData.lastCompletedDate === todayStr;
+
+      if (isDoneToday) {
+        jesusData.completedCount = Math.max(0, (jesusData.completedCount || 0) - 1);
+        jesusData.completedToday = false;
+        jesusData.lastCompletedDate = null;
+      } else {
+        jesusData.completedCount = (jesusData.completedCount || 0) + 1;
+        jesusData.completedToday = true;
+        jesusData.lastCompletedDate = todayStr;
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 55, spread: 55, origin: { y: 0.7 } });
+        }
+      }
+
+      const currentDays = getJesusTotalDays();
+      if (currentDays > (jesusData.bestDays || 0)) {
+        jesusData.bestDays = currentDays;
+        jesusData.bestStart = jesusData.startDate;
+      }
+
+      localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
+      renderJesusTab();
     }
 
     function saveJesusNotes(showToast = false) {
@@ -2204,24 +2253,39 @@
     }
 
     function renderJesusTab() {
-      const currentDays = getDailyDaysOnly(jesusData.startDate);
+      const todayStr = getLocalDateString(0);
+      if (jesusData.lastCompletedDate && jesusData.lastCompletedDate !== todayStr) {
+        jesusData.completedToday = false;
+      }
+
+      const currentDays = getJesusTotalDays();
 
       if (currentDays > (jesusData.bestDays || 0)) {
         jesusData.bestDays = currentDays;
         jesusData.bestStart = jesusData.startDate;
-        localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
       }
+      localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
 
       const bestDays = jesusData.bestDays || currentDays;
 
       const countEl = document.getElementById('jesus-days-count');
       const motEl = document.getElementById('jesus-motivation');
+      const checkBtn = document.getElementById('jesus-check-btn');
       const bestEl = document.getElementById('jesus-best-count');
       const startEl = document.getElementById('jesus-start-date');
       const notesEl = document.getElementById('jesus-notes-input');
 
       if (countEl) countEl.innerText = currentDays;
       if (motEl) motEl.innerText = getJesusMotivationMessage();
+      if (checkBtn) {
+        if (jesusData.completedToday) {
+          checkBtn.innerText = "✓ تم تسجيل إنجاز اليوم بنجاح! 🎉";
+          checkBtn.style.background = "var(--primary)";
+        } else {
+          checkBtn.innerText = "✅ تسجيل إنجاز اليوم";
+          checkBtn.style.background = "var(--accent)";
+        }
+      }
       if (bestEl) bestEl.innerText = `${bestDays} يوم`;
       if (startEl) startEl.innerText = jesusData.startDate;
       if (notesEl && document.activeElement !== notesEl) notesEl.value = jesusNotes || '';
@@ -2231,13 +2295,16 @@
 
     function resetJesusStreak() {
       if (confirm('هل تريد إعادة ضبط التحدي والبدء من اليوم؟')) {
-        const currentDays = getDailyDaysOnly(jesusData.startDate);
+        const currentDays = getJesusTotalDays();
         if (currentDays > (jesusData.bestDays || 0)) {
           jesusData.bestDays = currentDays;
           jesusData.bestStart = jesusData.startDate;
         }
 
         jesusData.startDate = getLocalDateString(0);
+        jesusData.completedCount = 0;
+        jesusData.completedToday = false;
+        jesusData.lastCompletedDate = null;
         localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
         renderJesusTab();
         alert('تم بدء تحدٍ جديد من اليوم بنجاح! 🙏');
@@ -2756,7 +2823,7 @@
 
     function renderReports() {
       const recoveryDays = getDailyDaysOnly(recoveryData.startDate);
-      const jesusDays = getDailyDaysOnly(jesusData.startDate);
+      const jesusDays = getJesusTotalDays();
       const bankStreak = calculateStreakFromLogs(bankLogs);
 
       const totalRecoveryEl = document.getElementById('total-recovery-streak');
