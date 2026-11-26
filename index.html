@@ -1220,11 +1220,15 @@
     };
     if (!jesusData.startDate) {
       jesusData.startDate = getLocalDateString(0);
-      jesusData.bestDays = 0;
-      jesusData.bestStart = getLocalDateString(0);
     }
     if (typeof jesusData.completedCount !== 'number') {
       jesusData.completedCount = 0;
+    }
+    if (!jesusData.bestStart) {
+      jesusData.bestStart = jesusData.startDate;
+    }
+    if (typeof jesusData.bestDays !== 'number' || jesusData.bestDays > jesusData.completedCount) {
+      jesusData.bestDays = jesusData.completedCount;
     }
     if (jesusData.lastCompletedDate && jesusData.lastCompletedDate !== getLocalDateString(0)) {
       jesusData.completedToday = false;
@@ -2183,7 +2187,7 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة يسوع */
+    /* الوظائف الخاصة بتابة يسوع (تعد فقط عند الضغط اليدوي على الزرار) */
     function getJesusMotivationMessage() {
       const messages = [
         "كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏",
@@ -2197,9 +2201,7 @@
     }
 
     function getJesusTotalDays() {
-      const elapsedDays = getDailyDaysOnly(jesusData.startDate);
-      const manualCount = jesusData.completedCount || 0;
-      return Math.max(elapsedDays, manualCount);
+      return Math.max(0, jesusData.completedCount || 0);
     }
 
     function toggleJesusToday() {
@@ -2266,7 +2268,7 @@
       }
       localStorage.setItem('life_app_jesus_data', JSON.stringify(jesusData));
 
-      const bestDays = jesusData.bestDays || currentDays;
+      const bestDays = jesusData.bestDays || 0;
 
       const countEl = document.getElementById('jesus-days-count');
       const motEl = document.getElementById('jesus-motivation');
