@@ -261,7 +261,6 @@
       gap: 8px;
     }
 
-    /* الشريط السفلي العائم القابل للسحب الأفقي */
     .bottom-nav {
       position: fixed;
       bottom: 45px;
@@ -499,7 +498,6 @@
       margin: 8px 0;
     }
 
-    /* تنسيقات تابة التخطيط الهادئة */
     .calm-subnav {
       display: flex;
       gap: 8px;
@@ -805,7 +803,7 @@
 
       <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
         <div>
-          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي</div>
+          <div style="font-size:0.8rem; color:var(--subtext);">🏆 أعلى رقم قياسي غير مسبوق</div>
           <div style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin-top:4px;" id="best-streak-count">0 يوم</div>
         </div>
         <div>
@@ -915,7 +913,7 @@
         <div style="font-size: 0.8rem; color: var(--subtext); margin-bottom: 12px;" id="bank-today-label">تاريخ اليوم: ...</div>
 
         <div class="timer-display" id="bank-timer-display">60:00</div>
-        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:14px;">
+        <div style="display:flex; gap:8px; justify-content:center; margin-bottom:6px;">
           <button id="bank-timer-toggle-btn" onclick="toggleBankTimer()" class="add-btn" style="width:auto; padding:8px 16px; background:rgba(16, 185, 129, 0.2); border:1px solid var(--accent); color:var(--text);">
             ▶️ بدء الساعة
           </button>
@@ -923,10 +921,7 @@
             ↺ إعادة
           </button>
         </div>
-        
-        <button id="bank-check-btn" onclick="toggleBankToday()" class="add-btn" style="padding: 14px; font-size: 1rem; background: var(--primary);">
-          ⏳ لم أتمم ساعة الإنجليزي اليوم
-        </button>
+        <div id="bank-auto-status" style="font-size:0.78rem; color:var(--accent); font-weight:bold; margin-top:8px;"></div>
       </div>
 
       <div class="card" style="border-color: rgba(99, 102, 241, 0.35);">
@@ -1013,7 +1008,6 @@
         <button class="calm-subbtn" id="subbtn-ideas" onclick="switchPlanningSubtab('ideas')">💡 أفكار</button>
       </div>
 
-      <!-- قسم القرارات -->
       <div id="subtab-decisions" class="calm-section active">
         <div class="card">
           <div class="input-group" style="margin-top:0;">
@@ -1028,7 +1022,6 @@
         </div>
       </div>
 
-      <!-- قسم الخطط -->
       <div id="subtab-plans" class="calm-section">
         <div class="card">
           <div class="input-group" style="margin-top:0;">
@@ -1043,7 +1036,6 @@
         </div>
       </div>
 
-      <!-- قسم الأفكار -->
       <div id="subtab-ideas" class="calm-section">
         <div class="card">
           <div class="input-group" style="margin-top:0;">
@@ -1876,7 +1868,6 @@
       return streak;
     }
 
-    /* الوظائف الخاصة بتعلم الإنجليزية */
     function toggleEnglishToday() {
       const isDone = englishLogs[currentDate];
       if (isDone) {
@@ -1930,11 +1921,12 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة بنك مصر (إنجليزي ساعة يومياً) مع حفظ الحالة والإشعارات */
+    /* الوظائف الخاصة بتابة بنك مصر (تلقائية بالكامل + إشعار مجدول عبر Service Worker) */
     const BANK_DURATION_SECONDS = 60 * 60;
     let bankTimerState = JSON.parse(localStorage.getItem('life_app_bank_timer_state')) || {
       remainingSeconds: BANK_DURATION_SECONDS,
       endTime: null,
+      targetDate: null,
       isRunning: false,
       notifiedDone: false
     };
@@ -1942,6 +1934,26 @@
 
     function saveBankTimerState() {
       localStorage.setItem('life_app_bank_timer_state', JSON.stringify(bankTimerState));
+    }
+
+    function postTimerToServiceWorker(type, payload = {}) {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type, ...payload });
+      } else if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+        navigator.serviceWorker.ready.then(reg => {
+          if (reg.active) {
+            reg.active.postMessage({ type, ...payload });
+          }
+        }).catch(() => {});
+      }
+    }
+
+    function markBankDayCompleted(dateStr) {
+      const target = dateStr || currentDate || getLocalDateString(0);
+      if (!bankLogs[target]) {
+        bankLogs[target] = true;
+        localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
+      }
     }
 
     function syncBankTimerRemaining() {
@@ -1952,9 +1964,10 @@
         } else {
           bankTimerState.remainingSeconds = 0;
           bankTimerState.isRunning = false;
+          const completedDate = bankTimerState.targetDate || currentDate || getLocalDateString(0);
           bankTimerState.endTime = null;
           saveBankTimerState();
-          onBankTimerCompleted();
+          onBankTimerCompleted(completedDate);
         }
       }
     }
@@ -1970,9 +1983,24 @@
       syncBankTimerRemaining();
       const displayEl = document.getElementById('bank-timer-display');
       const toggleBtn = document.getElementById('bank-timer-toggle-btn');
+      const autoStatusEl = document.getElementById('bank-auto-status');
+
       if (displayEl) displayEl.innerText = formatBankTimer(bankTimerState.remainingSeconds);
       if (toggleBtn) {
         toggleBtn.innerText = bankTimerState.isRunning ? '⏸️ إيقاف مؤقت' : '▶️ بدء الساعة';
+      }
+
+      if (autoStatusEl) {
+        const isCurrentDateDone = !!bankLogs[currentDate];
+        if (isCurrentDateDone && bankTimerState.remainingSeconds === 0) {
+          autoStatusEl.innerText = '✓ تم إتمام ساعة الإنجليزي وتسجيل اليوم تلقائياً';
+        } else if (bankTimerState.isRunning) {
+          autoStatusEl.innerText = '⏳ الساعة تعمل الآن وسيتم تسجيل اليوم وإرسال الإشعار تلقائياً عند الانتهاء';
+        } else if (isCurrentDateDone) {
+          autoStatusEl.innerText = '✓ تم تسجيل إنجاز هذا اليوم';
+        } else {
+          autoStatusEl.innerText = 'يتم تسجيل اليوم تلقائياً فور انتهاء 60 دقيقة';
+        }
       }
     }
 
@@ -1999,48 +2027,39 @@
         navigator.vibrate([200, 100, 200]);
       }
 
-      if ('Notification' in window) {
-        if (Notification.permission === 'default') {
-          try { await Notification.requestPermission(); } catch (e) {}
-        }
+      const title = 'بنك مصر — انتهت ساعة المذاكرة 🎉';
+      const body = 'أتممت 60 دقيقة من مذاكرة الإنجليزي بنجاح وتم تسجيل يومك تلقائياً!';
 
-        if (Notification.permission === 'granted') {
-          const title = 'بنك مصر — انتهت ساعة المذاكرة 🎉';
-          const options = {
-            body: 'أتممت 60 دقيقة من مذاكرة الإنجليزي بنجاح وتم تسجيل يومك!',
-            icon: 'icon.png',
-            badge: 'icon.png',
-            tag: 'bank-english-timer'
-          };
-
-          if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
-            navigator.serviceWorker.ready.then(reg => {
-              if (reg && typeof reg.showNotification === 'function') {
-                reg.showNotification(title, options);
-              } else {
-                new Notification(title, options);
-              }
-            }).catch(() => {
-              new Notification(title, options);
-            });
-          } else {
-            new Notification(title, options);
-          }
+      if ('Notification' in window && Notification.permission === 'granted') {
+        if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready.then(reg => {
+            if (reg && typeof reg.showNotification === 'function') {
+              reg.showNotification(title, {
+                body,
+                icon: 'icon.png',
+                badge: 'icon.png',
+                tag: 'bank-english-timer'
+              });
+            } else {
+              new Notification(title, { body, icon: 'icon.png', tag: 'bank-english-timer' });
+            }
+          }).catch(() => {
+            new Notification(title, { body, icon: 'icon.png', tag: 'bank-english-timer' });
+          });
+        } else {
+          new Notification(title, { body, icon: 'icon.png', tag: 'bank-english-timer' });
         }
       }
     }
 
-    function onBankTimerCompleted() {
+    function onBankTimerCompleted(completedDateStr) {
       if (bankTimerInterval) {
         clearInterval(bankTimerInterval);
         bankTimerInterval = null;
       }
 
-      const targetDate = currentDate || getLocalDateString(0);
-      if (!bankLogs[targetDate]) {
-        bankLogs[targetDate] = true;
-        localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
-      }
+      markBankDayCompleted(completedDateStr);
+      postTimerToServiceWorker('CANCEL_BANK_TIMER');
 
       if (!bankTimerState.notifiedDone) {
         bankTimerState.notifiedDone = true;
@@ -2049,7 +2068,6 @@
           confetti({ particleCount: 70, spread: 65, origin: { y: 0.7 } });
         }
         sendBankCompletionNotification();
-        alert('انتهت ساعة مذاكرة الإنجليزي (60 دقيقة) وتم تسجيل إنجاز اليوم بنجاح! 🎉');
       }
 
       renderBankTab();
@@ -2076,6 +2094,7 @@
           clearInterval(bankTimerInterval);
           bankTimerInterval = null;
         }
+        postTimerToServiceWorker('CANCEL_BANK_TIMER');
         saveBankTimerState();
         updateBankTimerUI();
         return;
@@ -2086,9 +2105,17 @@
         bankTimerState.notifiedDone = false;
       }
 
+      const endTime = Date.now() + (bankTimerState.remainingSeconds * 1000);
       bankTimerState.isRunning = true;
-      bankTimerState.endTime = Date.now() + (bankTimerState.remainingSeconds * 1000);
+      bankTimerState.endTime = endTime;
+      bankTimerState.targetDate = currentDate || getLocalDateString(0);
       saveBankTimerState();
+
+      postTimerToServiceWorker('SCHEDULE_BANK_TIMER', {
+        endTime: endTime,
+        targetDate: bankTimerState.targetDate
+      });
+
       startBankTimerLoop();
       updateBankTimerUI();
     }
@@ -2101,23 +2128,13 @@
       bankTimerState = {
         remainingSeconds: BANK_DURATION_SECONDS,
         endTime: null,
+        targetDate: null,
         isRunning: false,
         notifiedDone: false
       };
+      postTimerToServiceWorker('CANCEL_BANK_TIMER');
       saveBankTimerState();
       updateBankTimerUI();
-    }
-
-    function toggleBankToday() {
-      const isDone = bankLogs[currentDate];
-      if (isDone) {
-        delete bankLogs[currentDate];
-      } else {
-        bankLogs[currentDate] = true;
-        confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
-      }
-      localStorage.setItem('life_app_bank_logs', JSON.stringify(bankLogs));
-      renderBankTab();
     }
 
     function saveBankNotes(showToast = false) {
@@ -2145,7 +2162,6 @@
 
     function renderBankTab() {
       const todayLabel = document.getElementById('bank-today-label');
-      const checkBtn = document.getElementById('bank-check-btn');
       const streakCountEl = document.getElementById('bank-streak-count');
       const notesEl = document.getElementById('bank-notes-input');
       const historyList = document.getElementById('bank-history-list');
@@ -2153,17 +2169,6 @@
       if (todayLabel) todayLabel.innerText = `تاريخ اليوم المحدد: ${currentDate}`;
       if (notesEl && document.activeElement !== notesEl) notesEl.value = bankNotes || '';
       updateBankTimerUI();
-
-      const isCompleted = bankLogs[currentDate];
-      if (checkBtn) {
-        if (isCompleted) {
-          checkBtn.innerText = "✓ تم إتمام ساعة الإنجليزي اليوم بنجاح! 🎉";
-          checkBtn.style.background = "var(--accent)";
-        } else {
-          checkBtn.innerText = "⏳ لم أتمم ساعة الإنجليزي اليوم (اضغط عند الإتمام ☑️)";
-          checkBtn.style.background = "var(--primary)";
-        }
-      }
 
       if (streakCountEl) streakCountEl.innerText = calculateStreakFromLogs(bankLogs);
 
@@ -2187,7 +2192,6 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة يسوع (تعد فقط عند الضغط اليدوي على الزرار) */
     function getJesusMotivationMessage() {
       const messages = [
         "كل يوم بتثبت فيه هو نور وبركة في يومك! 🙏",
@@ -2313,7 +2317,6 @@
       }
     }
 
-    /* الوظائف الخاصة بتابة تخطيط الهادئة */
     function persistPlanningData() {
       localStorage.setItem('life_app_planning_data', JSON.stringify(planningData));
     }
@@ -2548,7 +2551,6 @@
       renderIdeasList();
     }
 
-    /* الوظائف الخاصة بالمالية وأرشيف الشهور */
     function addExpense() {
       const amtInput = document.getElementById('expense-amount');
       const catSelect = document.getElementById('expense-cat');
@@ -2892,6 +2894,28 @@
       reader.readAsText(file);
     }
 
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        syncBankTimerRemaining();
+        renderBankTab();
+      }
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        const data = event.data || {};
+        if (data.type === 'BANK_TIMER_FINISHED') {
+          markBankDayCompleted(data.targetDate);
+          bankTimerState.remainingSeconds = 0;
+          bankTimerState.isRunning = false;
+          bankTimerState.endTime = null;
+          bankTimerState.notifiedDone = true;
+          saveBankTimerState();
+          renderBankTab();
+        }
+      });
+    }
+
     syncBankTimerRemaining();
     if (bankTimerState.isRunning) {
       startBankTimerLoop();
@@ -2909,7 +2933,15 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js');
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        if (bankTimerState.isRunning && bankTimerState.endTime && reg.active) {
+          reg.active.postMessage({
+            type: 'SCHEDULE_BANK_TIMER',
+            endTime: bankTimerState.endTime,
+            targetDate: bankTimerState.targetDate || currentDate
+          });
+        }
+      });
     }
   </script>
 </body>
